@@ -2,14 +2,19 @@ package main
 
 import (
 	"flag"
+	"manager/configuration"
+	"io/ioutil"
+	"encoding/json"
 	"fmt"
 )
-
-var generate = flag.Bool("gen", false, "If set will generate nonexistant configs")
+var config configuration.Config
+var debug  = flag.Bool("debug", false, "If set debug output will print")
 
 func main() {
 	flag.Parse()
-	fmt.Println(*generate)
-	//Generate Files
-
+	config.Debug = *debug
+	data, err := ioutil.ReadFile("dalek/manifest.json")
+	config.DebugErrorLog(err)
+	err = json.Unmarshal(data, &config.Manifest)
+	fmt.Println(config)
 }
