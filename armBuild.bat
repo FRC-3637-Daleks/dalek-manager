@@ -4,4 +4,4 @@ set GOPATH=%cd%
 set GOOS="linux"
 set GOARCH="arm"
 set GOARM=7
-go build -o %GOPATH%\bin\robot-manager.exe %GOPATH%\src\main.go
+go build -o %GOPATH%\bin\FRCUserProgram.exe %GOPATH%\src\main.go
