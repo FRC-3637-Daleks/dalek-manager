@@ -5,8 +5,8 @@ A web config tool to be hosted on the roborio with several team code infrastruct
 json will be used for most things
 
 ### Binary Directory
-The binary is located at `/home/lvuser/`.
- - `FRCUserProgram` - Binary run at startup by the system
+The robot code binary is located at `/home/lvuser/`.
+ - `FRCUserProgram` - Robot Code binary run at startup by the roborio
  - `dalek/` - Working directory for the application
 
 ### Working Directory
