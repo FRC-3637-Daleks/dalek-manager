@@ -2,7 +2,8 @@ package main
 
 import (
 	"flag"
-	"manager/configuration"
+	"github.com/FRC-3637-Daleks/dalek-manager/manager/configuration"
+	"github.com/FRC-3637-Daleks/dalek-manager/manager/data"
 	"io/ioutil"
 	"encoding/json"
 	"fmt"
@@ -11,7 +12,6 @@ import (
 	"os"
 "html/template"
 	"log"
-	"manager/data"
 )
 var config configuration.Config
 var debug  = flag.Bool("debug", false, "If set debug output will print")
