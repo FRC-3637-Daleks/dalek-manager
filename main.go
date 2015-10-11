@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"path"
 	"os"
-"html/template"
+	"html/template"
 	"log"
 )
 var config configuration.Config
