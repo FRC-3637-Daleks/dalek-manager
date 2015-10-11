@@ -26,6 +26,8 @@ SCRIPTS := $(STOP_SCRIPT) $(START_SCRIPT) $(STARTUP_SCRIPT)
 DEPLOYED_FILES := $(WEB_FILES) $(SCRIPTS) $(ARM_OUTPUT)
 DEPLOYED_TAR := $(OUTPUT).tar.gz
 
+GOARGS := 
+
 all: $(OUTPUT)
 
 arm: $(ARM_OUTPUT)
@@ -34,10 +36,10 @@ install: $(OUTPUT)
 	go install
 
 $(OUTPUT): $(TOPLEVEL_PKG)
-	go build -o $(OUTPUT) -v
+	go build $(GOARGS) -o $(OUTPUT) $(TOPLEVEL_PKG)
 
 $(ARM_OUTPUT): $(TOPLEVEL_PKG)
-	env GDOS=linux GOARCH=arm GOARM=7 go build -o $(ARM_OUTPUT)
+	env GDOS=linux GOARCH=arm GOARM=7 go build $(GOARGS) -o $(ARM_OUTPUT) $(TOPLEVEL_PKG)
 
 deploy: $(ARM_OUTPUT) $(SCRIPTS) $(DEPLOYED_TAR)
 	ssh  $(TARGET_ADDRESS) "/etc/init.d/$(OUTPUT) stop || true"

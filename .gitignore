@@ -3,3 +3,5 @@ Robot-Manager.iml
 bin/
 cross-bin/
 dalek/
+dalek-manager*
+*.tar.gz

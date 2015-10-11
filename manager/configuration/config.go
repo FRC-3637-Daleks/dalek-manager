@@ -2,7 +2,7 @@ package configuration
 import (
 	"log"
 	"os"
-	"github.com/FRC-3637-Daleks/dalek-manager/manager/model"
+	"../model"
 )
 
 type Config struct {

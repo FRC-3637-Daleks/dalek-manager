@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"github.com/FRC-3637-Daleks/dalek-manager/manager/configuration"
-	"github.com/FRC-3637-Daleks/dalek-manager/manager/data"
+	"./manager/configuration"
+	"./manager/data"
 	"io/ioutil"
 	"encoding/json"
 	"fmt"
