@@ -7,10 +7,10 @@ json will be used for most things
 ### Binary Directory
 The robot code binary is located at `/home/lvuser/`.
  - `FRCUserProgram` - Robot Code binary run at startup by the roborio
- - `dalek/` - Working directory for the application
+ - `dman/` - Working directory for the application
 
 ### Working Directory
-The working directory is `/home/lvuser/dalek/`. Within it is the manifest file and several subdirectories
+The working directory is `/home/lvuser/dman/`. Within it is the manifest file and several subdirectories
 - `manifest.json` - This is a file containing file paths to various files.
 - `autonomous/` - This directory contains all autonomous scripts
 - `ports/` - This directory contains all port configs

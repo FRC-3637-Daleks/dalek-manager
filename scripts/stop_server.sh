@@ -1,0 +1,1 @@
+killall dalek-manager-arm
