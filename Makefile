@@ -3,7 +3,8 @@
 DEPLOY_DIR := dman
 WEB_DIR := web
 
-TOPLEVEL_PKG := main.go
+TOPLEVEL_PKG := dalek-manager
+TOPLEVEL_FILE := $(TOPLEVEL_PKG).go
 
 OUTPUT := dalek-manager
 ARM_OUTPUT := $(OUTPUT)-arm
@@ -35,11 +36,11 @@ arm: $(ARM_OUTPUT)
 install: $(OUTPUT)
 	go install
 
-$(OUTPUT): $(TOPLEVEL_PKG)
-	go build $(GOARGS) -o $(OUTPUT) $(TOPLEVEL_PKG)
+$(OUTPUT): $(TOPLEVEL_FILE)
+	go build $(GOARGS) $(TOPLEVEL_FILE)
 
-$(ARM_OUTPUT): $(TOPLEVEL_PKG)
-	env GDOS=linux GOARCH=arm GOARM=7 go build $(GOARGS) -o $(ARM_OUTPUT) $(TOPLEVEL_PKG)
+$(ARM_OUTPUT): $(TOPLEVEL_FILE)
+	env GOOS=linux GOARCH=arm GOARM=7 go build $(GOARGS) -o $(ARM_OUTPUT) $(TOPLEVEL_FILE)
 
 deploy: $(ARM_OUTPUT) $(SCRIPTS) $(DEPLOYED_TAR)
 	ssh  $(TARGET_ADDRESS) "/etc/init.d/$(OUTPUT) stop || true"
@@ -53,7 +54,7 @@ $(DEPLOYED_TAR): $(DEPLOYED_FILES)
 
 clean:
 	go clean
-	rm $(OUTPUT) $(ARM_OUTPUT) $(DEPLOYED_TAR)
+	rm $(DEPLOYED_TAR)
 
 stop:
 	ssh $(SSH_FLAGS) $(TARGET_ADDRESS) "/etc/init.d/$(OUTPUT) stop"
