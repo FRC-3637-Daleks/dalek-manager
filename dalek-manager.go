@@ -33,7 +33,7 @@ func serveTemplate(writer http.ResponseWriter, request *http.Request) {
 	//	fmt.Println(request.URL.Path)
 	includesPath := path.Join("web", "dynamic", "includes.html")
 	filePath := path.Join("web", "dynamic", request.URL.Path)
-	data := data.DataWrapper{}
+	data := data.PageWrapper{}
 	if (request.URL.Path == "/") {
 		filePath = path.Join("web", "dynamic", "index.html")
 	}

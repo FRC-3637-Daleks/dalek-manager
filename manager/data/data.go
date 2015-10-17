@@ -1,5 +1,4 @@
 package data
 
-type DataWrapper struct {
-
+type PageWrapper struct {
 }

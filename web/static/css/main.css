@@ -1,0 +1,17 @@
+.status {
+    font-weight: bolder;
+}
+.stopped {
+    color: #ff0300;
+}
+
+.running {
+    color: #2dff00;
+}
+.nav-box {
+    background-color: #484848;
+    color: #9d9d9d;
+}
+.nav-box:hover {
+    color: #9d9d9d;
+}
