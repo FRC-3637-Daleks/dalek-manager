@@ -16,7 +16,6 @@
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
                 <span class="sr-only">Toggle navigation</span>
@@ -27,19 +26,29 @@
             <a class="navbar-brand page-scroll" href="/">Team 3637 Robot Manager</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-            <form class="navbar-form navbar-left">
-                <button type="button" class="btn btn-default nav-box">Reset Robot</button>
+            <form id="navbar-buttons" class="navbar-form navbar-right">
+                <button id="reset" type="button" class="btn nav-box">Reset Robot</button>
                 <p class="btn nav-box">Robot <span id="robot-status" class="status stopped">Stopped</span></p>
                 <p class="btn nav-box">MQTT <span id="mqtt-status" class="status stopped">Stopped</span></p>
             </form>
-
-            <ul class="nav navbar-nav">
+        </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li class="active"><a href="#">Autonomous</a></li>
+                <li><a href="#">Port</a></li>
+                <li><a href="#">Controls</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Logs</a></li>
+                <li><a href="#">Binaries</a></li>
             </ul>
         </div>
-    </div>
-</nav>
-<div class="container main">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
+        </div>
+    </div>
 </div>
 {{template "jsIncludes"}}
 <script src="../static/js/main.js"></script>

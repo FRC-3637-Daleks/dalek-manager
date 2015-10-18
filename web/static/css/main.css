@@ -15,3 +15,29 @@
 .nav-box:hover {
     color: #9d9d9d;
 }
+
+#reset {
+    color: #9d9d9d;
+    border-color: #484848;
+    background-color: #484848;
+}
+
+#reset:active {
+    color: #9d9d9d;
+    border-color: #484848;
+    background-color: #484848;
+}
+
+#reset:hover {
+    background-color: #5d5d5d;
+    border-color: #5d5d5d;
+    color: #131313;
+}
+
+#navbar-buttons {
+    margin-right: 10px;
+}
+
+#side-bar {
+
+}
