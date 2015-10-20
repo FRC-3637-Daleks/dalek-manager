@@ -19,6 +19,43 @@ var debug  = flag.Bool("debug", false, "If set debug output will print")
 func main() {
 	flag.Parse()
 	config.Debug = *debug
+
+	if _, err := os.Stat("dalek"); os.IsNotExist(err) {
+		config.DebugLog("Makeing dalek Directory")
+		os.MkdirAll("dalek", 0775)
+	}
+	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
+		config.DebugLog("Makeing manifest.json")
+		//asign default values to config.manifest
+		json, err := json.MarshalIndent(config.Manifest, "", "  ")
+		if(err != nil) {panic(err)}
+		ioutil.WriteFile("dalek/manifest.json", json, 0775)
+	}
+	if _, err := os.Stat("dalek/autonomous"); os.IsNotExist(err) {
+		config.DebugLog("Makeing autonomous Directory")
+		os.MkdirAll("dalek/autonomous", 0775)
+	}
+	if _, err := os.Stat("dalek/ports"); os.IsNotExist(err) {
+		config.DebugLog("Makeing ports Directory")
+		os.MkdirAll("dalek/ports", 0775)
+	}
+	if _, err := os.Stat("dalek/controls"); os.IsNotExist(err) {
+		config.DebugLog("Makeing controls Directory")
+		os.MkdirAll("dalek/controls", 0775)
+	}
+	if _, err := os.Stat("dalek/settings"); os.IsNotExist(err) {
+		config.DebugLog("Makeing settings Directory")
+		os.MkdirAll("dalek/settings", 0775)
+	}
+	if _, err := os.Stat("dalek/logs"); os.IsNotExist(err) {
+		config.DebugLog("Makeing logs Directory")
+		os.MkdirAll("dalek/logs", 0775)
+	}
+	if _, err := os.Stat("dalek/binaries"); os.IsNotExist(err) {
+		config.DebugLog("Makeing binaries Directory")
+		os.MkdirAll("dalek/binaries", 0775)
+	}
+
 	data, err := ioutil.ReadFile("dalek/manifest.json")
 	config.DebugErrorLog(err)
 	err = json.Unmarshal(data, &config.Manifest)
