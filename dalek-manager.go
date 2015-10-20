@@ -22,7 +22,8 @@ func main() {
 
 	if _, err := os.Stat("dalek"); os.IsNotExist(err) {
 		config.DebugLog("Makeing dalek Directory")
-		os.MkdirAll("dalek", 0775)
+		err := os.MkdirAll("dalek", 0775)
+		if(err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
 		config.DebugLog("Makeing manifest.json")
@@ -33,27 +34,33 @@ func main() {
 	}
 	if _, err := os.Stat("dalek/autonomous"); os.IsNotExist(err) {
 		config.DebugLog("Makeing autonomous Directory")
-		os.MkdirAll("dalek/autonomous", 0775)
+		err := os.MkdirAll("dalek/autonomous", 0775)
+		if(err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/ports"); os.IsNotExist(err) {
 		config.DebugLog("Makeing ports Directory")
-		os.MkdirAll("dalek/ports", 0775)
+		err := os.MkdirAll("dalek/ports", 0775)
+		if(err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/controls"); os.IsNotExist(err) {
 		config.DebugLog("Makeing controls Directory")
-		os.MkdirAll("dalek/controls", 0775)
+		err := os.MkdirAll("dalek/controls", 0775)
+		if(err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/settings"); os.IsNotExist(err) {
 		config.DebugLog("Makeing settings Directory")
-		os.MkdirAll("dalek/settings", 0775)
+		err := os.MkdirAll("dalek/settings", 0775)
+		if(err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/logs"); os.IsNotExist(err) {
 		config.DebugLog("Makeing logs Directory")
-		os.MkdirAll("dalek/logs", 0775)
+		err := os.MkdirAll("dalek/logs", 0775)
+		if(err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/binaries"); os.IsNotExist(err) {
 		config.DebugLog("Makeing binaries Directory")
-		os.MkdirAll("dalek/binaries", 0775)
+		err := os.MkdirAll("dalek/binaries", 0775)
+		if(err != nil) {panic(err)}
 	}
 
 	data, err := ioutil.ReadFile("dalek/manifest.json")
