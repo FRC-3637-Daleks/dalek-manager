@@ -71,20 +71,34 @@ func main() {
 	config.DebugLog("Loaded manifest: ", config.Manifest)
 	rtr := mux.NewRouter()
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
-	rtr.HandleFunc("/", serveTemplate)
+	rtr.HandleFunc("/", serveRoot)
+	rtr.HandleFunc("/editor/{fileType}/{fileName}", serveEditor)
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", nil)
 }
 
-func serveTemplate(writer http.ResponseWriter, request *http.Request) {
-	//	fmt.Println(request.URL.Path)
-	includesPath := path.Join("web", "dynamic", "includes.html")
-	filePath := path.Join("web", "dynamic", request.URL.Path)
-	data := data.PageWrapper{}
-	if (request.URL.Path == "/") {
-		filePath = path.Join("web", "dynamic", "index.html")
-	}
+func serveRoot(writer http.ResponseWriter, request *http.Request) {
+	serveTemplate(writer, request, path.Join("web", "dynamic", "index.html"), data.PageWrapper{})
+}
 
+func serveEditor(writer http.ResponseWriter, request *http.Request)  {
+	editorWrapper := data.EditorWrapper{}
+	editorWrapper.Lang = "json"
+	vars := mux.Vars(request)
+	fileType := vars["fileType"]
+	fileName := vars["fileName"]
+	content, err := ioutil.ReadFile("dalek/" + fileType + "/" + fileName)
+	if(check(err, 500, &writer)){return}
+	editorWrapper.FileContent = string(content)
+	if(fileType == "autonomous") {
+		editorWrapper.Lang = "lua"
+	}
+	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
+}
+
+func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {
+	includesPath := path.Join("web", "dynamic", "includes.html")
+	config.DebugLog("Request for: \"", request.URL.Path, "\"\tSending: \"", filePath, "\"")
 	info, err := os.Stat(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -98,7 +112,6 @@ func serveTemplate(writer http.ResponseWriter, request *http.Request) {
 	}
 	tmpl, err := template.ParseFiles(includesPath, filePath)
 	if(check(err, 500, &writer)){return }
-
 	if err := tmpl.ExecuteTemplate(writer, "main", data); err != nil {
 		log.Println(err.Error())
 		http.Error(writer, http.StatusText(500), 500)
@@ -107,7 +120,7 @@ func serveTemplate(writer http.ResponseWriter, request *http.Request) {
 
 func check(err error, code int,  writer *http.ResponseWriter) bool {
 	if(err != nil) {
-		log.Println(err)
+		config.DebugErrorLog(err)
 		http.Error(*writer, http.StatusText(code), code)
 		return true
 	}
