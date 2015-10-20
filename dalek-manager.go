@@ -21,7 +21,6 @@ var debug  = flag.Bool("debug", false, "If set debug output will print")
 func main() {
 	flag.Parse()
 	config.Debug = *debug
-
 	if _, err := os.Stat("dalek"); os.IsNotExist(err) {
 		config.DebugLog("Makeing dalek Directory")
 		err := os.MkdirAll("dalek", 0775)
@@ -72,7 +71,7 @@ func main() {
 	rtr := mux.NewRouter()
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
 	rtr.HandleFunc("/", serveRoot)
-	rtr.HandleFunc("/editor/{fileType}/{fileName}", serveEditor)
+	rtr.HandleFunc("/editor/{fileType:autonomous|ports|settings}/{fileName}", serveEditor).Methods("GET")
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", nil)
 }
@@ -87,6 +86,7 @@ func serveEditor(writer http.ResponseWriter, request *http.Request)  {
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
+	config.DebugLog("Loading file into editor: ", "dalek/" + fileType + "/" + fileName)
 	content, err := ioutil.ReadFile("dalek/" + fileType + "/" + fileName)
 	if(check(err, 500, &writer)){return}
 	editorWrapper.FileContent = string(content)
