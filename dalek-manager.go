@@ -25,13 +25,6 @@ func main() {
 		err := os.MkdirAll("dalek", 0775)
 		if(err != nil) {panic(err)}
 	}
-	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
-		config.DebugLog("Makeing manifest.json")
-		//asign default values to config.manifest
-		json, err := json.MarshalIndent(config.Manifest, "", "  ")
-		if(err != nil) {panic(err)}
-		ioutil.WriteFile("dalek/manifest.json", json, 0775)
-	}
 	if _, err := os.Stat("dalek/autonomous"); os.IsNotExist(err) {
 		config.DebugLog("Makeing autonomous Directory")
 		err := os.MkdirAll("dalek/autonomous", 0775)
@@ -62,12 +55,18 @@ func main() {
 		err := os.MkdirAll("dalek/binaries", 0775)
 		if(err != nil) {panic(err)}
 	}
-
-	data, err := ioutil.ReadFile("dalek/manifest.json")
-	config.DebugErrorLog(err)
-	err = json.Unmarshal(data, &config.Manifest)
-	fmt.Println(config)
-
+	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
+		config.DebugLog("Makeing manifest.json")
+		//asign default values to config.manifest
+		json, err := json.MarshalIndent(config.Manifest, "", "  ")
+		if(err != nil) {panic(err)}
+		ioutil.WriteFile("dalek/manifest.json", json, 0775)
+	} else {
+		data, err := ioutil.ReadFile("dalek/manifest.json")
+		config.DebugErrorLog(err)
+		err = json.Unmarshal(data, &config.Manifest)
+		fmt.Println(config)
+	}
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
 	http.HandleFunc("/", serveTemplate)
 	http.ListenAndServe(":8080", nil)
