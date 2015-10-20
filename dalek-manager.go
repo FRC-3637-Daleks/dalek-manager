@@ -2,16 +2,18 @@ package main
 
 import (
 	"flag"
-	"./manager/configuration"
-	"./manager/data"
 	"io/ioutil"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"path"
 	"os"
 	"html/template"
 	"log"
+
+	"github.com/FRC-3637-Daleks/dalek-manager/manager/configuration"
+	"github.com/FRC-3637-Daleks/dalek-manager/manager/data"
+
+	"github.com/gorilla/mux"
 )
 var config configuration.Config
 var debug  = flag.Bool("debug", false, "If set debug output will print")
@@ -65,10 +67,12 @@ func main() {
 		data, err := ioutil.ReadFile("dalek/manifest.json")
 		config.DebugErrorLog(err)
 		err = json.Unmarshal(data, &config.Manifest)
-		fmt.Println(config)
 	}
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
-	http.HandleFunc("/", serveTemplate)
+	config.DebugLog("Loaded manifest: ", config.Manifest)
+	rtr := mux.NewRouter()
+	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
+	rtr.HandleFunc("/", serveTemplate)
+	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", nil)
 }
 
