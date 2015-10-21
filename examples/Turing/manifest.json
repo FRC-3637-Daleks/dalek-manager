@@ -1,0 +1,9 @@
+"manifest":
+{
+	"autonomous": "autonomous/fast_can.lua"
+	"binary": "binaries/2015_Apr_11_17"
+	"ports": "ports/primary_robot.json"
+	"controls": "controls/owen_and_sid.json"
+	"settings": "settings/default.json"
+	"logs": "logs/log-defaults.json"
+}

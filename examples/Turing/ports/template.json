@@ -1,0 +1,33 @@
+[
+	"CAN":
+	{
+		"min": 0,
+		"max": 64,
+		"requirements":
+		[
+			"drive":
+			[
+				"front-right",
+				"front-left",
+				"rear-right",
+				"rear-left",
+			],
+			"PDP",
+			"PCM"
+		]
+	}
+	
+	"DIO"
+	{
+		"min": 0,
+		"max": 8,
+		"requirements":
+		[
+			"cobra":
+			[
+				"limit-up",
+				"limit-down"
+			]
+		]
+	}
+]
