@@ -15,6 +15,7 @@ import (
 
 	"github.com/gorilla/mux"
 )
+
 var config configuration.Config
 var debug  = flag.Bool("debug", false, "If set debug output will print")
 
