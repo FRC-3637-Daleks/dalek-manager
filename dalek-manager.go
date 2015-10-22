@@ -71,17 +71,47 @@ func main() {
 	config.DebugLog("Loaded manifest: ", config.Manifest)
 	rtr := mux.NewRouter()
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
-	rtr.HandleFunc("/", serveRoot)
-	rtr.HandleFunc("/editor/{fileType:autonomous|ports|settings}/{fileName}", serveEditor).Methods("GET")
+	rtr.HandleFunc("/", rootHandler)
+	rtr.HandleFunc("/autonomous", autonomousHandler)
+	rtr.HandleFunc("/ports", portsHandler)
+	rtr.HandleFunc("/controls", controlsHandler)
+	rtr.HandleFunc("/settings", settingsHandler)
+	rtr.HandleFunc("/logs", logsHandler)
+	rtr.HandleFunc("/binaries", binariesHandler)
+	rtr.HandleFunc("/editor/{fileType:autonomous|ports|settings}/{fileName}", editorHandler).Methods("GET")
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", nil)
 }
 
-func serveRoot(writer http.ResponseWriter, request *http.Request) {
+func rootHandler(writer http.ResponseWriter, request *http.Request) {
 	serveTemplate(writer, request, path.Join("web", "dynamic", "index.html"), data.PageWrapper{})
 }
 
-func serveEditor(writer http.ResponseWriter, request *http.Request)  {
+func autonomousHandler(writer http.ResponseWriter, request *http.Request) {
+	serveTemplate(writer, request, path.Join("web", "dynamic", "autonomous.html"), data.PageWrapper{})
+}
+
+func portsHandler(writer http.ResponseWriter, request *http.Request) {
+	serveTemplate(writer, request, path.Join("web", "dynamic", "ports.html"), data.PageWrapper{})
+}
+
+func controlsHandler(writer http.ResponseWriter, request *http.Request) {
+	serveTemplate(writer, request, path.Join("web", "dynamic", "controls.html"), data.PageWrapper{})
+}
+
+func settingsHandler(writer http.ResponseWriter, request *http.Request) {
+	serveTemplate(writer, request, path.Join("web", "dynamic", "settings.html"), data.PageWrapper{})
+}
+
+func logsHandler(writer http.ResponseWriter, request *http.Request) {
+	serveTemplate(writer, request, path.Join("web", "dynamic", "logs.html"), data.PageWrapper{})
+}
+
+func binariesHandler(writer http.ResponseWriter, request *http.Request) {
+	serveTemplate(writer, request, path.Join("web", "dynamic", "binaries.html"), data.PageWrapper{})
+}
+
+func editorHandler(writer http.ResponseWriter, request *http.Request)  {
 	editorWrapper := data.EditorWrapper{}
 	editorWrapper.Lang = "json"
 	vars := mux.Vars(request)
