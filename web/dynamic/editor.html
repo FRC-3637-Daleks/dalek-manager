@@ -43,15 +43,8 @@
     </div>
 </div>
 
-{{template "jsIncludes"}}
-<script>
-    require(['ace/ace'], function (ace) {
-        var editor = ace.edit('editor');
-        editor.setTheme('ace/theme/monokai');
-        editor.getSession().setMode('ace/mode/{{.Lang}}');
-    });
-</script>
-<script src="/static/js/main.js"></script>
+{{template "editorJsIncludes"}}
+<script src="/static/js/editor.js"></script>
 </body>
 </html>
 {{end}}

@@ -63,7 +63,7 @@ func main() {
 		//asign default values to config.manifest
 		json, err := json.MarshalIndent(config.Manifest, "", "  ")
 		if (err != nil) {panic(err)}
-		ioutil.WriteFile("dalek/manifest.json", json, 0775)
+		ioutil.WriteFile("dalek/manifest.json", json, 0664)
 	} else {
 		data, err := ioutil.ReadFile("dalek/manifest.json")
 		config.DebugErrorLog(err)
@@ -80,6 +80,7 @@ func main() {
 	rtr.HandleFunc("/logs", logsHandler)
 	rtr.HandleFunc("/binaries", binariesHandler)
 	rtr.HandleFunc("/editor/{fileType:autonomous|ports|settings}/{fileName}", editorHandler).Methods("GET")
+	rtr.HandleFunc("/editor/{fileType:autonomous|ports|settings}/{fileName}", editorSaveHandler).Methods("POST")
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", nil)
 }
@@ -127,6 +128,20 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	editorWrapper.Lang = fileExt
 	config.DebugLog(fileExt)
 	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
+}
+
+func editorSaveHandler(writer http.ResponseWriter, request *http.Request) {
+	err := request.ParseForm()
+	if(check(err, 500, &writer)) {return }
+	vars := mux.Vars(request)
+	fileType := vars["fileType"]
+	fileName := vars["fileName"]
+	fileContent, err := ioutil.ReadAll(request.Body)
+	if(check(err, 500, &writer)) {return }
+	err = ioutil.WriteFile("dalek/" + fileType + "/" + fileName, fileContent, 0664)
+	if(check(err, 500, &writer)) {return }
+	config.DebugLog("Wrote file: " + fileType + " " + fileName)
+	http.Error(writer, http.StatusText(200), 200)
 }
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {

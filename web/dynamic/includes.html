@@ -16,22 +16,29 @@
     requirejs.config({
         baseUrl: '/static/js/lib',
         paths: {
-            jquery: 'jquery-2.1.4',
-            bootstrap: 'boostrap.min',
-            ace: 'ace'
+            jquery: 'jquery-2.1.4.min',
+            bootstrap: 'boostrap.min'
         }
     });
 </script>
 {{end}}
 
-{{define "editorSetup"}}
+{{define "editorJsIncludes"}}
+<script src="/static/js/lib/require.js"></script>
 <script>
+    requirejs.config({
+        baseUrl: '/static/js/lib',
+        paths: {
+            jquery: 'jquery-2.1.4.min',
+            bootstrap: 'boostrap.min',
+            ace: 'ace'
+        }
+    });
+
     require(['ace/ace'], function (ace) {
-        // Set up the editor
         var editor = ace.edit('editor');
         editor.setTheme('ace/theme/monokai');
         editor.getSession().setMode('ace/mode/lua');
-        // etc...
     });
 </script>
 {{end}}
