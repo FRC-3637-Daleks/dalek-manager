@@ -48,7 +48,7 @@
     require(['ace/ace'], function (ace) {
         var editor = ace.edit('editor');
         editor.setTheme('ace/theme/monokai');
-        editor.getSession().setMode('ace/mode/lua');
+        editor.getSession().setMode('ace/mode/{{.Lang}}');
     });
 </script>
 <script src="/static/js/main.js"></script>

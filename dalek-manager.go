@@ -14,10 +14,11 @@ import (
 	"github.com/FRC-3637-Daleks/dalek-manager/manager/data"
 
 	"github.com/gorilla/mux"
+	"strings"
 )
 
 var config configuration.Config
-var debug  = flag.Bool("debug", false, "If set debug output will print")
+var debug = flag.Bool("debug", false, "If set debug output will print")
 
 func main() {
 	flag.Parse()
@@ -25,43 +26,43 @@ func main() {
 	if _, err := os.Stat("dalek"); os.IsNotExist(err) {
 		config.DebugLog("Makeing dalek Directory")
 		err := os.MkdirAll("dalek", 0775)
-		if(err != nil) {panic(err)}
+		if (err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/autonomous"); os.IsNotExist(err) {
 		config.DebugLog("Makeing autonomous Directory")
 		err := os.MkdirAll("dalek/autonomous", 0775)
-		if(err != nil) {panic(err)}
+		if (err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/ports"); os.IsNotExist(err) {
 		config.DebugLog("Makeing ports Directory")
 		err := os.MkdirAll("dalek/ports", 0775)
-		if(err != nil) {panic(err)}
+		if (err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/controls"); os.IsNotExist(err) {
 		config.DebugLog("Makeing controls Directory")
 		err := os.MkdirAll("dalek/controls", 0775)
-		if(err != nil) {panic(err)}
+		if (err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/settings"); os.IsNotExist(err) {
 		config.DebugLog("Makeing settings Directory")
 		err := os.MkdirAll("dalek/settings", 0775)
-		if(err != nil) {panic(err)}
+		if (err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/logs"); os.IsNotExist(err) {
 		config.DebugLog("Makeing logs Directory")
 		err := os.MkdirAll("dalek/logs", 0775)
-		if(err != nil) {panic(err)}
+		if (err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/binaries"); os.IsNotExist(err) {
 		config.DebugLog("Makeing binaries Directory")
 		err := os.MkdirAll("dalek/binaries", 0775)
-		if(err != nil) {panic(err)}
+		if (err != nil) {panic(err)}
 	}
 	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
 		config.DebugLog("Makeing manifest.json")
 		//asign default values to config.manifest
 		json, err := json.MarshalIndent(config.Manifest, "", "  ")
-		if(err != nil) {panic(err)}
+		if (err != nil) {panic(err)}
 		ioutil.WriteFile("dalek/manifest.json", json, 0775)
 	} else {
 		data, err := ioutil.ReadFile("dalek/manifest.json")
@@ -111,19 +112,20 @@ func binariesHandler(writer http.ResponseWriter, request *http.Request) {
 	serveTemplate(writer, request, path.Join("web", "dynamic", "binaries.html"), data.PageWrapper{})
 }
 
-func editorHandler(writer http.ResponseWriter, request *http.Request)  {
+func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	editorWrapper := data.EditorWrapper{}
-	editorWrapper.Lang = "json"
+	editorWrapper.Lang = "text"
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
 	config.DebugLog("Loading file into editor: ", "dalek/" + fileType + "/" + fileName)
 	content, err := ioutil.ReadFile("dalek/" + fileType + "/" + fileName)
-	if(check(err, 500, &writer)){return}
+	if (check(err, 500, &writer)) {return}
 	editorWrapper.FileContent = string(content)
-	if(fileType == "autonomous") {
-		editorWrapper.Lang = "lua"
-	}
+	temp := strings.Split(fileName, ".")
+	fileExt := temp[len(temp) - 1]
+	editorWrapper.Lang = fileExt
+	config.DebugLog(fileExt)
 	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
 }
 
@@ -142,15 +144,15 @@ func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath s
 		return
 	}
 	tmpl, err := template.ParseFiles(includesPath, filePath)
-	if(check(err, 500, &writer)){return }
+	if (check(err, 500, &writer)) {return }
 	if err := tmpl.ExecuteTemplate(writer, "main", data); err != nil {
 		log.Println(err.Error())
 		http.Error(writer, http.StatusText(500), 500)
 	}
 }
 
-func check(err error, code int,  writer *http.ResponseWriter) bool {
-	if(err != nil) {
+func check(err error, code int, writer *http.ResponseWriter) bool {
+	if (err != nil) {
 		config.DebugErrorLog(err)
 		http.Error(*writer, http.StatusText(code), code)
 		return true
