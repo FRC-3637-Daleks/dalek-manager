@@ -44,8 +44,8 @@ body {
         padding: 20px;
         overflow-x: hidden;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-        background-color: #b6b6b6;
-        border-right: 1px solid #b6b6b6;
+        background-color: #353535;
+        border-right: 1px solid #353535;
     }
 }
 
@@ -59,7 +59,7 @@ body {
 .nav-sidebar > li > a {
     padding-right: 20px;
     padding-left: 20px;
-    color: #131313;
+    color: #9d9d9d;
     font-size: 1.2em;
     font-weight: 600;
 }
