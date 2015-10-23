@@ -1,0 +1,58 @@
+[
+	"joysticks":
+	{
+		"port-min": 0,
+		"port-max": 2,
+		"types":
+		[
+			"joystick":
+			{
+				"digitals":
+				[
+					"trigger": 1,
+					"hat-middle": 2,
+					"hat-left": 3,
+					"hat-right": 4,
+					"hat-front": 5,
+					"hat-rear": 6,
+					"base-bottom-right": 7,
+					"base-top-left": 8,
+					"base-top-right": 9,
+					"base-bottom-left": 10
+				],
+				"analogs":
+				[
+					"x-axis",
+					"y-axis",
+					"z-axis"
+				]
+			},
+			
+			"gamepad"
+			{
+				"digitals":
+				[
+					"button-1": 1,
+					"button-2": 2,
+					"button-3": 3,
+					"button-4": 4,
+					"left-bottom-trigger": 5,
+					"right-bottom-trigger": 6,
+					"left-top-trigger": 7,
+					"right-top-trigger": 8,
+					"select": 9,
+					"start": 10
+				],
+				"analogs":
+				[
+					"left-x-axis",
+					"left-y-axis",
+					"right-x-axis",
+					"right-y-axis",
+					"dpad-x-axis",
+					"dpad-y-axis
+				]
+			}
+		]		
+	}
+]

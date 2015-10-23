@@ -1,0 +1,48 @@
+"requirements":
+[
+	"drive":
+	[
+		"move-x":
+		{
+			"type": "analog",
+		},
+	
+		"move-y":
+		{
+			"type": "analog",
+		},
+		
+		"move-rotate":
+		{
+			"type": "analog",
+		},
+	
+		"precision-mode-on":
+		{
+			"type": "digital"
+		},
+	
+		"precision-mode-off":
+		{
+			"type": "digital"
+		}
+	]
+
+	"cobra":
+	[
+		"move":
+		{
+			"type: "analog"
+		}
+		
+		"move-up":
+		{
+			"type": "digital"
+		}
+	
+		"move-down":
+		{
+			"type": "digital"
+		}
+	]
+]
