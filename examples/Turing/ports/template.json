@@ -1,17 +1,19 @@
-[
+{
 	"CAN":
 	{
 		"min": 0,
 		"max": 64,
 		"requirements":
 		[
-			"drive":
-			[
-				"front-right",
-				"front-left",
-				"rear-right",
-				"rear-left",
-			],
+			{
+				"drive":
+				[
+					"front-right",
+					"front-left",
+					"rear-right",
+					"rear-left",
+				],
+			},
 			"PDP",
 			"PCM"
 		]
@@ -30,4 +32,4 @@
 			]
 		]
 	}
-]
+}

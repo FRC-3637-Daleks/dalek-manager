@@ -1,0 +1,75 @@
+{
+
+	"binds":
+	{
+		"drive":
+		{
+			"move-x": 
+			{
+				"type": "continuous",
+				"source": "joysticks/joystick-0/y-axis"
+			},
+			
+			"move-y":
+			{
+				"type": "continuous",
+				"source": "joysticks/joystick-0/y-axis"
+			},
+			
+			"move-rotate":
+			{
+				"type": "continuous",
+				"source": "joysticks/joystick-1/x-axis"
+			},
+		
+			"precision-mode-on": 
+			{
+				"type": "onTrue",
+				"source": "precision-toggle"
+			}
+			
+			"precision-mode-off":
+			{
+				"type": "onFalse",
+				"source": "precision-toggle"
+			}
+		}
+		
+		"cobra":
+		{
+			"move":
+			{
+				"type": "continuous",
+				"source": "joysticks/gamepad-2/left-y-axis"
+			},
+			
+			"move-up":
+			{
+				"type": "whileTrue",
+				"source": "joysticks/gamepad-2/left-bottom-trigger"
+			},
+			
+			"move-down":
+			{
+				"type": "whileTrue",
+				"source": "joysticks/gamepad-2/left-top-trigger"
+			},
+		}
+	},
+	
+	"groups":
+	{
+		"precision-toggle":
+		{
+			"type": "toggle",
+			"source":
+			{
+				"type": "and",
+				"sources":
+				[
+					"joysticks/joystick-0/trigger",
+					"joysticks/joystick-1/trigger"
+				]
+			}
+		}
+	}
