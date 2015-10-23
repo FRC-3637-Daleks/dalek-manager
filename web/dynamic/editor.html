@@ -4,45 +4,51 @@
 <head>
     <title>Team 3637 Robot Manager</title>
     {{template "cssIncludes"}}
-    <style type="text/css" media="screen">
-        #editor {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            bottom: 0;
-            left: 0;
-        }
-    </style>
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand page-scroll" href="/">Team 3637 Robot Manager</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-            </ul>
-        </div>
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand page-scroll" href="/">Team 3637 Robot Manager</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+        <form id="navbar-buttons" class="navbar-form navbar-right">
+            <button id="reset" type="button" class="btn nav-box">Reset Robot</button>
+            <p class="btn nav-box">Robot <span id="robot-status" class="status no-status">No Status</span></p>
+
+            <p class="btn nav-box">MQTT <span id="mqtt-status" class="status no-status">No Status</span></p>
+        </form>
     </div>
 </nav>
-<div class="container main">
-    <div id="editor" style="background-color: #272822">{{.FileContent}}</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="autonomous">Autonomous</a></li>
+                <li><a href="ports">Port</a></li>
+                <li><a href="controls">Controls</a></li>
+                <li><a href="settings">Settings</a></li>
+                <li><a href="logs">Logs</a></li>
+                <li><a href="binaries">Binaries</a></li>
+            </ul>
+        </div>
+        <div class="col-md-10 col-md-offset-2" style="padding: 0">
+            <div id="editor" style="background-color: #272822">{{.FileContent}}</div>
+        </div>
+    </div>
 </div>
+
 {{template "jsIncludes"}}
 <script>
     require(['ace/ace'], function (ace) {
-        // Set up the editor
         var editor = ace.edit('editor');
         editor.setTheme('ace/theme/monokai');
         editor.getSession().setMode('ace/mode/lua');
-        // etc...
     });
 </script>
 <script src="/static/js/main.js"></script>
