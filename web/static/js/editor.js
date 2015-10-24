@@ -7,6 +7,9 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
     editor.getSession().setMode('ace/mode/lua');
 
     var fileName = document.title;
+    function confirmExit() {
+        return "You have attempted to leave this page. Are you sure?";
+    }
 
     $('#save').on('click', function(){
         var data = new FormData();
@@ -29,6 +32,7 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
             editor.session.getUndoManager().markClean();
             $('#save').prop("disabled",true);
             document.title = fileName;
+            window.onbeforeunload = null;
         }).fail(function(response){
             console.log(response);
         });
@@ -39,11 +43,13 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
         if (editor.session.getUndoManager().isClean()) {
             $('#save').prop("disabled",true);
             document.title = fileName;
+            window.onbeforeunload = null;
         }
         else {
             console.log("edit");
             $('#save').prop("disabled",false);
             document.title = "* " + fileName;
+            window.onbeforeunload = confirmExit;
         }
     });
 });
