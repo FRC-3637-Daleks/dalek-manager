@@ -120,10 +120,13 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
-	config.DebugLog("Loading file into editor: ", "dalek/" + fileType + "/" + fileName)
-	content, err := ioutil.ReadFile("dalek/" + fileType + "/" + fileName)
-	if (check(err, 500, &writer)) {return}
-	editorWrapper.FileContent = string(content)
+	editorWrapper.FileName = fileName
+	if _, err := os.Stat("dalek/" + fileType + "/" + fileName); !os.IsNotExist(err) {
+		config.DebugLog("Loading file into editor: ", "dalek/" + fileType + "/" + fileName)
+		content, err := ioutil.ReadFile("dalek/" + fileType + "/" + fileName)
+		if (check(err, 500, &writer)) {return}
+		editorWrapper.FileContent = string(content)
+	}
 	temp := strings.Split(fileName, ".")
 	fileExt := temp[len(temp) - 1]
 	editorWrapper.Lang = fileExt
