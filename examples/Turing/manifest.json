@@ -1,8 +1,29 @@
 {
-	"autonomous": "autonomous/fast_can.lua",
-	"binary": "binaries/2015_Apr_11_17",
-	"ports": "ports/primary_robot.json",
-	"controls": "controls/sid_owen.json",
-	"settings": "settings/default.json",
-	"logs": "logs/log-defaults.json"
+	"templates":
+	{
+		"configs":
+		{
+			"ports": "ports/template.json",
+			"controls":
+			{
+				"available": "controls/available.json",
+				"requirements": "controls/requirements.json"
+			},
+			"settings": "settings/template.json",
+			"logs": "logs/default.json"
+		}
+	},
+	
+	"runtime":
+	{
+		"configs":
+		{
+			"ports": "ports/default.json",
+			"controls": "controls/default.json",
+			"settings": "settings/default.json",
+			"logs": "logs/default.json"
+		},
+		"autonomous": "autonomous/fast_can.lua",
+		"binary": "binaries/2015_Apr_11_17",
+	}
 }
