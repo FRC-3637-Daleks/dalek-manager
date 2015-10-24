@@ -80,8 +80,8 @@ func main() {
 	rtr.HandleFunc("/settings", settingsHandler)
 	rtr.HandleFunc("/logs", logsHandler)
 	rtr.HandleFunc("/binaries", binariesHandler)
-	rtr.HandleFunc("/editor/{fileType:autonomous|ports|settings}/{fileName}", editorHandler).Methods("GET")
-	rtr.HandleFunc("/editor/{fileType:autonomous|ports|settings}/{fileName}", editorSaveHandler).Methods("POST")
+	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler).Methods("GET")
+	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorSaveHandler).Methods("POST")
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", nil)
 }
