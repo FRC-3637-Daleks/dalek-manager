@@ -10,7 +10,7 @@
 				"requirements": "controls/requirements.json"
 			},
 			"settings": "settings/template.json",
-			"logs": "logs/default.json"
+			"log-config": "logs/default.json"
 		}
 	},
 	
@@ -25,5 +25,11 @@
 		},
 		"autonomous": "autonomous/fast_can.lua",
 		"binary": "binaries/2015_Apr_11_17",
+	},
+	
+	"server":
+	{
+		"web-root": "web/",
+		"port": 5800
 	}
 }
