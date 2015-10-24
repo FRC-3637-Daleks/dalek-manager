@@ -1,0 +1,22 @@
+{
+	"drive":
+	{
+		"precision-ratio":
+		{
+			"type": "float"
+		}
+	},
+	
+	"cobra":
+	{
+		"soft-lower-limit":
+		{
+			"type": "integer"
+		},
+		
+		"max-speed":
+		{
+			"type": "float"
+		}
+	}
+}
