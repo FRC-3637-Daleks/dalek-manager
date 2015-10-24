@@ -4,7 +4,7 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
 
     editor = ace.edit('editor');
     editor.setTheme('ace/theme/monokai');
-    editor.getSession().setMode('ace/mode/lua');
+    editor.getSession().setMode('ace/mode/' + lang);
 
     var fileName = document.title;
     function confirmExit() {
@@ -39,7 +39,6 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
     });
 
     editor.on('input', function() {
-
         if (editor.session.getUndoManager().isClean()) {
             $('#save').prop("disabled",true);
             document.title = fileName;
