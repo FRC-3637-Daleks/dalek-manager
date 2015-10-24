@@ -1,8 +1,12 @@
+var editor;
+
 requirejs(['jquery', 'ace/ace'], function($, ace) {
 
-    var editor = ace.edit('editor');
+    editor = ace.edit('editor');
     editor.setTheme('ace/theme/monokai');
     editor.getSession().setMode('ace/mode/lua');
+
+    var fileName = document.title;
 
     $('#save').on('click', function(){
         var data = new FormData();
@@ -22,8 +26,24 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
             data: body
         }).done(function(response){
             console.log(response);
+            editor.session.getUndoManager().markClean();
+            $('#save').prop("disabled",true);
+            document.title = fileName;
         }).fail(function(response){
             console.log(response);
         });
+    });
+
+    editor.on('input', function() {
+
+        if (editor.session.getUndoManager().isClean()) {
+            $('#save').prop("disabled",true);
+            document.title = fileName;
+        }
+        else {
+            console.log("edit");
+            $('#save').prop("disabled",false);
+            document.title = "* " + fileName;
+        }
     });
 });
