@@ -8,6 +8,9 @@
 .running {
     color: #2dff00;
 }
+.no-status {
+    color: #aaaaaa;
+}
 .nav-box {
     background-color: #484848;
     color: #9d9d9d;
@@ -16,19 +19,19 @@
     color: #9d9d9d;
 }
 
-#reset {
+.nav-btn {
     color: #9d9d9d;
     border-color: #484848;
     background-color: #484848;
 }
 
-#reset:active {
+.nav-btn:active {
     color: #9d9d9d;
     border-color: #484848;
     background-color: #484848;
 }
 
-#reset:hover {
+.nav-btn:hover {
     background-color: #5d5d5d;
     border-color: #5d5d5d;
     color: #131313;

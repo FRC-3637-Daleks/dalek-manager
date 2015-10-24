@@ -4,34 +4,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="description" content="Team 3637 Robot Manager"/>
 <meta name="author" content="Team 3637"/>
-<link href="../static/assets/icon.png" rel="shortcut icon"/>
-<link href="../static/css/bootstrap.min.css" rel="stylesheet"/>
-<link href="../static/css/dashboard.css" rel="stylesheet"/>
-<link href="../static/css/main.css" rel="stylesheet"/>
+<link href="/static/assets/icon.png" rel="shortcut icon"/>
+<link href="/static/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="/static/css/dashboard.css" rel="stylesheet"/>
+<link href="/static/css/main.css" rel="stylesheet"/>
 {{end}}
 
 {{define "jsIncludes"}}
-<script src="../static/js/lib/require.js"></script>
+<script src="/static/js/lib/require.js"></script>
 <script>
     requirejs.config({
-        baseUrl: '../static/js/lib',
+        baseUrl: '/static/js/lib',
         paths: {
-            jquery: 'jquery-2.1.4',
-            bootstrap: 'boostrap.min',
-            ace: 'ace'
+            jquery: 'jquery-2.1.4.min',
+            bootstrap: 'boostrap.min'
         }
     });
 </script>
 {{end}}
 
-{{define "editorSetup"}}
+{{define "editorJsIncludes"}}
+<script src="/static/js/lib/require.js"></script>
 <script>
-    require(['ace/ace'], function (ace) {
-        // Set up the editor
+    requirejs.config({
+        baseUrl: '/static/js/lib',
+        paths: {
+            jquery: 'jquery-2.1.4.min',
+            bootstrap: 'boostrap.min',
+            ace: 'ace'
+        }
+    });
+
+/*    require(['ace/ace'], function (ace) {
         var editor = ace.edit('editor');
         editor.setTheme('ace/theme/monokai');
         editor.getSession().setMode('ace/mode/lua');
-        // etc...
-    });
+    });*/
 </script>
 {{end}}
