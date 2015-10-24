@@ -7,9 +7,6 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
     editor.getSession().setMode('ace/mode/lua');
 
     var fileName = document.title;
-    function confirmExit() {
-        return "You have attempted to leave this page. Are you sure?";
-    }
 
     $('#save').on('click', function(){
         var data = new FormData();
@@ -49,7 +46,7 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
             console.log("edit");
             $('#save').prop("disabled",false);
             document.title = "* " + fileName;
-            window.onbeforeunload = confirmExit;
+            window.onbeforeunload = function(){return "You have unsaved chnages are you sure you want to exit?"};
         }
     });
 });
