@@ -1,0 +1,31 @@
+{
+	"subsystems":
+	[
+		{
+			"name": "drive",
+			"values":
+			[
+				{
+					"name": "precision-ratio",
+					"type": "float"
+				}
+			]
+		},
+	
+		{
+			"name": "cobra",
+			"values":
+			[
+				{
+					"name": "soft-lower-limit",
+					"type": "integer"
+				},
+				
+				{
+					"name": "max-speed",
+					"type": "float"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,24 @@
+{
+	"CAN":
+	{
+		"drive":
+		{
+			"front-right": 1,
+			"front-left": 2,
+			"rear-right": 3,
+			"rear-left": 4
+		},
+		
+		"PDP": 5,
+		"PCM": 6
+	},
+	
+	"DIO":
+	{
+		"cobra":
+		{
+			"limit-up": 0,
+			"limit-down": 1
+		}
+	}
+}

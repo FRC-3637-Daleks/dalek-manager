@@ -1,0 +1,40 @@
+[
+	{
+		"name": "CAN",
+		"min": 0,
+		"max": 64,
+		"keys":
+		[
+			{
+				"name": "drive",
+				"keys":
+				[
+					"front-right",
+					"front-left",
+					"rear-right",
+					"rear-left"
+				],
+			},
+			"PDP",
+			"PCM"
+		]
+	},
+	
+	{
+		"name": "DIO",
+		"min": 0,
+		"max": 8,
+		"keys":
+		[
+			{
+				"name": "cobra",
+				"keys":
+				[
+					"limit-up",
+					"limit-down"
+				]
+			}
+		]
+		
+	}
+]

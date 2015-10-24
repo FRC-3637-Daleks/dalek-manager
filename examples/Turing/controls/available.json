@@ -1,0 +1,80 @@
+[
+	{
+		"name": "joysticks",
+		"ids":
+		{
+			"min": 0,
+			"max": 1
+		},
+		"types":
+		[
+			{
+				"name": "joystick",
+				"digitals":
+				[
+					"trigger",
+					"hat-middle",
+					"hat-left",
+					"hat-right",
+					"hat-front",
+					"hat-rear",
+					"base-bottom-right",
+					"base-top-left",
+					"base-top-right",
+					"base-bottom-left"
+				],
+				"analogs":
+				[
+					"x-axis",
+					"y-axis",
+					"z-axis"
+				]
+			},
+			
+			{
+				"name": "gamepad",
+				"digitals":
+				[
+					"button-1",
+					"button-2",
+					"button-3",
+					"button-4",
+					"left-bottom-trigger",
+					"right-bottom-trigger",
+					"left-top-trigger",
+					"right-top-trigger",
+					"select",
+					"start"
+				],
+				"analogs":
+				[
+					"left-x-axis",
+					"left-y-axis",
+					"right-x-axis",
+					"right-y-axis",
+					"dpad-x-axis",
+					"dpad-y-axis"
+				]
+			}
+		]
+	},
+	
+	{
+		"name": "sensors",
+		"subsystems":
+		[
+			{
+				"name": "cobra",
+				"digitals":
+				[
+					"limit-up",
+					"limit-down"
+				],
+			
+				"analogs":
+				[
+					"potentiometer"
+				]
+			}
+		]
+	}

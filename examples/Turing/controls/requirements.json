@@ -1,0 +1,59 @@
+[
+	{
+		"name": "drive",
+		"continuous-inputs":
+		[
+			{
+				"name": "move-x",
+				"type": "analog"
+			},
+			
+			{
+				"name": "move-y",
+				"type": "analog"
+			},
+			
+			{
+				"name": "move-rotate",
+				"type": "analog"
+			},
+		],
+		
+		"commands":
+		[
+			{
+				"name": "precision-mode-on"
+			},
+			
+			{
+				"name": "precision-mode-off"
+			}
+		]
+	},
+
+	{
+		"name": "cobra",
+		"continous-inputs":
+		[
+			{
+				"name": "move",
+				"type": "analog"
+			}
+		],
+		
+		"commands":
+		[
+			{
+				"name": "move-up"
+			},
+			
+			{
+				"name": "move-down"
+			},
+			
+			{
+				"name": "stop"
+			}
+		],
+	}
+]

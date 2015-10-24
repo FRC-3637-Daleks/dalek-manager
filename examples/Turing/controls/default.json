@@ -1,0 +1,116 @@
+{
+	"binds":
+	{
+		"drive":
+		{
+			"move-x": 
+			{
+				"source": 
+				{
+					"input": "joysticks/joystick/0/y-axis",
+				},
+				"squared": true
+			},
+			
+			"move-y":
+			{
+				"source":
+				{
+					"input": "joysticks/joystick/0/y-axis",
+				},
+				"squared": true
+			},
+			
+			"move-rotate":
+			{
+				"source":
+				{
+					"input": "joysticks/joystick/1/x-axis",
+				},
+				"squared": true
+			},
+		
+			"precision-mode-on":
+			{
+				"poll": "onTrue",
+				"source": "precision-toggle"
+			},
+			
+			"precision-mode-off":
+			{
+				"poll": "onFalse",
+				"source": "precision-toggle"
+			}
+		},
+		
+		"cobra":
+		{
+			"move":
+			{
+				"source": 
+				{
+					"input": "joysticks/gamepad/2/left-y-axis"
+				}
+			},
+			
+			"move-up":
+			{
+				"poll": "onTrue",
+				"source": 
+				{
+					"input": "joysticks/gamepad/2/left-bottom-trigger"
+				}
+			},
+			
+			"move-down":
+			{
+				"poll": "onTrue",
+				"source": 
+				{
+					"input": "joysticks/gamepad/2/left-top-trigger"
+				}
+			},
+			
+			"stop":
+			{
+				"poll": "onTrue",
+				"source": "cobra-stop"
+			}
+		}
+	},
+	
+	"groups":
+	{
+		"precision-toggle":
+		{
+			"type": "toggle",
+			"source":
+			{
+				"type": "and",
+				"sources":
+				[
+					{"input": "joysticks/joystick/0/trigger"},
+					{"input": "joysticks/joystick/1/trigger"}
+				]
+			}
+		},
+		
+		"cobra-stop":
+		{
+			"type": "none-of",
+			"sources":
+			[
+				{"input": "joysticks/gamepad/2/left-bottom-trigger"},
+				{"input": "joysticks/gamepad/2/left-top-trigger"},
+				{"input": "sensors/cobra/limit-up"},
+				{"input": "sensors/cobra/limit-down"},
+				{
+					"input": "sensors/cobra/potentiometer",
+					"type": "compare",
+					"comparison": ">",
+					"comparator": 900
+				}
+			],
+			"comment": "Use of sensors in this case is impractical, and is only here to demonstrate format",
+		}
+	}
