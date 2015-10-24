@@ -17,19 +17,19 @@
 			"PDP",
 			"PCM"
 		]
-	}
+	},
 	
-	"DIO"
+	"DIO":
 	{
 		"min": 0,
 		"max": 8,
 		"requirements":
-		[
+		{
 			"cobra":
 			[
 				"limit-up",
 				"limit-down"
 			]
-		]
+		}
 	}
 }

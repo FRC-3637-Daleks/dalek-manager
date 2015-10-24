@@ -1,7 +1,6 @@
-"requirements":
-[
+{
 	"drive":
-	[
+	{
 		"move-x":
 		{
 			"type": "analog",
@@ -26,23 +25,23 @@
 		{
 			"type": "digital"
 		}
-	]
+	},
 
 	"cobra":
-	[
+	{
 		"move":
 		{
-			"type: "analog"
-		}
+			"type": "analog"
+		},
 		
 		"move-up":
 		{
 			"type": "digital"
-		}
+		},
 	
 		"move-down":
 		{
 			"type": "digital"
 		}
-	]
-]
+	}
+}

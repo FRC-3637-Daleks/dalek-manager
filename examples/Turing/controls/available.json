@@ -50,11 +50,11 @@
 					"right-x-axis",
 					"right-y-axis",
 					"dpad-x-axis",
-					"dpad-y-axis
+					"dpad-y-axis"
 				]
 			}
 		}
-	}
+	},
 	
 	"sensors":
 	{

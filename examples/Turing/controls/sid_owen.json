@@ -33,7 +33,7 @@
 				"type": "onFalse",
 				"source": "precision-toggle"
 			}
-		}
+		},
 		
 		"cobra":
 		{
