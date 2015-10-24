@@ -19,19 +19,19 @@
     color: #9d9d9d;
 }
 
-#reset {
+.nav-btn {
     color: #9d9d9d;
     border-color: #484848;
     background-color: #484848;
 }
 
-#reset:active {
+.nav-btn:active {
     color: #9d9d9d;
     border-color: #484848;
     background-color: #484848;
 }
 
-#reset:hover {
+.nav-btn:hover {
     background-color: #5d5d5d;
     border-color: #5d5d5d;
     color: #131313;
@@ -43,9 +43,4 @@
 
 #side-bar {
 
-}
-
-#editor {
-    width: 100%;
-    height: 100%;
 }

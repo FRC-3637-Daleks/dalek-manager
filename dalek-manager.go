@@ -15,6 +15,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"strings"
+	"io"
 )
 
 var config configuration.Config
@@ -133,13 +134,18 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 func editorSaveHandler(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if(check(err, 500, &writer)) {return }
+	err = request.ParseMultipartForm(32 << 20)
+	if(check(err, 500, &writer)) {return }
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
-	fileContent, err := ioutil.ReadAll(request.Body)
+	file, _, err := request.FormFile("file")
+	if(check(err, 500, &writer)) {config.DebugLog("Test");return }
+	defer file.Close()
+	f, err := os.OpenFile("dalek/" + fileType + "/" + fileName, os.O_WRONLY|os.O_CREATE, 0664)
 	if(check(err, 500, &writer)) {return }
-	err = ioutil.WriteFile("dalek/" + fileType + "/" + fileName, fileContent, 0664)
-	if(check(err, 500, &writer)) {return }
+	defer f.Close()
+	io.Copy(f, file)
 	config.DebugLog("Wrote file: " + fileType + " " + fileName)
 	http.Error(writer, http.StatusText(200), 200)
 }
