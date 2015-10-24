@@ -80,6 +80,7 @@ func main() {
 	rtr.HandleFunc("/settings", settingsHandler)
 	rtr.HandleFunc("/logs", logsHandler)
 	rtr.HandleFunc("/binaries", binariesHandler)
+	rtr.HandleFunc("/editor/{fileName}", editorHandler).Methods("GET")
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler).Methods("GET")
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorSaveHandler).Methods("POST")
 	http.Handle("/", rtr)
@@ -120,10 +121,12 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
+	filePath := "dalek/" + fileType + "/" + fileName
+	config.DebugLog("Request for: ", filePath)
 	editorWrapper.FileName = fileName
-	if _, err := os.Stat("dalek/" + fileType + "/" + fileName); !os.IsNotExist(err) {
-		config.DebugLog("Loading file into editor: ", "dalek/" + fileType + "/" + fileName)
-		content, err := ioutil.ReadFile("dalek/" + fileType + "/" + fileName)
+	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
+		config.DebugLog("Loading file into editor: ", filePath)
+		content, err := ioutil.ReadFile(filePath)
 		if (check(err, 500, &writer)) {return}
 		editorWrapper.FileContent = string(content)
 	}
