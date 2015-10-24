@@ -1,8 +1,11 @@
 [
 	{
 		"name": "joysticks",
-		"port-min": 0,
-		"port-max": 2,
+		"ids":
+		{
+			"min": 0,
+			"max": 1
+		},
 		"types":
 		[
 			{

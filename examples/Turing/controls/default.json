@@ -49,7 +49,7 @@
 			{
 				"source": 
 				{
-					"input": "joysticks/gamepad/2/left-y-axis",
+					"input": "joysticks/gamepad/2/left-y-axis"
 				}
 			},
 			
