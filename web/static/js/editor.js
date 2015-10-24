@@ -14,7 +14,6 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
     function save() {
         var data = new FormData();
         data.append('file', editor.getValue());
-        console.log(data);
         var boundary = "---------------------------7da24f2e50046";
         var body = '--' + boundary + '\r\n'
             + 'Content-Disposition: form-data; name="file";'
@@ -28,13 +27,13 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
             contentType: "multipart/form-data; boundary="+boundary,
             data: body
         }).done(function(response){
-            console.log(response);
+            console.log("Save successful: " + response);
             editor.session.getUndoManager().markClean();
             $('#save').prop("disabled",true);
             document.title = fileName;
             window.onbeforeunload = null;
         }).fail(function(response){
-            console.log(response);
+            console.log("Save failed: " + response);
         });
     }
 

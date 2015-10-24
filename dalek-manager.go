@@ -81,6 +81,7 @@ func main() {
 	rtr.HandleFunc("/logs", logsHandler)
 	rtr.HandleFunc("/binaries", binariesHandler)
 	rtr.HandleFunc("/editor/{fileName}", editorHandler).Methods("GET")
+	rtr.HandleFunc("/editor/{fileName}", editorSaveHandler).Methods("POST")
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler).Methods("GET")
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorSaveHandler).Methods("POST")
 	http.Handle("/", rtr)
