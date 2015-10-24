@@ -1,36 +1,44 @@
 {
-
 	"binds":
 	{
 		"drive":
 		{
 			"move-x": 
 			{
-				"type": "continuous",
-				"source": "joysticks/joystick-0/y-axis"
+				"source": 
+				{
+					"input": "joysticks/joystick/0/y-axis",
+				},
+				"squared": true
 			},
 			
 			"move-y":
 			{
-				"type": "continuous",
-				"source": "joysticks/joystick-0/y-axis"
+				"source":
+				{
+					"input": "joysticks/joystick/0/y-axis",
+				},
+				"squared": true
 			},
 			
 			"move-rotate":
 			{
-				"type": "continuous",
-				"source": "joysticks/joystick-1/x-axis"
+				"source":
+				{
+					"input": "joysticks/joystick/1/x-axis",
+				},
+				"squared": true
 			},
 		
-			"precision-mode-on": 
+			"precision-mode-on":
 			{
-				"type": "onTrue",
+				"poll": "onTrue",
 				"source": "precision-toggle"
-			}
+			},
 			
 			"precision-mode-off":
 			{
-				"type": "onFalse",
+				"poll": "onFalse",
 				"source": "precision-toggle"
 			}
 		},
@@ -39,21 +47,35 @@
 		{
 			"move":
 			{
-				"type": "continuous",
-				"source": "joysticks/gamepad-2/left-y-axis"
+				"source": 
+				{
+					"input": "joysticks/gamepad/2/left-y-axis",
+				}
 			},
 			
 			"move-up":
 			{
-				"type": "whileTrue",
-				"source": "joysticks/gamepad-2/left-bottom-trigger"
+				"poll": "onTrue",
+				"source": 
+				{
+					"input": "joysticks/gamepad/2/left-bottom-trigger"
+				}
 			},
 			
 			"move-down":
 			{
-				"type": "whileTrue",
-				"source": "joysticks/gamepad-2/left-top-trigger"
+				"poll": "onTrue",
+				"source": 
+				{
+					"input": "joysticks/gamepad/2/left-top-trigger"
+				}
 			},
+			
+			"stop":
+			{
+				"poll": "onTrue",
+				"source": "cobra-stop"
+			}
 		}
 	},
 	
@@ -67,9 +89,28 @@
 				"type": "and",
 				"sources":
 				[
-					"joysticks/joystick-0/trigger",
-					"joysticks/joystick-1/trigger"
+					{"input": "joysticks/joystick/0/trigger"},
+					{"input": "joysticks/joystick/1/trigger"}
 				]
 			}
+		},
+		
+		"cobra-stop":
+		{
+			"type": "none-of",
+			"sources":
+			[
+				{"input": "joysticks/gamepad/2/left-bottom-trigger"},
+				{"input": "joysticks/gamepad/2/left-top-trigger"},
+				{"input": "sensors/cobra/limit-up"},
+				{"input": "sensors/cobra/limit-down"},
+				{
+					"input": "sensors/cobra/potentiometer",
+					"type": "compare",
+					"comparison": ">",
+					"comparator": 900
+				}
+			],
+			"comment": "Use of sensors in this case is impractical, and is only here to demonstrate format",
 		}
 	}

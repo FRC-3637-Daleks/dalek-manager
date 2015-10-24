@@ -1,2 +1,12 @@
 {
+	"drive":
+	{
+		"precision-ratio": 0.3
+	},
+	
+	"cobra":
+	{
+		"soft-lower-limit": 10,
+		"max-speed": 0.5
+	}
 }

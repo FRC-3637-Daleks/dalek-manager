@@ -1,25 +1,25 @@
-{
-	"joysticks":
+[
 	{
+		"name": "joysticks",
 		"port-min": 0,
 		"port-max": 2,
 		"types":
-		{
-			"joystick":
+		[
 			{
+				"name": "joystick",
 				"digitals":
-				{
-					"trigger": 1,
-					"hat-middle": 2,
-					"hat-left": 3,
-					"hat-right": 4,
-					"hat-front": 5,
-					"hat-rear": 6,
-					"base-bottom-right": 7,
-					"base-top-left": 8,
-					"base-top-right": 9,
-					"base-bottom-left": 10
-				},
+				[
+					"trigger",
+					"hat-middle",
+					"hat-left",
+					"hat-right",
+					"hat-front",
+					"hat-rear",
+					"base-bottom-right",
+					"base-top-left",
+					"base-top-right",
+					"base-bottom-left"
+				],
 				"analogs":
 				[
 					"x-axis",
@@ -28,21 +28,21 @@
 				]
 			},
 			
-			"gamepad":
 			{
+				"name": "gamepad",
 				"digitals":
-				{
-					"button-1": 1,
-					"button-2": 2,
-					"button-3": 3,
-					"button-4": 4,
-					"left-bottom-trigger": 5,
-					"right-bottom-trigger": 6,
-					"left-top-trigger": 7,
-					"right-top-trigger": 8,
-					"select": 9,
-					"start": 10
-				},
+				[
+					"button-1",
+					"button-2",
+					"button-3",
+					"button-4",
+					"left-bottom-trigger",
+					"right-bottom-trigger",
+					"left-top-trigger",
+					"right-top-trigger",
+					"select",
+					"start"
+				],
 				"analogs":
 				[
 					"left-x-axis",
@@ -53,23 +53,25 @@
 					"dpad-y-axis"
 				]
 			}
-		}
+		]
 	},
 	
-	"sensors":
 	{
-		"cobra":
-		{
-			"digitals":
-			[
-				"limit-up",
-				"limit-down"
-			],
+		"name": "sensors",
+		"subsystems":
+		[
+			{
+				"name": "cobra",
+				"digitals":
+				[
+					"limit-up",
+					"limit-down"
+				],
 			
-			"analogs":
-			[
-				"potentiometer"
-			]
-		}
+				"analogs":
+				[
+					"potentiometer"
+				]
+			}
+		]
 	}
-}

@@ -1,47 +1,59 @@
-{
-	"drive":
+[
 	{
-		"move-x":
-		{
-			"type": "analog",
-		},
-	
-		"move-y":
-		{
-			"type": "analog",
-		},
+		"name": "drive",
+		"continuous-inputs":
+		[
+			{
+				"name": "move-x",
+				"type": "analog"
+			},
+			
+			{
+				"name": "move-y",
+				"type": "analog"
+			},
+			
+			{
+				"name": "move-rotate",
+				"type": "analog"
+			},
+		],
 		
-		"move-rotate":
-		{
-			"type": "analog",
-		},
-	
-		"precision-mode-on":
-		{
-			"type": "digital"
-		},
-	
-		"precision-mode-off":
-		{
-			"type": "digital"
-		}
+		"commands":
+		[
+			{
+				"name": "precision-mode-on"
+			},
+			
+			{
+				"name": "precision-mode-off"
+			}
+		]
 	},
 
-	"cobra":
 	{
-		"move":
-		{
-			"type": "analog"
-		},
+		"name": "cobra",
+		"continous-inputs":
+		[
+			{
+				"name": "move",
+				"type": "analog"
+			}
+		],
 		
-		"move-up":
-		{
-			"type": "digital"
-		},
-	
-		"move-down":
-		{
-			"type": "digital"
-		}
+		"commands":
+		[
+			{
+				"name": "move-up"
+			},
+			
+			{
+				"name": "move-down"
+			},
+			
+			{
+				"name": "stop"
+			}
+		],
 	}
-}
+]

@@ -1,12 +1,13 @@
-{
-	"CAN":
+[
 	{
+		"name": "CAN",
 		"min": 0,
 		"max": 64,
-		"requirements":
+		"keys":
 		[
 			{
-				"drive":
+				"name": "drive",
+				"keys":
 				[
 					"front-right",
 					"front-left",
@@ -19,17 +20,21 @@
 		]
 	},
 	
-	"DIO":
 	{
+		"name": "DIO",
 		"min": 0,
 		"max": 8,
-		"requirements":
-		{
-			"cobra":
-			[
-				"limit-up",
-				"limit-down"
-			]
-		}
+		"keys":
+		[
+			{
+				"name": "cobra",
+				"keys":
+				[
+					"limit-up",
+					"limit-down"
+				]
+			}
+		]
+		
 	}
-}
+]
