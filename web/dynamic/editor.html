@@ -2,7 +2,7 @@
 {{define "main"}}
 <html lang="en">
 <head>
-    <title>Team 3637 Robot Manager</title>
+    <title>{{.FileName}}</title>
     {{template "cssIncludes"}}
     <link href="/static/css/editor.css" rel="stylesheet" media="screen">
 </head>
@@ -30,12 +30,12 @@
     <div class="row">
         <div class="col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li><a href="autonomous">Autonomous</a></li>
-                <li><a href="ports">Port</a></li>
-                <li><a href="controls">Controls</a></li>
-                <li><a href="settings">Settings</a></li>
-                <li><a href="logs">Logs</a></li>
-                <li><a href="binaries">Binaries</a></li>
+                <li><a href="../../autonomous">Autonomous</a></li>
+                <li><a href="../../ports">Port</a></li>
+                <li><a href="../../controls">Controls</a></li>
+                <li><a href="../../settings">Settings</a></li>
+                <li><a href="../../logs">Logs</a></li>
+                <li><a href="../../binaries">Binaries</a></li>
             </ul>
         </div>
         <div class="col-md-10 col-md-offset-2" style="padding: 0; background-color: #272822;">
@@ -44,7 +44,7 @@
     </div>
     <div class="row">
         <div class="col-md-10 col-md-offset-2 nav-bottom">
-            <button id="save" class="btn nav-box nav-btn">Save</button>
+            <button id="save" class="btn nav-box nav-btn disabled">Save</button>
         </div>
     </div>
 </div>
