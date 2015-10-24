@@ -1,6 +1,6 @@
 var editor;
 
-requirejs(['jquery', 'ace/ace'], function($, ace) {
+requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
 
     editor = ace.edit('editor');
     editor.setTheme('ace/theme/monokai');
@@ -11,7 +11,7 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
         return "You have attempted to leave this page. Are you sure?";
     }
 
-    $('#save').on('click', function(){
+    function save() {
         var data = new FormData();
         data.append('file', editor.getValue());
         console.log(data);
@@ -36,6 +36,35 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
         }).fail(function(response){
             console.log(response);
         });
+    }
+
+    $('#save').on('click', function(){
+        save();
+    });
+
+    editor.commands.addCommand({
+        name: 'save',
+        bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
+        exec: function(editor) {
+            if (!editor.session.getUndoManager().isClean()) {
+                save();
+            }
+        },
+        readOnly: true
+    });
+
+    mousetrap.bind(['ctrl+s', 'command+s'], function(e){
+        if (e.preventDefault) {
+            e.preventDefault();
+            console.log("Prevented")
+        } else {
+            // internet explorer
+            e.returnValue = false;
+        }
+        if (!editor.session.getUndoManager().isClean()) {
+            save();
+        }
+        return false;
     });
 
     editor.on('input', function() {
@@ -45,7 +74,6 @@ requirejs(['jquery', 'ace/ace'], function($, ace) {
             window.onbeforeunload = null;
         }
         else {
-            console.log("edit");
             $('#save').prop("disabled",false);
             document.title = "* " + fileName;
             window.onbeforeunload = confirmExit;
