@@ -15,7 +15,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"strings"
-	"io"
+	"bytes"
 )
 
 var config configuration.Config
@@ -80,8 +80,12 @@ func main() {
 	rtr.HandleFunc("/settings", settingsHandler)
 	rtr.HandleFunc("/logs", logsHandler)
 	rtr.HandleFunc("/binaries", binariesHandler)
+	rtr.HandleFunc("/editor/{fileName}", editorHandler).Methods("GET")
+	rtr.HandleFunc("/editor/{fileName}", editorSaveHandler).Methods("POST")
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler).Methods("GET")
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorSaveHandler).Methods("POST")
+	rtr.HandleFunc("/file/{fileName}", fileHandler)
+	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", fileHandler)
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", nil)
 }
@@ -120,17 +124,19 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
+	filePath := "dalek/" + fileType + "/" + fileName
+	config.DebugLog("Request for: ", filePath)
 	editorWrapper.FileName = fileName
-	if _, err := os.Stat("dalek/" + fileType + "/" + fileName); !os.IsNotExist(err) {
-		config.DebugLog("Loading file into editor: ", "dalek/" + fileType + "/" + fileName)
-		content, err := ioutil.ReadFile("dalek/" + fileType + "/" + fileName)
+	editorWrapper.FileType = fileType
+	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
+		config.DebugLog("Loading file into editor: ", filePath)
+		content, err := ioutil.ReadFile(filePath)
 		if (check(err, 500, &writer)) {return}
 		editorWrapper.FileContent = string(content)
 	}
 	temp := strings.Split(fileName, ".")
 	fileExt := temp[len(temp) - 1]
 	editorWrapper.Lang = fileExt
-	config.DebugLog(fileExt)
 	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
 }
 
@@ -143,14 +149,33 @@ func editorSaveHandler(writer http.ResponseWriter, request *http.Request) {
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
 	file, _, err := request.FormFile("file")
-	if(check(err, 500, &writer)) {config.DebugLog("Test");return }
-	defer file.Close()
-	f, err := os.OpenFile("dalek/" + fileType + "/" + fileName, os.O_WRONLY|os.O_CREATE, 0664)
 	if(check(err, 500, &writer)) {return }
-	defer f.Close()
-	io.Copy(f, file)
+	defer file.Close()
+	buf := new(bytes.Buffer)
+	_, err = buf.ReadFrom(file)
+	if(check(err, 500, &writer)) {return }
+	ioutil.WriteFile("dalek/" + fileType + "/" + fileName, buf.Bytes(), 0664)
 	config.DebugLog("Wrote file: " + fileType + " " + fileName)
 	http.Error(writer, http.StatusText(200), 200)
+}
+
+func fileHandler(writer http.ResponseWriter, request *http.Request)  {
+	vars := mux.Vars(request)
+	fileType := vars["fileType"]
+	fileName := vars["fileName"]
+	filePath := "dalek/" + fileType + "/" + fileName
+	config.DebugLog("Request for: ", filePath)
+	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
+		config.DebugLog("Serving file: ", filePath)
+		content, err := ioutil.ReadFile(filePath)
+		if (check(err, 500, &writer)) {return}
+		writer.Write(content)
+		return
+	} else {
+		config.DebugLog("File does not exist: ", filePath)
+		http.Error(writer, http.StatusText(400), 400)
+		return
+	}
 }
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {

@@ -9,14 +9,14 @@
 				"name": "drive",
 				"keys":
 				[
-					"front-right",
-					"front-left",
-					"rear-right",
-					"rear-left"
+					{"name": "front-right"},
+					{"name": "front-left"},
+					{"name": "rear-right"},
+					{"name": "rear-left"}
 				],
 			},
-			"PDP",
-			"PCM"
+			{"name": "PDP"},
+			{"name": "PCM"}
 		]
 	},
 	
@@ -30,8 +30,8 @@
 				"name": "cobra",
 				"keys":
 				[
-					"limit-up",
-					"limit-down"
+					{"name": "limit-up"},
+					{"name": "limit-down"}
 				]
 			}
 		]
