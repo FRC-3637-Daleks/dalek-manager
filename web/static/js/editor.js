@@ -7,9 +7,6 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
     editor.getSession().setMode('ace/mode/' + lang);
 
     var fileName = document.title;
-    function confirmExit() {
-        return "You have attempted to leave this page. Are you sure?";
-    }
 
     function save() {
         var data = new FormData();
@@ -75,7 +72,7 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
         else {
             $('#save').prop("disabled",false);
             document.title = "* " + fileName;
-            window.onbeforeunload = confirmExit;
+            window.onbeforeunload = function(){return "You have unsaved chnages are you sure you want to exit?"};
         }
     });
 });
