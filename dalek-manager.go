@@ -15,8 +15,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"strings"
-	"io"
-//	"bytes"
+	"bytes"
 )
 
 var config configuration.Config
@@ -149,17 +148,12 @@ func editorSaveHandler(writer http.ResponseWriter, request *http.Request) {
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
 	file, _, err := request.FormFile("file")
-	if(check(err, 500, &writer)) {config.DebugLog("Test");return }
-/*	buf := new(bytes.Buffer)
-	buf.ReadFrom(file)
-	config.DebugLog(buf.String())*/
-	defer file.Close()
-	f, err := os.OpenFile("dalek/" + fileType + "/" + fileName, os.O_WRONLY|os.O_CREATE, 0664)
 	if(check(err, 500, &writer)) {return }
-	defer f.Close()
-	io.Copy(f, file)
-/*	buf.ReadFrom(f)
-	config.DebugLog(buf.String())*/
+	defer file.Close()
+	buf := new(bytes.Buffer)
+	_, err = buf.ReadFrom(file)
+	if(check(err, 500, &writer)) {return }
+	ioutil.WriteFile("dalek/" + fileType + "/" + fileName, buf.Bytes(), 0664)
 	config.DebugLog("Wrote file: " + fileType + " " + fileName)
 	http.Error(writer, http.StatusText(200), 200)
 }
