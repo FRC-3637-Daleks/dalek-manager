@@ -75,4 +75,8 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
             window.onbeforeunload = function(){return "You have unsaved chnages are you sure you want to exit?"};
         }
     });
+
+    if(fileType != '') {
+        $('#' + fileType).parent().addClass('active');
+    }
 });
