@@ -84,6 +84,8 @@ func main() {
 	rtr.HandleFunc("/editor/{fileName}", editorSaveHandler).Methods("POST")
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler).Methods("GET")
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorSaveHandler).Methods("POST")
+	rtr.HandleFunc("/file/{fileName}", fileHandler)
+	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", fileHandler)
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", nil)
 }
@@ -135,7 +137,6 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	temp := strings.Split(fileName, ".")
 	fileExt := temp[len(temp) - 1]
 	editorWrapper.Lang = fileExt
-	config.DebugLog(fileExt)
 	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
 }
 
@@ -156,6 +157,25 @@ func editorSaveHandler(writer http.ResponseWriter, request *http.Request) {
 	ioutil.WriteFile("dalek/" + fileType + "/" + fileName, buf.Bytes(), 0664)
 	config.DebugLog("Wrote file: " + fileType + " " + fileName)
 	http.Error(writer, http.StatusText(200), 200)
+}
+
+func fileHandler(writer http.ResponseWriter, request *http.Request)  {
+	vars := mux.Vars(request)
+	fileType := vars["fileType"]
+	fileName := vars["fileName"]
+	filePath := "dalek/" + fileType + "/" + fileName
+	config.DebugLog("Request for: ", filePath)
+	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
+		config.DebugLog("Serving file: ", filePath)
+		content, err := ioutil.ReadFile(filePath)
+		if (check(err, 500, &writer)) {return}
+		writer.Write(content)
+		return
+	} else {
+		config.DebugLog("File does not exist: ", filePath)
+		http.Error(writer, http.StatusText(400), 400)
+		return
+	}
 }
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {
