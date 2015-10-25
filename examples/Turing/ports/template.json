@@ -13,7 +13,7 @@
 					{"name": "front-left"},
 					{"name": "rear-right"},
 					{"name": "rear-left"}
-				],
+				]
 			},
 			{"name": "PDP"},
 			{"name": "PCM"}
