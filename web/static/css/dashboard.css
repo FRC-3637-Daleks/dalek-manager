@@ -122,3 +122,12 @@ body {
     background-color: #282828;
     padding: 10px;
 }
+
+.nav-sidebar-collapsed {
+    width: 4.5%;
+}
+
+.editor-sidebar-collapsed {
+    width: 95.5%;
+    margin-left: 4.5%;
+}

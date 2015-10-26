@@ -72,11 +72,25 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
         else {
             $('#save').prop("disabled",false);
             document.title = "* " + fileName;
-            window.onbeforeunload = function(){return "You have unsaved chnages are you sure you want to exit?"};
+            window.onbeforeunload = function(){return "You have unsaved changes are you sure you want to exit?"};
         }
     });
 
     if(fileType != '') {
         $('#' + fileType).parent().addClass('active');
     }
+
+    $('#folderViewShrink').find('> span').on('click', function(){
+        $('#folderViewShrink').parent().parent().addClass('hidden');
+        $('#folderViewExpand').removeClass('hidden')
+            .parent().removeClass('col-md-2').addClass('nav-sidebar-collapsed');
+        $('#editor').parent().removeClass('col-md-10 col-md-offset-2').addClass('editor-sidebar-collapsed');
+    });
+
+    $('#folderViewExpand').on('click', function(){
+        $('#editor').parent().removeClass('editor-sidebar-collapsed').addClass('col-md-10 col-md-offset-2');
+        $('#folderViewExpand').addClass('hidden')
+            .parent().addClass('col-md-2').removeClass('nav-sidebar-collapsed');
+        $('#folderViewShrink').parent().parent().removeClass('hidden');
+    });
 });

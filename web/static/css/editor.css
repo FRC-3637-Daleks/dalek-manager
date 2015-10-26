@@ -10,5 +10,30 @@ body {
     z-index: 0;
 }
 
+#folderViewShrink {
+    padding-right: 20px;
+    padding-left: 20px;
+    color: #9d9d9d;
+    font-size: 1.3em;
+    font-weight: 700;
+}
+
+#folderViewShrink > span {
+    float: right;
+}
+
+#folderViewShrink > span:hover {
+    color: #d1d1d1;
+}
+
+#folderViewExpand {
+    color: #9d9d9d;
+    font-size: 1.3em;
+    font-weight: 700;
+}
+#folderViewExpand:hover {
+    color: #d1d1d1;
+}
+
 #save {
 }
