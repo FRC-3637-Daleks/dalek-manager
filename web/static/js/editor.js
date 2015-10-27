@@ -2,11 +2,6 @@ var editor;
 
 requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
 
-    //Load the editor
-    editor = ace.edit('editor');
-    editor.setTheme('ace/theme/monokai');
-    editor.getSession().setMode('ace/mode/' + lang);
-
     //UI setup
     if(fileType != '') {
         $('#' + fileType).parent().addClass('active');
@@ -40,6 +35,11 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
             .parent().addClass('col-md-2').removeClass('nav-sidebar-collapsed');
         $('#fileViewShrink').parent().parent().removeClass('hidden');
     });
+
+    //Load the editor
+    editor = ace.edit('editor');
+    editor.setTheme('ace/theme/monokai');
+    editor.getSession().setMode('ace/mode/' + lang);
 
     //Setup save function
     var fileName = document.title;
