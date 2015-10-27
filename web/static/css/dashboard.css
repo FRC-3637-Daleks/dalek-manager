@@ -154,3 +154,44 @@ body {
     width: 95.5%;
     margin-left: 4.5%;
 }
+
+.viewShrink {
+    padding-right: 20px;
+    padding-left: 20px;
+    color: #9d9d9d;
+    font-size: 1.3em;
+    font-weight: 700;
+}
+
+.viewShrink > span {
+    padding: 20px;
+    margin: -20px;
+}
+
+.viewShrink > span:hover {
+    color: #d1d1d1;
+}
+
+.viewExpand {
+    color: #9d9d9d;
+    font-size: 1.3em;
+    font-weight: 700;
+    padding: 20px;
+    margin: -20px;
+}
+
+.viewExpand:hover {
+    color: #d1d1d1;
+}
+
+#folderViewShrink > span {
+    float: right;
+}
+
+#fileViewShrink {
+    text-align: right;
+}
+
+#fileViewShrink > span {
+    float: left;
+}
