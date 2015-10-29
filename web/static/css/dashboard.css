@@ -29,7 +29,7 @@ body {
  */
 
 /* Hide for mobile, show later */
-.sidebar {
+.sidebar, .rightbar {
     display: none;
 }
 
@@ -46,6 +46,19 @@ body {
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
         background-color: #1c1c1c;
     }
+
+    .rightbar {
+        position: fixed;
+        top: 50px;
+        bottom: 0;
+        right: 0;
+        z-index: 1000;
+        display: block;
+        padding: 20px;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+        background-color: #1c1c1c;
+    }
 }
 
 /* Sidebar navigation */
@@ -55,7 +68,14 @@ body {
     margin-left: -20px;
 }
 
-.nav-sidebar > li > a {
+.nav-rightbar {
+    margin-right: -20px; /* 20px padding + 1px border */
+    margin-bottom: 20px;
+    margin-left: -21px;
+}
+
+.nav-sidebar > li > a,
+.nav-rightbar > li> a {
     padding-right: 20px;
     padding-left: 20px;
     color: #9d9d9d;
@@ -65,7 +85,10 @@ body {
 
 .nav-sidebar > .active > a,
 .nav-sidebar > .active > a:hover,
-.nav-sidebar > .active > a:focus {
+.nav-sidebar > .active > a:focus,
+.nav-rightbar > .active > a,
+.nav-rightbar > .active > a:hover,
+.nav-rightbar > .active > a:focus{
     color: #131313;
     background-color: #ca0e02;
 }
@@ -121,4 +144,54 @@ body {
     color: #9d9d9d;
     background-color: #282828;
     padding: 10px;
+}
+
+.nav-sidebar-collapsed {
+    width: 4.5%;
+}
+
+.editor-sidebar-collapsed {
+    width: 95.5%;
+    margin-left: 4.5%;
+}
+
+.viewShrink {
+    padding-right: 20px;
+    padding-left: 20px;
+    color: #9d9d9d;
+    font-size: 1.3em;
+    font-weight: 700;
+}
+
+.viewShrink > span {
+    padding: 20px;
+    margin: -20px;
+}
+
+.viewShrink > span:hover {
+    color: #d1d1d1;
+}
+
+.viewExpand {
+    color: #9d9d9d;
+    font-size: 1.3em;
+    font-weight: 700;
+    padding: 20px;
+    margin: -20px;
+}
+
+.viewExpand:hover {
+    color: #d1d1d1;
+}
+
+#folderViewShrink > span {
+    float: right;
+}
+
+#fileViewShrink {
+    text-align: right;
+}
+
+#fileViewShrink > span {
+    float: left;
 }

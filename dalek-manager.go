@@ -62,7 +62,6 @@ func main() {
 	}
 	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
 		config.DebugLog("Makeing manifest.json")
-		//asign default values to config.manifest
 		json, err := json.MarshalIndent(config.Manifest, "", "  ")
 		if (err != nil) {panic(err)}
 		ioutil.WriteFile("dalek/manifest.json", json, 0664)
