@@ -16,6 +16,7 @@ import (
 	"github.com/gorilla/mux"
 	"strings"
 	"bytes"
+	"github.com/gorilla/context"
 )
 
 var config configuration.Config
@@ -61,7 +62,6 @@ func main() {
 	}
 	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
 		config.DebugLog("Makeing manifest.json")
-		//asign default values to config.manifest
 		json, err := json.MarshalIndent(config.Manifest, "", "  ")
 		if (err != nil) {panic(err)}
 		ioutil.WriteFile("dalek/manifest.json", json, 0664)
@@ -87,35 +87,35 @@ func main() {
 	rtr.HandleFunc("/file/{fileName}", fileHandler)
 	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", fileHandler)
 	http.Handle("/", rtr)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
 }
 
 func rootHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "index.html"), data.PageWrapper{})
+	serveTemplate(writer, request, path.Join("web", "dynamic", "index.html"), nil)
 }
 
 func autonomousHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "autonomous.html"), data.PageWrapper{})
+	serveTemplate(writer, request, path.Join("web", "dynamic", "autonomous.html"), nil)
 }
 
 func portsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "ports.html"), data.PageWrapper{})
+	serveTemplate(writer, request, path.Join("web", "dynamic", "ports.html"), nil)
 }
 
 func controlsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "controls.html"), data.PageWrapper{})
+	serveTemplate(writer, request, path.Join("web", "dynamic", "controls.html"), nil)
 }
 
 func settingsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "settings.html"), data.PageWrapper{})
+	serveTemplate(writer, request, path.Join("web", "dynamic", "settings.html"), nil)
 }
 
 func logsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "logs.html"), data.PageWrapper{})
+	serveTemplate(writer, request, path.Join("web", "dynamic", "logs.html"), nil)
 }
 
 func binariesHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "binaries.html"), data.PageWrapper{})
+	serveTemplate(writer, request, path.Join("web", "dynamic", "binaries.html"), nil)
 }
 
 func editorHandler(writer http.ResponseWriter, request *http.Request) {
