@@ -18,7 +18,7 @@ TARGET_ADDRESS := $(TARGET_USER)@$(TARGET_HOSTNAME)
 # Makes it so that user can enter password
 SSH_FLAGS := -tt
 
-WEB_FILES := $(wildcard $(WEB_DIR)/dynamic/*.html) $(wildcard $(WEB_DIR)/static/css/*.css) $(wildcard $(WEB_DIR)/static/js/*.js)
+WEB_FILES := $(wildcard $(WEB_DIR)/dynamic/*.html) $(wildcard $(WEB_DIR)/static/css/*.css) $(wildcard $(WEB_DIR)/static/js/*.js) $(wildcard $(WEB_DIR)/static/assets/*)
 START_SCRIPT := scripts/start_server.sh
 STOP_SCRIPT := scripts/stop_server.sh
 INSTALL_SCRIPT := scripts/install.sh
@@ -55,6 +55,7 @@ $(DEPLOYED_TAR): $(DEPLOYED_FILES)
 clean:
 	go clean
 	rm $(DEPLOYED_TAR)
+	rm $(ARM_OUTPUT)
 
 stop:
 	ssh $(SSH_FLAGS) $(TARGET_ADDRESS) "/etc/init.d/$(OUTPUT) stop"
