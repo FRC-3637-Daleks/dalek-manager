@@ -5,17 +5,17 @@
 		[
 			{
 				"name": "move-x",
-				"type": "analog"
+				"type": "double"
 			},
 			
 			{
 				"name": "move-y",
-				"type": "analog"
+				"type": "double"
 			},
 			
 			{
 				"name": "move-rotate",
-				"type": "analog"
+				"type": "double"
 			},
 		],
 		
@@ -37,7 +37,7 @@
 		[
 			{
 				"name": "move",
-				"type": "analog"
+				"type": "double"
 			}
 		],
 		
