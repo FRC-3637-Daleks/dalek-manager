@@ -59,6 +59,11 @@
 				"source": 
 				{
 					"input": "joysticks/gamepad/2/left-bottom-trigger"
+				},
+				
+				"arguments":
+				{
+					"speed": "joysticks/joystick/0/z-axis"
 				}
 			},
 			
@@ -68,6 +73,11 @@
 				"source": 
 				{
 					"input": "joysticks/gamepad/2/left-top-trigger"
+				},
+				
+				"arguments":
+				{
+					"speed": 0.5
 				}
 			},
 			
