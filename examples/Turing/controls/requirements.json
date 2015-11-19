@@ -45,6 +45,14 @@
 		[
 			{
 				"name": "move-up"
+				"arguments":
+				[
+					{
+						"name": "speed",
+						"type": "double"
+						"default": 0.5
+					}
+				]
 			},
 			
 			{
