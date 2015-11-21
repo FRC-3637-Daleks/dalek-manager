@@ -1,5 +1,3 @@
-var editor;
-
 requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
 
     //UI setup
@@ -37,7 +35,7 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
     });
 
     //Load the editor
-    editor = ace.edit('editor');
+    var editor = ace.edit('editor');
     editor.setTheme('ace/theme/monokai');
     editor.getSession().setMode('ace/mode/' + lang);
 
