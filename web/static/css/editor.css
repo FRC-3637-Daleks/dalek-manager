@@ -10,5 +10,25 @@ body {
     z-index: 0;
 }
 
-#save {
+#fileButtons {
+    position: absolute;
+    bottom: 20px;
+    right: 30px;
+}
+
+#fileNameContainer {
+    background-color: #212121;
+    border: #212121;
+    margin-bottom: 10px;
+    vertical-align: middle;
+}
+
+#fileNameContainer > input {
+    background-color: #9d9d9d;
+    border: #9d9d9d;
+}
+
+#fileNameContainer > label,
+#fileNameContainer > label:hover{
+    color: #9d9d9d;
 }

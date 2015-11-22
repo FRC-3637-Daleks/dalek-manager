@@ -80,12 +80,12 @@ func main() {
 	rtr.HandleFunc("/settings", settingsHandler)
 	rtr.HandleFunc("/logs", logsHandler)
 	rtr.HandleFunc("/binaries", binariesHandler)
-	rtr.HandleFunc("/editor/{fileName}", editorHandler).Methods("GET")
-	rtr.HandleFunc("/editor/{fileName}", editorSaveHandler).Methods("POST")
-	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler).Methods("GET")
-	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorSaveHandler).Methods("POST")
-	rtr.HandleFunc("/file/{fileName}", fileHandler)
-	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", fileHandler)
+	rtr.HandleFunc("/editor/{fileName}", editorHandler)
+	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler)
+	rtr.HandleFunc("/file/{fileName}", fileHandler).Methods("GET")
+	rtr.HandleFunc("/file/{fileName}", addFileHandler).Methods("POST")
+	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", fileHandler).Methods("GET")
+	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", addFileHandler).Methods("POST")
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
 }
@@ -128,6 +128,12 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	config.DebugLog("Request for: ", filePath)
 	editorWrapper.FileName = fileName
 	editorWrapper.FileType = fileType
+	fileList, err := getFileList("dalek/" + fileType)
+	if(check(err, 500, &writer)) {return}
+	fileJson, err := json.Marshal(fileList)
+	if(check(err, 500, &writer)) {return}
+	editorWrapper.Files = string(fileJson)
+	config.DebugLog(editorWrapper.Files)
 	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
 		config.DebugLog("Loading file into editor: ", filePath)
 		content, err := ioutil.ReadFile(filePath)
@@ -140,7 +146,7 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
 }
 
-func editorSaveHandler(writer http.ResponseWriter, request *http.Request) {
+func addFileHandler(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if(check(err, 500, &writer)) {return }
 	err = request.ParseMultipartForm(32 << 20)
@@ -207,4 +213,16 @@ func check(err error, code int, writer *http.ResponseWriter) bool {
 		return true
 	}
 	return false
+}
+
+func getFileList(dir string) ([]string, error) {
+	var (
+		files []string
+		err error
+	)
+	fileData, err := ioutil.ReadDir(dir)
+	for _, f := range fileData {
+		files = append(files, f.Name())
+	}
+	return files, err
 }

@@ -4,5 +4,5 @@ type PageWrapper struct {
 }
 
 type EditorWrapper struct {
-	FileContent, Lang, FileName, FileType string
+	FileContent, Lang, FileName, FileType, Files string
 }

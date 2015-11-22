@@ -1,37 +1,17 @@
+var nameChange = false;
 requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
 
+    var originalName;
+
     //UI setup
-    if(fileType != '') {
-        $('#' + fileType).parent().addClass('active');
-    }
-
-    $('#folderViewShrink').find('> span').on('click', function(){
-        $('#folderViewShrink').parent().parent().addClass('hidden');
-        $('#folderViewExpand').removeClass('hidden')
-            .parent().removeClass('col-md-2').addClass('nav-sidebar-collapsed');
-        $('#editor').parent().removeClass('col-md-10 col-md-offset-2').addClass('editor-sidebar-collapsed');
-        $('.nav-bottom').removeClass('col-md-offset-2').addClass('editor-sidebar-collapsed');
-
-    });
-
-    $('#folderViewExpand').on('click', function(){
-        $('#editor').parent().removeClass('editor-sidebar-collapsed').addClass('col-md-10 col-md-offset-2');
-        $('#folderViewExpand').addClass('hidden')
-            .parent().addClass('col-md-2').removeClass('nav-sidebar-collapsed');
-        $('#folderViewShrink').parent().parent().removeClass('hidden');
-        $('.nav-bottom').addClass('col-md-offset-2').removeClass('editor-sidebar-collapsed');
-    });
-
-    $('#fileViewShrink').find('> span').on('click', function(){
-        $('#fileViewShrink').parent().parent().addClass('hidden');
-        $('#fileViewExpand').removeClass('hidden')
-            .parent().removeClass('col-md-2').addClass('nav-sidebar-collapsed');
-    });
-
-    $('#fileViewExpand').on('click', function(){
-        $('#fileViewExpand').addClass('hidden')
-            .parent().addClass('col-md-2').removeClass('nav-sidebar-collapsed');
-        $('#fileViewShrink').parent().parent().removeClass('hidden');
+    $(document).ready(function(){
+        if(fileType != '') {
+            $('#' + fileType).parent().addClass('active');
+            $('#fileNameContainer').find('label').html(fileType + '/')
+        }
+        if(fileName != '') {
+            $('#fileName').attr('value', fileName);
+        }
     });
 
     //Load the editor
@@ -40,7 +20,7 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
     editor.getSession().setMode('ace/mode/' + lang);
 
     //Setup save function
-    var fileName = document.title;
+    var filePath = document.title;
 
     function save() {
         var data = new FormData();
@@ -54,15 +34,17 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
             + '--'+ boundary + '--';
         $.ajax({
             type: 'POST',
-            url: window.location.pathname,
+            url: '/file/' + fileType + '/' + fileName,
             contentType: "multipart/form-data; boundary="+boundary,
             data: body
         }).done(function(response){
             console.log("Save successful: " + response);
             editor.session.getUndoManager().markClean();
-            $('#save').prop("disabled",true);
-            document.title = fileName;
-            window.onbeforeunload = null;
+            if(nameChange) {
+                window.history.pushState(null, null, '/editor/' + fileType + '/' + fileName);
+            }
+            nameChange = false;
+            updateEditorState()
         }).fail(function(response){
             console.log("Save failed: " + response);
         });
@@ -73,8 +55,19 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
         save();
     });
 
-    editor.on('input', function() {
-        if (editor.session.getUndoManager().isClean()) {
+    $('#fileName').on('input', function(e){
+        if($(e.target).val() != originalName) {
+            nameChange = true;
+            fileName = $(e.target).val();
+        } else {
+            nameChange = false;
+            fileName = originalName;
+        }
+        updateEditorState();
+    });
+
+    function updateEditorState() {
+        if (editor.session.getUndoManager().isClean() && !nameChange) {
             $('#save').prop("disabled",true);
             document.title = fileName;
             window.onbeforeunload = null;
@@ -84,7 +77,9 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
             document.title = "* " + fileName;
             window.onbeforeunload = function(){return "You have unsaved changes are you sure you want to exit?"};
         }
-    });
+    }
+
+    editor.on('input', updateEditorState());
 
     //Bin save keys
     editor.commands.addCommand({
@@ -101,7 +96,6 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
     mousetrap.bind(['ctrl+s', 'command+s'], function(e){
         if (e.preventDefault) {
             e.preventDefault();
-            console.log("Prevented")
         } else {
             // internet explorer
             e.returnValue = false;

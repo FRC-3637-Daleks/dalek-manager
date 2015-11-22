@@ -37,6 +37,23 @@
     color: #131313;
 }
 
+.fileButton,
+.fileButton:link,
+.fileButton:hover,
+.fileButton:active,
+.fileButton:visited {
+    width: 100%;
+    background-color: #1c1c1c !important;
+    border: 0;
+    border-bottom:1px solid #4C4C4C !important;
+    padding: 10px;
+    color: #9d9d9d;
+    font-size: 1.1em;
+    font-weight: 600;
+    display: block;
+    text-decoration: none;
+}
+
 #navbar-buttons {
     margin-right: 10px;
 }
