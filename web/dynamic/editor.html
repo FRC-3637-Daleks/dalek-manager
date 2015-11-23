@@ -2,7 +2,6 @@
 {{define "main"}}
 <html lang="en">
 <head>
-    <title>{{.FileName}}</title>
     {{template "cssIncludes"}}
     <link href="/static/css/editor.css" rel="stylesheet" media="screen">
 </head>
@@ -58,11 +57,11 @@
                            <div class="accordion-section-content"
                                 data-bind="attr: {id:'accordion-'+$index()}">
                                <a name="edit" class="fileButton"
-                                  data-bind="attr: {href: '/editor/autonomous/' + $data}">Edit</a>
+                                  data-bind="attr: {href: '/editor/' + files.fileType + '/' + $data}">Edit</a>
                                <a name="delete" class="fileButton"
                                   data-bind="attr: {href: 'javascript:deleteFile(\'' + $data + '\');'}">Delete</a>
                                <a name="download" class="fileButton"
-                                  data-bind="attr: {href: '/file/autonomous/' + $data}" download>Download</a>
+                                  data-bind="attr: {href: '/file/' + files.fileType + '/' + $data}" download>Download</a>
                                <a name="select" class="fileButton"
                                   data-bind="attr: {href: 'javascript:selectFile(\'' + $data + '\');'}">Select</a>
                            </div>
@@ -87,16 +86,10 @@
         </div>
     </div>
 </div>
-<script>
-    var lang = '{{.Lang}}';
-    var fileType = '{{.FileType}}';
-    var fileName = '{{.FileName}}';
-    var files = ["cake.lua", "f.lua", "test.lua"];
-</script>
 {{template "editorJsIncludes"}}
 <script src="/static/js/main.js"></script>
-<script src="/static/js/editor.js"></script>
 <script src="/static/js/files.js"></script>
+<script src="/static/js/editor.js"></script>
 </body>
 </html>
 {{end}}

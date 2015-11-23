@@ -14,7 +14,6 @@ import (
 	"github.com/FRC-3637-Daleks/dalek-manager/manager/data"
 
 	"github.com/gorilla/mux"
-	"strings"
 	"bytes"
 	"github.com/gorilla/context"
 )
@@ -84,9 +83,11 @@ func main() {
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler)
 	rtr.HandleFunc("/file/{fileName}", getFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/{fileName}", addFileHandler).Methods("POST")
+	rtr.HandleFunc("/file/{fileName}", deleteFileHandler).Methods("DELETE")
 	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", getFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", addFileHandler).Methods("POST")
 	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", deleteFileHandler).Methods("DELETE")
+	rtr.HandleFunc("/file/list/", listFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/list/{fileType:autonomous|control|ports|settings}", listFileHandler).Methods("GET")
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
@@ -122,29 +123,17 @@ func binariesHandler(writer http.ResponseWriter, request *http.Request) {
 
 func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	editorWrapper := data.EditorWrapper{}
-	editorWrapper.Lang = "text"
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
 	filePath := "dalek/" + fileType + "/" + fileName
 	config.DebugLog("Request for: ", filePath)
-	editorWrapper.FileName = fileName
-	editorWrapper.FileType = fileType
-	fileList, err := getFileList("dalek/" + fileType)
-	if(check(err, 500, &writer)) {return}
-	fileJson, err := json.Marshal(fileList)
-	if(check(err, 500, &writer)) {return}
-	editorWrapper.Files = string(fileJson)
-	config.DebugLog(editorWrapper.Files)
 	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
 		config.DebugLog("Loading file into editor: ", filePath)
 		content, err := ioutil.ReadFile(filePath)
 		if (check(err, 500, &writer)) {return}
 		editorWrapper.FileContent = string(content)
 	}
-	temp := strings.Split(fileName, ".")
-	fileExt := temp[len(temp) - 1]
-	editorWrapper.Lang = fileExt
 	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
 }
 
@@ -241,7 +230,9 @@ func getFileList(dir string) ([]string, error) {
 	)
 	fileData, err := ioutil.ReadDir(dir)
 	for _, f := range fileData {
-		files = append(files, f.Name())
+		if(!f.IsDir()) {
+			files = append(files, f.Name())
+		}
 	}
 	return files, err
 }
