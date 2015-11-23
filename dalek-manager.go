@@ -82,10 +82,12 @@ func main() {
 	rtr.HandleFunc("/binaries", binariesHandler)
 	rtr.HandleFunc("/editor/{fileName}", editorHandler)
 	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler)
-	rtr.HandleFunc("/file/{fileName}", fileHandler).Methods("GET")
+	rtr.HandleFunc("/file/{fileName}", getFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/{fileName}", addFileHandler).Methods("POST")
-	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", fileHandler).Methods("GET")
+	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", getFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", addFileHandler).Methods("POST")
+	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", deleteFileHandler).Methods("DELETE")
+	rtr.HandleFunc("/file/list/{fileType:autonomous|control|ports|settings}", listFileHandler).Methods("GET")
 	http.Handle("/", rtr)
 	http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
 }
@@ -146,6 +148,33 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
 }
 
+func getFileHandler(writer http.ResponseWriter, request *http.Request)  {
+	vars := mux.Vars(request)
+	fileType := vars["fileType"]
+	fileName := vars["fileName"]
+	filePath := "dalek/" + fileType + "/" + fileName
+	config.DebugLog("Request for: ", filePath)
+	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
+		config.DebugLog("Serving file: ", filePath)
+		content, err := ioutil.ReadFile(filePath)
+		if (check(err, 500, &writer)) {return}
+		writer.Write(content)
+		return
+	} else {
+		config.DebugLog("File does not exist: ", filePath)
+		http.Error(writer, http.StatusText(400), 400)
+		return
+	}
+}
+
+func listFileHandler(writer http.ResponseWriter, request *http.Request) {
+	fileList, err := getFileList("dalek/" + request.RequestURI[11:len(request.RequestURI)])
+	if(check(err, 500, &writer)) {return}
+	fileJson, err := json.MarshalIndent(fileList, "", "    ")
+	if(check(err, 500, &writer)) {return}
+	writer.Write(fileJson)
+}
+
 func addFileHandler(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if(check(err, 500, &writer)) {return }
@@ -165,23 +194,13 @@ func addFileHandler(writer http.ResponseWriter, request *http.Request) {
 	http.Error(writer, http.StatusText(200), 200)
 }
 
-func fileHandler(writer http.ResponseWriter, request *http.Request)  {
-	vars := mux.Vars(request)
-	fileType := vars["fileType"]
-	fileName := vars["fileName"]
-	filePath := "dalek/" + fileType + "/" + fileName
-	config.DebugLog("Request for: ", filePath)
-	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
-		config.DebugLog("Serving file: ", filePath)
-		content, err := ioutil.ReadFile(filePath)
-		if (check(err, 500, &writer)) {return}
-		writer.Write(content)
-		return
-	} else {
-		config.DebugLog("File does not exist: ", filePath)
-		http.Error(writer, http.StatusText(400), 400)
-		return
-	}
+func deleteFileHandler(writer http.ResponseWriter, request *http.Request) {
+	file := "dalek/" + request.RequestURI[6:len(request.RequestURI)]
+	config.DebugLog("Deleting file: " + file)
+	err := os.Remove(file)
+	if(check(err, 500, &writer)) {return }
+	writer.WriteHeader(http.StatusNoContent)
+	writer.Write([]byte("No Content"))
 }
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {

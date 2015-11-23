@@ -1,31 +1,25 @@
-var deleteFile, selectFile;
+var deleteFile, selectFile, files;
 requirejs(['jquery', 'ko'], function ($, ko) {
-    $(document).ready(function () {
-        function close_accordion_section() {
-            $('.accordion .accordion-section-title').removeClass('active');
-            $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
-        }
+    function ViewModel() {
+        var self = this;
+        self.data = ko.observableArray();
+    }
 
-        $('.accordion-section-title').on('click', function (e) {
-            var currentAttrValue = $(this).find('a').attr('href');
-
-            if ($(e.target).is('.active')) {
-                close_accordion_section();
-            } else {
-                close_accordion_section();
-
-                // Add active class to section title
-                $(this).addClass('active');
-                // Open up the hidden content panel
-                $('.accordion ' + currentAttrValue).slideDown(300).addClass('open');
-            }
-
-            e.preventDefault();
+    function updateFileList() {
+        $.getJSON('/file/list/' + fileType, function(data){
+            files.data(data);
         });
-    });
+    }
+
+    files = new ViewModel();
 
     deleteFile = function (file) {
-
+        $.ajax({
+            type: 'DELETE',
+            url: '/file/' + fileType + '/' + fileName
+        }).done(function(){
+            updateFileList();
+        });
     };
 
     selectFile = function(file) {
@@ -33,4 +27,30 @@ requirejs(['jquery', 'ko'], function ($, ko) {
     };
 
     ko.applyBindings(files);
+
+    $(document).ready(function () {
+        console.log('test');
+        function close_accordion_section() {
+            $('.accordion .accordion-section-title').removeClass('active');
+            $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
+        }
+        console.log('test');
+        $('.accordion-section-title').on('click', function (e) {
+            console.log('click');
+            var currentAttrValue = $(this).find('a').attr('href');
+
+            if ($(e.target).is('.active')) {
+                close_accordion_section();
+            } else {
+                close_accordion_section();
+                $(this).addClass('active');
+                $('.accordion ' + currentAttrValue).slideDown(300).addClass('open');
+            }
+
+            e.preventDefault();
+        });
+        console.log('test');
+        updateFileList();
+        window.setInterval(updateFileList, 1000);
+    });
 });
