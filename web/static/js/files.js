@@ -1,56 +1,64 @@
-var deleteFile, selectFile, files;
+var deleteFile, selectFile;
 requirejs(['jquery', 'ko'], function ($, ko) {
+
     function ViewModel() {
         var self = this;
         self.data = ko.observableArray();
     }
 
-    function updateFileList() {
-        $.getJSON('/file/list/' + fileType, function(data){
-            files.data(data);
-        });
+    files = new ViewModel();
+    var oldList = [];
+
+    function close_accordion_section() {
+        $('.accordion .accordion-section-title').removeClass('active');
+        $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
     }
 
-    files = new ViewModel();
+    function updateAccordionListener() {
+        if (!($(files.data()).not(oldList).length === 0 && $(oldList).not(files.data()).length === 0)) {
+            oldList = files.data();
+            console.log('listener set');
+            $('.accordion-section-title').off('click').on('click', function (e) {
+                var currentAttrValue = $(this).find('a').attr('href');
+                if ($(e.target).is('.active') || $(e.target).parent().is('.active')) {
+                    close_accordion_section();
+                } else {
+                    close_accordion_section();
+
+                    // Add active class to section title
+                    $(this).addClass('active');
+                    // Open up the hidden content panel
+                    $('.accordion ' + currentAttrValue).slideDown(300).addClass('open');
+                }
+                e.preventDefault();
+            });
+        }
+    }
+
+    function updateFileList() {
+        $.getJSON('/file/list/' + fileType, function (data) {
+            files.data(data);
+            updateAccordionListener();
+        });
+    }
 
     deleteFile = function (file) {
         $.ajax({
             type: 'DELETE',
-            url: '/file/' + fileType + '/' + fileName
+            url: '/file/' + fileType + '/' + file
         }).done(function(){
             updateFileList();
         });
     };
 
-    selectFile = function(file) {
+    selectFile = function (file) {
 
     };
 
     ko.applyBindings(files);
 
     $(document).ready(function () {
-        console.log('test');
-        function close_accordion_section() {
-            $('.accordion .accordion-section-title').removeClass('active');
-            $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
-        }
-        console.log('test');
-        $('.accordion-section-title').on('click', function (e) {
-            console.log('click');
-            var currentAttrValue = $(this).find('a').attr('href');
-
-            if ($(e.target).is('.active')) {
-                close_accordion_section();
-            } else {
-                close_accordion_section();
-                $(this).addClass('active');
-                $('.accordion ' + currentAttrValue).slideDown(300).addClass('open');
-            }
-
-            e.preventDefault();
-        });
-        console.log('test');
         updateFileList();
-        window.setInterval(updateFileList, 1000);
+        window.setInterval(updateFileList, 3000);
     });
 });
