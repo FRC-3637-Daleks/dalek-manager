@@ -1,4 +1,4 @@
-var deleteFile, selectFile, lang, fileType, fileName;
+var deleteFile, selectFile, newFile, lang, fileType, fileName;
 requirejs(['jquery', 'ko'], function ($, ko) {
     var filePath = window.location.pathname;
     var temp = filePath.split("/");
@@ -73,6 +73,22 @@ requirejs(['jquery', 'ko'], function ($, ko) {
 
     selectFile = function (file) {
 
+    };
+
+    newFile = function () {
+        var name = "untitled.txt",
+            pos = 0,
+            found = false;
+        while (!found) {
+            files.data().forEach(function(element){
+                if(element == name) {
+                    name = name.substr(0, 8) + ++pos + ".txt";
+                } else {
+                    found = true;
+                }
+            });
+        }
+        window.location = "/editor/" + fileType + "/" + name;
     };
 
     ko.applyBindings(files);

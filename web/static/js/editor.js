@@ -1,8 +1,8 @@
+var editor;
 requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
 
     var nameChange = false;
     var originalName;
-    var editor;
 
     function save() {
         var data = new FormData();
@@ -26,6 +26,16 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
                 window.history.pushState(null, null, '/editor/' + fileType + '/' + fileName);
             }
             nameChange = false;
+            var temp = fileName.split('.');
+            if(temp.length == 2) {
+                lang = temp[1];
+            } else {
+                lang = 'text';
+            }
+            if(lang == 'txt') {
+                lang = 'text';
+            }
+            editor.getSession().setMode('ace/mode/' + lang);
             updateEditorState()
         }).fail(function(response){
             console.log("Save failed: " + response);
@@ -33,17 +43,50 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
     }
 
     function updateEditorState() {
-        if (editor.session.getUndoManager().isClean() && !nameChange) {
-            $('#save').prop("disabled",true);
+        if (editor.getSession().getUndoManager().isClean() && !nameChange) {
+            console.log('yes', editor.session.getUndoManager().isClean(), !nameChange);
+            //$('#save').addClass("disabled");
             document.title = fileName;
             window.onbeforeunload = null;
         }
         else {
-            $('#save').prop("disabled",false);
+            console.log('no', editor.session.getUndoManager().isClean(), !nameChange);
+            //$('#save').removeClass("disabled");
             document.title = "* " + fileName;
             window.onbeforeunload = function(){return "You have unsaved changes are you sure you want to exit?"};
         }
     }
+
+    //Load the editor
+    editor = ace.edit('editor');
+    editor.setTheme('ace/theme/monokai');
+    editor.getSession().setMode('ace/mode/' + lang);
+
+    //Bind save keys
+    editor.commands.addCommand({
+        name: 'save',
+        bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
+        exec: function(editor) {
+            if (!editor.session.getUndoManager().isClean()) {
+                save();
+            }
+        },
+        readOnly: true
+    });
+    editor.getSession().on('change', function(){updateEditorState()});
+
+    mousetrap.bind(['ctrl+s', 'command+s'], function(e){
+        if (e.preventDefault) {
+            e.preventDefault();
+        } else {
+            // internet explorer
+            e.returnValue = false;
+        }
+        if (!editor.session.getUndoManager().isClean()) {
+            save();
+        }
+        return false;
+    });
 
     $(document).ready(function(){
         //UI setup
@@ -54,10 +97,6 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
         if(fileName != '') {
             $('#fileName').attr('value', fileName);
         }
-        //Load the editor
-        editor = ace.edit('editor');
-        editor.setTheme('ace/theme/monokai');
-        editor.getSession().setMode('ace/mode/' + lang);
 
         //Setup save UI
         $('#save').on('click', function(){
@@ -73,32 +112,6 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
                 fileName = originalName;
             }
             updateEditorState();
-        });
-
-        //Bind save keys
-        editor.commands.addCommand({
-            name: 'save',
-            bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
-            exec: function(editor) {
-                if (!editor.session.getUndoManager().isClean()) {
-                    save();
-                }
-            },
-            readOnly: true
-        });
-        editor.on('input', updateEditorState());
-
-        mousetrap.bind(['ctrl+s', 'command+s'], function(e){
-            if (e.preventDefault) {
-                e.preventDefault();
-            } else {
-                // internet explorer
-                e.returnValue = false;
-            }
-            if (!editor.session.getUndoManager().isClean()) {
-                save();
-            }
-            return false;
         });
 
         updateEditorState();
