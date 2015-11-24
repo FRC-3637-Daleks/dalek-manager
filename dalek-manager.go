@@ -79,8 +79,10 @@ func main() {
 	rtr.HandleFunc("/settings", settingsHandler)
 	rtr.HandleFunc("/logs", logsHandler)
 	rtr.HandleFunc("/binaries", binariesHandler)
-	rtr.HandleFunc("/editor/{fileName}", editorHandler)
-	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler)
+	rtr.HandleFunc("/editor/{fileName}", editorHandler).Methods("GET")
+	rtr.HandleFunc("/editor/{fileName}", putEditorHandler).Methods("POST")
+	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler).Methods("GET")
+	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", putEditorHandler).Methods("POST")
 	rtr.HandleFunc("/file/{fileName}", getFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/{fileName}", addFileHandler).Methods("POST")
 	rtr.HandleFunc("/file/{fileName}", deleteFileHandler).Methods("DELETE")
@@ -134,6 +136,27 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 		if (check(err, 500, &writer)) {return}
 		editorWrapper.FileContent = string(content)
 	}
+	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
+}
+
+func putEditorHandler(writer http.ResponseWriter, request *http.Request) {
+	editorWrapper := data.EditorWrapper{}
+	vars := mux.Vars(request)
+	fileType := vars["fileType"]
+	fileName := vars["fileName"]
+	filePath := "dalek/" + fileType + "/" + fileName
+	err := request.ParseForm()
+	if(check(err, 500, &writer)) {return }
+	err = request.ParseMultipartForm(32 << 20)
+	if(check(err, 500, &writer)) {return }
+	config.DebugLog("Request for: ", filePath)
+	file, _, err := request.FormFile("file")
+	if(check(err, 500, &writer)) {return }
+	defer file.Close()
+	buf := new(bytes.Buffer)
+	_, err = buf.ReadFrom(file)
+	if(check(err, 500, &writer)) {return }
+	editorWrapper.FileContent = string(buf.Bytes())
 	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
 }
 
@@ -194,7 +217,8 @@ func deleteFileHandler(writer http.ResponseWriter, request *http.Request) {
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {
 	includesPath := path.Join("web", "dynamic", "includes.html")
-	config.DebugLog("Request for: \"", request.URL.Path, "\"\tSending: \"", filePath, "\"")
+	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
+	config.DebugLog("Sending: \"", filePath, "\"")
 	info, err := os.Stat(filePath)
 	if err != nil {
 		if os.IsNotExist(err) {

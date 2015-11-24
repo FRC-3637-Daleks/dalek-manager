@@ -1,4 +1,4 @@
-var deleteFile, selectFile, newFile, lang, fileType, fileName;
+var deleteFile, selectFile, newFile, uploadFile, lang, fileType, fileName;
 requirejs(['jquery', 'ko'], function ($, ko) {
     var filePath = window.location.pathname;
     var temp = filePath.split("/");
@@ -91,10 +91,22 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         window.location = "/editor/" + fileType + "/" + name;
     };
 
+    uploadFile = function () {
+
+    };
+
     ko.applyBindings(files);
 
     $(document).ready(function () {
+        $('#file').parent().attr('action', '/editor/' + fileType + '/' + fileName);
         updateFileList();
         window.setInterval(updateFileList, 3000);
+        function handleFileSelect(evt) {
+            var file = evt.target.files[0];
+            if (file != null) {
+                $('#file').parent().attr('action', '/editor/' + fileType + '/' + file.name).submit();
+            }
+        }
+        document.getElementById('file').addEventListener('change', handleFileSelect, false);
     });
 });
