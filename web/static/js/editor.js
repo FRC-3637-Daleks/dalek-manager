@@ -44,13 +44,13 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
 
     function updateEditorState() {
         if (editor.getSession().getUndoManager().isClean() && !nameChange) {
-            console.log('yes', editor.session.getUndoManager().isClean(), !nameChange);
+            //console.log('yes', editor.session.getUndoManager().isClean(), !nameChange);
             //$('#save').addClass("disabled");
             document.title = fileName;
             window.onbeforeunload = null;
         }
         else {
-            console.log('no', editor.session.getUndoManager().isClean(), !nameChange);
+            //console.log('no', editor.session.getUndoManager().isClean(), !nameChange);
             //$('#save').removeClass("disabled");
             document.title = "* " + fileName;
             window.onbeforeunload = function(){return "You have unsaved changes are you sure you want to exit?"};

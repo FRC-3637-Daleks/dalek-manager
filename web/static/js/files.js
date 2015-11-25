@@ -1,22 +1,22 @@
-var deleteFile, selectFile, newFile, lang, fileType, fileName;
+var deleteFile, selectFile, newFile, lang, fileType, fileName, manifest;
 requirejs(['jquery', 'ko'], function ($, ko) {
     var filePath = window.location.pathname;
     var temp = filePath.split("/");
-    if(temp.length == 3) {
+    if (temp.length == 3) {
         fileType = '';
         fileName = temp[2];
         temp = temp[2].split('.');
-    } else if(temp.length == 4) {
+    } else if (temp.length == 4) {
         fileType = temp[2];
         fileName = temp[3];
         temp = temp[3].split('.');
     }
-    if(temp.length == 2) {
+    if (temp.length == 2) {
         lang = temp[1];
     } else {
         lang = 'text';
     }
-    if(lang == 'txt') {
+    if (lang == 'txt') {
         lang = 'text';
     }
     document.title = fileName;
@@ -25,12 +25,15 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         self.data = ko.observableArray();
         self.fileType = fileType;
     }
+
     files = new ViewModel();
     var oldList = [];
+
     function close_accordion_section() {
         $('.accordion .accordion-section-title').removeClass('active');
         $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
     }
+
     function updateAccordionListener() {
         if (!($(files.data()).not(oldList).length === 0 && $(oldList).not(files.data()).length === 0)) {
             oldList = files.data();
@@ -50,30 +53,116 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             });
         }
     }
+
+    function updateManifest() {
+        if (manifest == null || manifest == '') {
+            return;
+        }
+        var data = new FormData();
+        data.append('file', editor.getValue());
+        var boundary = "---------------------------7da24f2e50046";
+        var body = '--' + boundary + '\r\n'
+            + 'Content-Disposition: form-data; name="file";'
+            + 'filename="temp.txt"\r\n'
+            + 'Content-type: plain/text\r\n\r\n'
+            + JSON.stringify(manifest) + '\r\n'
+            + '--' + boundary + '--';
+        $.ajax({
+            type: 'POST',
+            url: '/file/manifest.json',
+            contentType: "multipart/form-data; boundary=" + boundary,
+            data: body
+        }).done(function (response) {
+            console.log("Manifest save successful: " + response);
+            if (manifest == null || manifest == '') {
+                $.getJSON('/file/manifest.json', function (data) {
+                    manifest = data;
+                });
+            }
+            updateManifestUI();
+        }).fail(function (response) {
+            console.log("Manifest save failed: " + response);
+        });
+    }
+
+    function updateManifestUI() {
+        if (manifest == null || manifest == '') {
+            return;
+        }
+        function setFile(fileName) {
+            if (fileName == '') {
+                return;
+            }
+            $('.selected-file').addClass('hidden');
+            $('.accordion-section-title-text:contains("' + fileName + '")').parent().find('span').removeClass('hidden');
+        }
+        switch (fileType) {
+            case "autonomous":
+                setFile(manifest.autonomous);
+                break;
+            case "ports":
+                setFile(manifest.ports);
+                break;
+            case "controls":
+                setFile(manifest.controls);
+                break;
+            case "settings":
+                setFile(manifest.settings);
+                break;
+            case "logs":
+                setFile(manifest.logs);
+                break;
+            case "binary":
+                setFile(manifest.binary);
+                break;
+        }
+    }
+
     function updateFileList() {
         $.getJSON('/file/list/' + fileType, function (data) {
             files.data(data);
             updateAccordionListener();
         });
     }
+
     deleteFile = function (file) {
         $.ajax({
             type: 'DELETE',
             url: '/file/' + fileType + '/' + file
-        }).done(function(){
+        }).done(function () {
             updateFileList();
         });
     };
     selectFile = function (file) {
-
+        switch (fileType) {
+            case "autonomous":
+                manifest.autonomous = file;
+                break;
+            case "ports":
+                smanifest.ports = file;
+                break;
+            case "controls":
+                manifest.controls = file;
+                break;
+            case "settings":
+                manifest.settings = file;
+                break;
+            case "logs":
+                manifest.logs = file;
+                break;
+            case "binary":
+                manifest.binary = file;
+                break;
+        }
+        updateManifest();
     };
     newFile = function () {
         var name = "untitled.txt",
             pos = 0,
             found = false;
         while (!found) {
-            files.data().forEach(function(element){
-                if(element == name) {
+            files.data().forEach(function (element) {
+                if (element == name) {
                     name = name.substr(0, 8) + ++pos + ".txt";
                 } else {
                     found = true;
@@ -82,30 +171,30 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         }
         window.location = "/editor/" + fileType + "/" + name;
     };
-    function handleFileUpload(files)
-    {
-        for (var i = 0; i < files.length; i++)
-        {
+    function handleFileUpload(files) {
+        for (var i = 0; i < files.length; i++) {
             var fd = new FormData();
             fd.append('file', files[i]);
-            console.log(fd);
+            //console.log(fd);
             sendFileToServer(fd, files[i].name);
         }
     }
+
     function sendFileToServer(formData, fileName) {
         var uploadURL = "/file/" + fileType + '/' + fileName;
         $.ajax({
             url: uploadURL,
             type: "POST",
-            contentType:false,
+            contentType: false,
             processData: false,
             cache: false,
             data: formData,
-            success: function(){
+            success: function () {
                 window.location = "/editor/" + fileType + '/' + fileName;
             }
         });
     }
+
     ko.applyBindings(files);
     $(document).ready(function () {
         $('#file').parent().attr('action', '/editor/' + fileType + '/' + fileName);
@@ -117,31 +206,32 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                 $('#file').parent().attr('action', '/editor/' + fileType + '/' + file.name).submit();
             }
         }
+
         document.getElementById('file').addEventListener('change', handleFileSelect, false);
         //$('file').on('change', handleFileSelect);
-        $(document).on('dragenter', function (e)
-        {
+        $(document).on('dragenter', function (e) {
             e.stopPropagation();
             e.preventDefault();
             $('body').fadeTo('fast', 0.5);
         });
-        $(document).on('dragleave ', function (e)
-        {
+        $(document).on('dragleave ', function (e) {
             e.stopPropagation();
             e.preventDefault();
             $('body').fadeTo('fast', 1);
         });
-        $(document).on('dragover', function (e)
-        {
+        $(document).on('dragover', function (e) {
             e.stopPropagation();
             e.preventDefault();
         });
-        $(document).on('drop', function (e)
-        {
+        $(document).on('drop', function (e) {
             e.stopPropagation();
             e.preventDefault();
             var files = e.originalEvent.dataTransfer.files;
             handleFileUpload(files);
+        });
+        $.getJSON('/file/manifest.json', function (data) {
+            manifest = data;
+            updateManifestUI();
         });
     });
 });
