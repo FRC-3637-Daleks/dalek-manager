@@ -1,4 +1,4 @@
-var deleteFile, selectFile, newFile, uploadFile, lang, fileType, fileName;
+var deleteFile, selectFile, newFile, lang, fileType, fileName;
 requirejs(['jquery', 'ko'], function ($, ko) {
     var filePath = window.location.pathname;
     var temp = filePath.split("/");
@@ -20,21 +20,17 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         lang = 'text';
     }
     document.title = fileName;
-
     function ViewModel() {
         var self = this;
         self.data = ko.observableArray();
         self.fileType = fileType;
     }
-
     files = new ViewModel();
     var oldList = [];
-
     function close_accordion_section() {
         $('.accordion .accordion-section-title').removeClass('active');
         $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
     }
-
     function updateAccordionListener() {
         if (!($(files.data()).not(oldList).length === 0 && $(oldList).not(files.data()).length === 0)) {
             oldList = files.data();
@@ -54,14 +50,12 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             });
         }
     }
-
     function updateFileList() {
         $.getJSON('/file/list/' + fileType, function (data) {
             files.data(data);
             updateAccordionListener();
         });
     }
-
     deleteFile = function (file) {
         $.ajax({
             type: 'DELETE',
@@ -70,11 +64,9 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             updateFileList();
         });
     };
-
     selectFile = function (file) {
 
     };
-
     newFile = function () {
         var name = "untitled.txt",
             pos = 0,
@@ -90,13 +82,31 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         }
         window.location = "/editor/" + fileType + "/" + name;
     };
-
-    uploadFile = function () {
-
-    };
-
+    function handleFileUpload(files)
+    {
+        for (var i = 0; i < files.length; i++)
+        {
+            var fd = new FormData();
+            fd.append('file', files[i]);
+            console.log(fd);
+            sendFileToServer(fd, files[i].name);
+        }
+    }
+    function sendFileToServer(formData, fileName) {
+        var uploadURL = "/file/" + fileType + '/' + fileName;
+        $.ajax({
+            url: uploadURL,
+            type: "POST",
+            contentType:false,
+            processData: false,
+            cache: false,
+            data: formData,
+            success: function(){
+                window.location = "/editor/" + fileType + '/' + fileName;
+            }
+        });
+    }
     ko.applyBindings(files);
-
     $(document).ready(function () {
         $('#file').parent().attr('action', '/editor/' + fileType + '/' + fileName);
         updateFileList();
@@ -108,5 +118,30 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             }
         }
         document.getElementById('file').addEventListener('change', handleFileSelect, false);
+        //$('file').on('change', handleFileSelect);
+        $(document).on('dragenter', function (e)
+        {
+            e.stopPropagation();
+            e.preventDefault();
+            $('body').fadeTo('fast', 0.5);
+        });
+        $(document).on('dragleave ', function (e)
+        {
+            e.stopPropagation();
+            e.preventDefault();
+            $('body').fadeTo('fast', 1);
+        });
+        $(document).on('dragover', function (e)
+        {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+        $(document).on('drop', function (e)
+        {
+            e.stopPropagation();
+            e.preventDefault();
+            var files = e.originalEvent.dataTransfer.files;
+            handleFileUpload(files);
+        });
     });
 });
