@@ -24,7 +24,7 @@
 			"logs": "logs/default.json"
 		},
 		"autonomous": "autonomous/fast_can.lua",
-		"binary": "binaries/2015_Apr_11_17",
+		"binary": "binaries/2015_Apr_11_17"
 	},
 	
 	"server":
