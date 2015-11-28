@@ -65,7 +65,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             + 'Content-Disposition: form-data; name="file";'
             + 'filename="temp.txt"\r\n'
             + 'Content-type: plain/text\r\n\r\n'
-            + JSON.stringify(manifest) + '\r\n'
+            + JSON.stringify(manifest, null, 4) + '\r\n'
             + '--' + boundary + '--';
         $.ajax({
             type: 'POST',
