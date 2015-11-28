@@ -89,7 +89,9 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         if (manifest == null || manifest == '') {
             return;
         }
-        function setFile(fileName) {
+        function setFile(file) {
+            temp = file.split('/');
+            var fileName = temp[temp.length - 1];
             if (fileName == '') {
                 return;
             }
@@ -136,22 +138,22 @@ requirejs(['jquery', 'ko'], function ($, ko) {
     selectFile = function (file) {
         switch (fileType) {
             case "autonomous":
-                manifest.autonomous = file;
+                manifest.autonomous = fileType + '/' + file;
                 break;
             case "ports":
-                smanifest.ports = file;
+                manifest.ports = fileType + '/' + file;
                 break;
             case "controls":
-                manifest.controls = file;
+                manifest.controls = fileType + '/' + file;
                 break;
             case "settings":
-                manifest.settings = file;
+                manifest.settings = fileType + '/' + file;
                 break;
             case "logs":
-                manifest.logs = file;
+                manifest.logs = fileType + '/' + file;
                 break;
             case "binary":
-                manifest.binary = file;
+                manifest.binary = fileType + '/' + file;
                 break;
         }
         updateManifest();
