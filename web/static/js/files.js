@@ -12,19 +12,21 @@ requirejs(['jquery', 'ko'], function ($, ko) {
     }
     if(typePos >= 0) {
         fileType = temp[typePos];
-        if(temp.length > 1 && temp.length - 1 > typePos) {
-            fileName = temp[temp.length - 1];
-            temp = fileName.split('.');
-            if (temp.length == 2) {
-                lang = temp[1];
-            } else {
-                lang = 'text';
-            }
-            if (lang == 'txt') {
-                lang = 'text';
-            }
-            document.title = fileName;
+    } else {
+        fileType = '';
+    }
+    if(temp.length > 1 && (temp.length - 1 > typePos || typePos == -1)) {
+        fileName = temp[temp.length - 1];
+        var temp2 = fileName.split('.');
+        if (temp2.length == 2) {
+            lang = temp2[1];
+        } else {
+            lang = 'text';
         }
+        if (lang == 'txt') {
+            lang = 'text';
+        }
+        document.title = fileName;
     }
 
     //UI setup
@@ -135,7 +137,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
     }
 
     function updateFileList() {
-        if(fileType == null || fileType == '') {
+        if(fileType == null) {
             return;
         }
         $.getJSON('/file/list/' + fileType, function (data) {
