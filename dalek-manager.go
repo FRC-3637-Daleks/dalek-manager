@@ -72,6 +72,7 @@ func main() {
 		config.DebugErrorLog(err)
 		err = json.Unmarshal(data, &manifest)
 	}
+	fileRegex := "autonomous|controls|ports|settings|logs|binaries"
 	config.DebugLog("Loaded manifest: ", manifest)
 	rtr := mux.NewRouter()
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
@@ -84,16 +85,16 @@ func main() {
 	rtr.HandleFunc("/binaries", binariesHandler)
 	rtr.HandleFunc("/editor/{fileName}", editorHandler).Methods("GET")
 	rtr.HandleFunc("/editor/{fileName}", putEditorHandler).Methods("POST")
-	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", editorHandler).Methods("GET")
-	rtr.HandleFunc("/editor/{fileType:autonomous|control|ports|settings}/{fileName}", putEditorHandler).Methods("POST")
+	rtr.HandleFunc("/editor/{fileType:" + fileRegex + "}/{fileName}", editorHandler).Methods("GET")
+	rtr.HandleFunc("/editor/{fileType:" + fileRegex + "}/{fileName}", putEditorHandler).Methods("POST")
 	rtr.HandleFunc("/file/{fileName}", getFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/{fileName}", addFileHandler).Methods("POST")
 	rtr.HandleFunc("/file/{fileName}", deleteFileHandler).Methods("DELETE")
-	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", getFileHandler).Methods("GET")
-	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", addFileHandler).Methods("POST")
-	rtr.HandleFunc("/file/{fileType:autonomous|control|ports|settings}/{fileName}", deleteFileHandler).Methods("DELETE")
+	rtr.HandleFunc("/file/{fileType:" + fileRegex + "}/{fileName}", getFileHandler).Methods("GET")
+	rtr.HandleFunc("/file/{fileType:" + fileRegex + "}/{fileName}", addFileHandler).Methods("POST")
+	rtr.HandleFunc("/file/{fileType:" + fileRegex + "}/{fileName}", deleteFileHandler).Methods("DELETE")
 	rtr.HandleFunc("/file/list/", listFileHandler).Methods("GET")
-	rtr.HandleFunc("/file/list/{fileType:autonomous|control|ports|settings}", listFileHandler).Methods("GET")
+	rtr.HandleFunc("/file/list/{fileType:" + fileRegex + "}", listFileHandler).Methods("GET")
 	http.Handle("/", rtr)
 	if (manifest.Server.Port == 0) {
 		goto defaultStart

@@ -1,6 +1,6 @@
 var deleteFile, selectFile, newFile, lang, fileType, fileName, manifest;
 requirejs(['jquery', 'ko'], function ($, ko) {
-    var validType = /(autonomous|control|ports|settings)/;
+    var validType = /(autonomous|controls|ports|settings|logs|binaries)/;
     var filePath = window.location.pathname;
     var temp = filePath.split("/").splice(1, filePath.length);
     var typePos = -1;
@@ -181,14 +181,16 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         var name = "untitled.txt",
             pos = 0,
             found = false;
-        while (!found) {
-            files.data().forEach(function (element) {
-                if (element == name) {
-                    name = name.substr(0, 8) + ++pos + ".txt";
-                } else {
-                    found = true;
-                }
-            });
+        if(files.data() != null) {
+            while (!found) {
+                files.data().forEach(function (element) {
+                    if (element == name) {
+                        name = name.substr(0, 8) + ++pos + ".txt";
+                    } else {
+                        found = true;
+                    }
+                });
+            }
         }
         window.location = "/editor/" + fileType + "/" + name;
     };
