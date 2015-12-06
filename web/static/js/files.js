@@ -70,8 +70,6 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         if (manifest == null || manifest == '') {
             return;
         }
-        var data = new FormData();
-        data.append('file', editor.getValue());
         var boundary = "---------------------------7da24f2e50046";
         var body = '--' + boundary + '\r\n'
             + 'Content-Disposition: form-data; name="file";'
@@ -119,7 +117,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                 setFile(manifest.runtime.autonomous);
                 break;
             case "ports":
-                setFile(manifest.runtime.ports);
+                setFile(manifest.runtime.configs.ports);
                 break;
             case "controls":
                 setFile(manifest.runtime.configs.controls);
