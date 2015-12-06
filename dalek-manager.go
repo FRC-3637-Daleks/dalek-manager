@@ -64,6 +64,7 @@ func main() {
 	}
 	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
 		config.DebugLog("Makeing manifest.json")
+		manifest.Server.Port = 8080
 		json, err := json.MarshalIndent(manifest, "", "    ")
 		if (err != nil) {panic(err)}
 		ioutil.WriteFile("dalek/manifest.json", json, 0664)

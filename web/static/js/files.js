@@ -115,13 +115,6 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             $('.accordion-section-title-text').filter(function(){
                 return $(this).text() == fileName;
             }).parent().find('span').removeClass('hidden');
-/*            var elements = $('.accordion-section-title-text:contains("' + fileName + '")');
-            console.log(elements);
-            elements.forEach(function(element) {
-                if(element.value == fileName) {
-                    $(element).parent().find('span').removeClass('hidden');
-                }
-            });*/
         }
         switch (fileType) {
             case "autonomous":
