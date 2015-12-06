@@ -16,9 +16,12 @@ import (
 	"github.com/gorilla/mux"
 	"bytes"
 	"github.com/gorilla/context"
+	"github.com/FRC-3637-Daleks/dalek-manager/manager/model"
+	"strconv"
 )
 
 var config configuration.Config
+var manifest model.Manifest
 var debug = flag.Bool("debug", false, "If set debug output will print")
 
 func main() {
@@ -61,15 +64,15 @@ func main() {
 	}
 	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
 		config.DebugLog("Makeing manifest.json")
-		json, err := json.MarshalIndent(config.Manifest, "", "  ")
+		json, err := json.MarshalIndent(manifest, "", "    ")
 		if (err != nil) {panic(err)}
 		ioutil.WriteFile("dalek/manifest.json", json, 0664)
 	} else {
 		data, err := ioutil.ReadFile("dalek/manifest.json")
 		config.DebugErrorLog(err)
-		err = json.Unmarshal(data, &config.Manifest)
+		err = json.Unmarshal(data, &manifest)
 	}
-	config.DebugLog("Loaded manifest: ", config.Manifest)
+	config.DebugLog("Loaded manifest: ", manifest)
 	rtr := mux.NewRouter()
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
 	rtr.HandleFunc("/", rootHandler)
@@ -92,6 +95,20 @@ func main() {
 	rtr.HandleFunc("/file/list/", listFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/list/{fileType:autonomous|control|ports|settings}", listFileHandler).Methods("GET")
 	http.Handle("/", rtr)
+	if (manifest.Server.Port == 0) {
+		goto defaultStart
+	} else {
+		if (manifest.Server.Port < 1) {
+			config.DebugLog("Port: " + strconv.Itoa(manifest.Server.Port) + "Is not a valid port")
+			goto defaultStart
+		}
+		if (manifest.Server.Port < 1024) {
+			config.DebugLog("Please use a port higher than 1023")
+			goto defaultStart
+		}
+		http.ListenAndServe(":" + strconv.Itoa(manifest.Server.Port), context.ClearHandler(http.DefaultServeMux))
+	}
+	defaultStart:
 	http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
 }
 
@@ -146,21 +163,21 @@ func putEditorHandler(writer http.ResponseWriter, request *http.Request) {
 	fileName := vars["fileName"]
 	filePath := "dalek/" + fileType + "/" + fileName
 	err := request.ParseForm()
-	if(check(err, 500, &writer)) {return }
+	if (check(err, 500, &writer)) {return }
 	err = request.ParseMultipartForm(32 << 20)
-	if(check(err, 500, &writer)) {return }
+	if (check(err, 500, &writer)) {return }
 	config.DebugLog("Request for: ", filePath)
 	file, _, err := request.FormFile("file")
-	if(check(err, 500, &writer)) {return }
+	if (check(err, 500, &writer)) {return }
 	defer file.Close()
 	buf := new(bytes.Buffer)
 	_, err = buf.ReadFrom(file)
-	if(check(err, 500, &writer)) {return }
+	if (check(err, 500, &writer)) {return }
 	editorWrapper.FileContent = string(buf.Bytes())
 	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
 }
 
-func getFileHandler(writer http.ResponseWriter, request *http.Request)  {
+func getFileHandler(writer http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
@@ -181,26 +198,26 @@ func getFileHandler(writer http.ResponseWriter, request *http.Request)  {
 
 func listFileHandler(writer http.ResponseWriter, request *http.Request) {
 	fileList, err := getFileList("dalek/" + request.RequestURI[11:len(request.RequestURI)])
-	if(check(err, 500, &writer)) {return}
+	if (check(err, 500, &writer)) {return}
 	fileJson, err := json.MarshalIndent(fileList, "", "    ")
-	if(check(err, 500, &writer)) {return}
+	if (check(err, 500, &writer)) {return}
 	writer.Write(fileJson)
 }
 
 func addFileHandler(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
-	if(check(err, 500, &writer)) {return }
+	if (check(err, 500, &writer)) {return }
 	err = request.ParseMultipartForm(32 << 20)
-	if(check(err, 500, &writer)) {return }
+	if (check(err, 500, &writer)) {return }
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
 	file, _, err := request.FormFile("file")
-	if(check(err, 500, &writer)) {return }
+	if (check(err, 500, &writer)) {return }
 	defer file.Close()
 	buf := new(bytes.Buffer)
 	_, err = buf.ReadFrom(file)
-	if(check(err, 500, &writer)) {return }
+	if (check(err, 500, &writer)) {return }
 	ioutil.WriteFile("dalek/" + fileType + "/" + fileName, buf.Bytes(), 0664)
 	config.DebugLog("Wrote file: " + fileType + " " + fileName)
 	http.Error(writer, http.StatusText(200), 200)
@@ -210,7 +227,7 @@ func deleteFileHandler(writer http.ResponseWriter, request *http.Request) {
 	file := "dalek/" + request.RequestURI[6:len(request.RequestURI)]
 	config.DebugLog("Deleting file: " + file)
 	err := os.Remove(file)
-	if(check(err, 500, &writer)) {return }
+	if (check(err, 500, &writer)) {return }
 	writer.WriteHeader(http.StatusNoContent)
 	writer.Write([]byte("No Content"))
 }
@@ -254,7 +271,7 @@ func getFileList(dir string) ([]string, error) {
 	)
 	fileData, err := ioutil.ReadDir(dir)
 	for _, f := range fileData {
-		if(!f.IsDir()) {
+		if (!f.IsDir()) {
 			files = append(files, f.Name())
 		}
 	}

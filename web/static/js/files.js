@@ -1,25 +1,37 @@
 var deleteFile, selectFile, newFile, lang, fileType, fileName, manifest;
 requirejs(['jquery', 'ko'], function ($, ko) {
+    var validType = /(autonomous|control|ports|settings)/;
     var filePath = window.location.pathname;
-    var temp = filePath.split("/");
-    if (temp.length == 3) {
-        fileType = '';
-        fileName = temp[2];
-        temp = temp[2].split('.');
-    } else if (temp.length == 4) {
-        fileType = temp[2];
-        fileName = temp[3];
-        temp = temp[3].split('.');
+    var temp = filePath.split("/").splice(1, filePath.length);
+    var typePos = -1;
+    for(var i = 0; i < temp.length; i++) {
+        if(validType.test(temp[i])) {
+            typePos = i;
+            break;
+        }
     }
-    if (temp.length == 2) {
-        lang = temp[1];
-    } else {
-        lang = 'text';
+    if(typePos >= 0) {
+        fileType = temp[typePos];
+        if(temp.length > 1 && temp.length - 1 > typePos) {
+            fileName = temp[temp.length - 1];
+            temp = fileName.split('.');
+            if (temp.length == 2) {
+                lang = temp[1];
+            } else {
+                lang = 'text';
+            }
+            if (lang == 'txt') {
+                lang = 'text';
+            }
+            document.title = fileName;
+        }
     }
-    if (lang == 'txt') {
-        lang = 'text';
+
+    //UI setup
+    if(fileType != '') {
+        $('#' + fileType).parent().addClass('active');
     }
-    document.title = fileName;
+
     function ViewModel() {
         var self = this;
         self.data = ko.observableArray();
@@ -90,6 +102,10 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             return;
         }
         function setFile(file) {
+            if (file == null || file == '') {
+                return;
+            }
+
             temp = file.split('/');
             var fileName = temp[temp.length - 1];
             if (fileName == '') {
@@ -100,27 +116,30 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         }
         switch (fileType) {
             case "autonomous":
-                setFile(manifest.autonomous);
+                setFile(manifest.runtime.autonomous);
                 break;
             case "ports":
-                setFile(manifest.ports);
+                setFile(manifest.runtime.ports);
                 break;
             case "controls":
-                setFile(manifest.controls);
+                setFile(manifest.runtime.configs.controls);
                 break;
             case "settings":
-                setFile(manifest.settings);
+                setFile(manifest.runtime.configs.settings);
                 break;
             case "logs":
-                setFile(manifest.logs);
+                setFile(manifest.runtime.configs.logs);
                 break;
             case "binary":
-                setFile(manifest.binary);
+                setFile(manifest.runtime.binary);
                 break;
         }
     }
 
     function updateFileList() {
+        if(fileType == null || fileType == '') {
+            return;
+        }
         $.getJSON('/file/list/' + fileType, function (data) {
             files.data(data);
             updateAccordionListener();
@@ -138,22 +157,22 @@ requirejs(['jquery', 'ko'], function ($, ko) {
     selectFile = function (file) {
         switch (fileType) {
             case "autonomous":
-                manifest.autonomous = fileType + '/' + file;
+                manifest.runtime.autonomous = fileType + '/' + file;
                 break;
             case "ports":
-                manifest.ports = fileType + '/' + file;
+                manifest.runtime.configs.ports = fileType + '/' + file;
                 break;
             case "controls":
-                manifest.controls = fileType + '/' + file;
+                manifest.runtime.configs.controls = fileType + '/' + file;
                 break;
             case "settings":
-                manifest.settings = fileType + '/' + file;
+                manifest.runtime.configs.settings = fileType + '/' + file;
                 break;
             case "logs":
-                manifest.logs = fileType + '/' + file;
+                manifest.runtime.configs.logs = fileType + '/' + file;
                 break;
             case "binary":
-                manifest.binary = fileType + '/' + file;
+                manifest.runtime.binary = fileType + '/' + file;
                 break;
         }
         updateManifest();
