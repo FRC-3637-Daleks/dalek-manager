@@ -108,9 +108,11 @@ func main() {
 			config.DebugLog("Please use a port higher than 1023")
 			goto defaultStart
 		}
+		config.DebugLog("Starting server on port: " + strconv.Itoa(manifest.Server.Port))
 		http.ListenAndServe(":" + strconv.Itoa(manifest.Server.Port), context.ClearHandler(http.DefaultServeMux))
 	}
 	defaultStart:
+	config.DebugLog("Starting server on port: 8080")
 	http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
 }
 
@@ -143,12 +145,12 @@ func binariesHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func editorHandler(writer http.ResponseWriter, request *http.Request) {
+	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	editorWrapper := data.EditorWrapper{}
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
 	filePath := "dalek/" + fileType + "/" + fileName
-	config.DebugLog("Request for: ", filePath)
 	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
 		config.DebugLog("Loading file into editor: ", filePath)
 		content, err := ioutil.ReadFile(filePath)
@@ -180,11 +182,11 @@ func putEditorHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func getFileHandler(writer http.ResponseWriter, request *http.Request) {
+	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
 	filePath := "dalek/" + fileType + "/" + fileName
-	config.DebugLog("Request for: ", filePath)
 	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
 		config.DebugLog("Serving file: ", filePath)
 		content, err := ioutil.ReadFile(filePath)
@@ -207,6 +209,7 @@ func listFileHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func addFileHandler(writer http.ResponseWriter, request *http.Request) {
+	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	err := request.ParseForm()
 	if (check(err, 500, &writer)) {return }
 	err = request.ParseMultipartForm(32 << 20)
