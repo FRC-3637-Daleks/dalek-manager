@@ -70,7 +70,7 @@ func main() {
 		ioutil.WriteFile("dalek/manifest.json", json, 0664)
 	} else {
 		data, err := ioutil.ReadFile("dalek/manifest.json")
-		config.DebugErrorLog(err)
+		config.ErrorLog(err)
 		err = json.Unmarshal(data, &manifest)
 	}
 	fileRegex := "autonomous|controls|ports|settings|logs|binaries"
@@ -262,7 +262,7 @@ func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath s
 
 func check(err error, code int, writer *http.ResponseWriter) bool {
 	if (err != nil) {
-		config.DebugErrorLog(err)
+		config.ErrorLog(err)
 		http.Error(*writer, http.StatusText(code), code)
 		return true
 	}

@@ -21,7 +21,7 @@ func (config *Config) DebugLog(v ...interface{}) {
 	}
 }
 
-func (config *Config) DebugErrorLog(e error) {
+func (config *Config) ErrorLog(e error) {
 	if (e != nil) {
 		log.Println(e)
 	}
