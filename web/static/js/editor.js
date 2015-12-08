@@ -23,9 +23,11 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
             + 'Content-type: plain/text\r\n\r\n'
             + editor.getValue() + '\r\n'
             + '--'+ boundary + '--';
+        var url = '/file/' + fileType + '/' + fileName;
+        url = url.replace(/\/\//g, '/');
         $.ajax({
             type: 'POST',
-            url: '/file/' + fileType + '/' + fileName,
+            url: url,
             contentType: "multipart/form-data; boundary="+boundary,
             data: body
         }).done(function(response){
