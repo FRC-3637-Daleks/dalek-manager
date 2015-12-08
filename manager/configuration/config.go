@@ -22,10 +22,8 @@ func (config *Config) DebugLog(v ...interface{}) {
 }
 
 func (config *Config) DebugErrorLog(e error) {
-	if (config.Debug) {
-		if (e != nil) {
-			log.Println(e)
-		}
+	if (e != nil) {
+		log.Println(e)
 	}
 }
 
