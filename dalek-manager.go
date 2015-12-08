@@ -108,11 +108,11 @@ func main() {
 			config.DebugLog("Please use a port higher than 1023")
 			goto defaultStart
 		}
-		config.DebugLog("Starting server on port: " + strconv.Itoa(manifest.Server.Port))
+		config.Log("Starting server on port: " + strconv.Itoa(manifest.Server.Port))
 		http.ListenAndServe(":" + strconv.Itoa(manifest.Server.Port), context.ClearHandler(http.DefaultServeMux))
 	}
 	defaultStart:
-	config.DebugLog("Starting server on port: 8080")
+	config.Log("Starting server on port: 8080")
 	http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
 }
 
