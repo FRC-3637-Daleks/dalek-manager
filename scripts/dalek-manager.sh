@@ -11,8 +11,11 @@
 
 USERNAME='lvuser'
 SERVICE='dalek-manager-arm'
-SPATH='/home/lvuser/dman/'
+SPATH='/home/lvuser/dman'
 OPTIONS=''
+LOGPATH=$SPATH'/logs'
+NOW=`date`
+LOGNAME="log-$NOW"
 ME=`whoami`
 
 as_user() {
@@ -29,7 +32,7 @@ then
 	echo "$SERVICE is already running!"
 else
 	echo "Starting $SERVICE..."
-	as_user "$SPATH$SERVICE $OPTIONS"
+	as_user "$SPATH/$SERVICE $OPTIONS > $LOGPATH/$LOGNAME"
 	sleep 1
 	if pgrep -u $USERNAME -f $SERVICE > /dev/null
 	then

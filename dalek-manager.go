@@ -65,6 +65,7 @@ func main() {
 	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
 		config.DebugLog("Makeing manifest.json")
 		manifest.Server.Port = 8080
+		manifest.Server.WebRoot = "."
 		json, err := json.MarshalIndent(manifest, "", "    ")
 		if (err != nil) {panic(err)}
 		ioutil.WriteFile("dalek/manifest.json", json, 0664)
@@ -76,7 +77,8 @@ func main() {
 	fileRegex := "autonomous|controls|ports|settings|logs|binaries"
 	config.DebugLog("Loaded manifest: ", manifest)
 	rtr := mux.NewRouter()
-	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
+	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(
+		http.Dir(path.Join(manifest.Server.WebRoot, "web", "static")))))
 	rtr.HandleFunc("/", rootHandler)
 	rtr.HandleFunc("/autonomous", autonomousHandler)
 	rtr.HandleFunc("/ports", portsHandler)
@@ -117,31 +119,31 @@ func main() {
 }
 
 func rootHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "index.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "index.html"), nil)
 }
 
 func autonomousHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "autonomous.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "autonomous.html"), nil)
 }
 
 func portsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "ports.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "ports.html"), nil)
 }
 
 func controlsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "controls.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "controls.html"), nil)
 }
 
 func settingsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "settings.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "settings.html"), nil)
 }
 
 func logsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "logs.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "logs.html"), nil)
 }
 
 func binariesHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join("web", "dynamic", "binaries.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "binaries.html"), nil)
 }
 
 func editorHandler(writer http.ResponseWriter, request *http.Request) {
@@ -157,7 +159,7 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 		if (check(err, 500, &writer)) {return}
 		editorWrapper.FileContent = string(content)
 	}
-	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "editor.html"), editorWrapper)
 }
 
 func putEditorHandler(writer http.ResponseWriter, request *http.Request) {
@@ -178,7 +180,7 @@ func putEditorHandler(writer http.ResponseWriter, request *http.Request) {
 	_, err = buf.ReadFrom(file)
 	if (check(err, 500, &writer)) {return }
 	editorWrapper.FileContent = string(buf.Bytes())
-	serveTemplate(writer, request, path.Join("web", "dynamic", "editor.html"), editorWrapper)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "editor.html"), editorWrapper)
 }
 
 func getFileHandler(writer http.ResponseWriter, request *http.Request) {
@@ -238,7 +240,7 @@ func deleteFileHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {
-	includesPath := path.Join("web", "dynamic", "includes.html")
+	includesPath := path.Join(manifest.Server.WebRoot, "web", "dynamic", "includes.html")
 	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	config.DebugLog("Sending: \"", filePath, "\"")
 	info, err := os.Stat(filePath)
