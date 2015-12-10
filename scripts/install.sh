@@ -1,8 +1,14 @@
-mkdir /home/lvuser/dman
-cd /home/lvuser/dman
+#!/bin/sh
+
+$BASE=/home/lvuser/dman
+
+if [ ! -e $BASE ]; then
+	mkdir /home/lvuser/dman
+fi
+cd $BASE
 
 echo Extracting...
-mv /home/lvuser/dalek-manager.tar.gz /home/lvuser/dman
+mv /home/lvuser/dalek-manager.tar.gz $BASE
 tar -xzf dalek-manager.tar.gz > /dev/null 2>&1
 
 echo Making files executable...
