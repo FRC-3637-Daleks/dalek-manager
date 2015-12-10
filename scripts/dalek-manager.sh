@@ -27,14 +27,14 @@ fi
 }
 
 service_start() {
-if  pgrep -u $USERNAME -f $SERVICE > /dev/null
+if  ps aux | grep $SERVICE | grep $USERNAME | grep -v grep > /dev/null
 then
 	echo "$SERVICE is already running!"
 else
 	echo "Starting $SERVICE..."
 	as_user "$SPATH/$SERVICE $OPTIONS > $LOGPATH/$LOGNAME"
 	sleep 1
-	if pgrep -u $USERNAME -f $SERVICE > /dev/null
+	if ps aux | grep $SERVICE | grep $USERNAME | grep -v grep > /dev/null
 	then
 		echo "$SERVICE is now running."
 	else
@@ -44,14 +44,14 @@ fi
 }
 
 service_stop() {
-if pgrep -u $USERNAME -f $SERVICE > /dev/null
+if ps aux | grep $SERVICE | grep $USERNAME | grep -v grep > /dev/null
 then
 	echo "Stopping $SERVICE"
 	killall $SERVICE
 else
 	echo "$SERVICE was not running."
 fi
-if pgrep -u $USERNAME -f $SERVICE > /dev/null
+if ps aux | grep $SERVICE | grep $USERNAME | grep -v grep > /dev/null
 then
 	echo "Error! $SERVICE could not be stopped."
 else
