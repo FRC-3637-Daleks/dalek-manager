@@ -18,6 +18,7 @@ import (
 	"github.com/gorilla/context"
 	"github.com/FRC-3637-Daleks/dalek-manager/manager/model"
 	"strconv"
+	"github.com/FRC-3637-Daleks/dalek-manager/manager/util"
 )
 
 var config configuration.Config
@@ -227,7 +228,19 @@ func addFileHandler(writer http.ResponseWriter, request *http.Request) {
 	if (check(err, 500, &writer)) {return }
 	ioutil.WriteFile("dalek/" + fileType + "/" + fileName, buf.Bytes(), 0664)
 	config.DebugLog("Wrote file: " + fileType + " " + fileName)
-	http.Error(writer, http.StatusText(200), 200)
+	if (fileType == "" && fileName == "manifest.json") {
+		data, err := ioutil.ReadFile("dalek/manifest.json")
+		config.ErrorLog(err)
+		err = json.Unmarshal(data, &manifest)
+		if (check(err, 500, &writer)) {return }
+		config.Log("Setting binary: " + manifest.Runtime.Binary)
+		//			binPath, err := filepath.Abs(manifest.Runtime.Binary)
+		if (check(err, 500, &writer)) {return }
+		err = util.CopyFile("dalek/" + manifest.Runtime.Binary, "../FRCUserProgram")
+		if (check(err, 500, &writer)) {return }
+	}
+	writer.WriteHeader(http.StatusOK)
+	writer.Write([]byte("OK"))
 }
 
 func deleteFileHandler(writer http.ResponseWriter, request *http.Request) {

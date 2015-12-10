@@ -132,8 +132,11 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             case "logs":
                 setFile(manifest.runtime.configs.logs);
                 break;
-            case "binary":
+            case "binaries":
                 setFile(manifest.runtime.binary);
+                break;
+            default:
+                console.log("Invalid file type");
                 break;
         }
     }
@@ -173,8 +176,11 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             case "logs":
                 manifest.runtime.configs.logs = fileType + '/' + file;
                 break;
-            case "binary":
+            case "binaries":
                 manifest.runtime.binary = fileType + '/' + file;
+                break;
+            default:
+                console.log("Invalid file type");
                 break;
         }
         updateManifest();
