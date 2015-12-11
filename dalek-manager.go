@@ -19,6 +19,7 @@ import (
 	"github.com/FRC-3637-Daleks/dalek-manager/manager/model"
 	"strconv"
 	"github.com/FRC-3637-Daleks/dalek-manager/manager/util"
+	"errors"
 )
 
 var config configuration.Config
@@ -87,6 +88,7 @@ func main() {
 	rtr.HandleFunc("/settings", settingsHandler)
 	rtr.HandleFunc("/logs", logsHandler)
 	rtr.HandleFunc("/binaries", binariesHandler)
+	rtr.HandleFunc("/binaries/pull", pullBinHandler)
 	rtr.HandleFunc("/editor/{fileName}", editorHandler).Methods("GET")
 	rtr.HandleFunc("/editor/{fileName}", putEditorHandler).Methods("POST")
 	rtr.HandleFunc("/editor/{fileType:" + fileRegex + "}/{fileName}", editorHandler).Methods("GET")
@@ -204,7 +206,8 @@ func getFileHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func listFileHandler(writer http.ResponseWriter, request *http.Request) {
-	fileList, err := getFileList("dalek/" + request.RequestURI[11:len(request.RequestURI)])
+	vars := mux.Vars(request)
+	fileList, err := getFileList("dalek/" + vars["fileType"])
 	if (check(err, 500, &writer)) {return}
 	fileJson, err := json.MarshalIndent(fileList, "", "    ")
 	if (check(err, 500, &writer)) {return}
@@ -244,12 +247,31 @@ func addFileHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func deleteFileHandler(writer http.ResponseWriter, request *http.Request) {
-	file := "dalek/" + request.RequestURI[6:len(request.RequestURI)]
+	vars := mux.Vars(request)
+	file := "dalek/" + vars["fileType"] + "/" + vars["fileName"]
 	config.DebugLog("Deleting file: " + file)
 	err := os.Remove(file)
 	if (check(err, 500, &writer)) {return }
 	writer.WriteHeader(http.StatusNoContent)
 	writer.Write([]byte("No Content"))
+}
+
+func pullBinHandler(writer http.ResponseWriter, request *http.Request) {
+	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
+	err := request.ParseForm()
+	if (check(err, 500, &writer)) {return }
+	config.DebugLog(request.Form)
+	config.DebugLog(request.PostForm)
+	fileName := request.PostFormValue("fileName")
+	if(fileName == "") {
+		err = errors.New("File name cannot be empty")
+		if (check(err, 500, &writer)) {return }
+	}
+	config.DebugLog("Copying FRCUserProgram to : dalek/binaries/" + fileName)
+	err = util.CopyFile("../FRCUserProgram", "dalek/binaries/" + fileName)
+	if (check(err, 500, &writer)) {return }
+	writer.WriteHeader(http.StatusOK)
+	writer.Write([]byte("OK"))
 }
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {
@@ -278,7 +300,7 @@ func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath s
 func check(err error, code int, writer *http.ResponseWriter) bool {
 	if (err != nil) {
 		config.ErrorLog(err)
-		http.Error(*writer, http.StatusText(code), code)
+		http.Error(*writer, err.Error(), code)
 		return true
 	}
 	return false
