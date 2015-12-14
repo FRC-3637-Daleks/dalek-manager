@@ -68,6 +68,10 @@ func main() {
 		config.DebugLog("Makeing manifest.json")
 		manifest.Server.Port = 8080
 		manifest.Server.WebRoot = "."
+		manifest.Templates.Configs.Controls.Available = "available.json"
+		manifest.Templates.Configs.Controls.Available = "requirements.json"
+		manifest.Templates.Configs.Ports = "template.json"
+		manifest.Templates.Configs.Settings = "template.json"
 		json, err := json.MarshalIndent(manifest, "", "    ")
 		if (err != nil) {panic(err)}
 		ioutil.WriteFile("dalek/manifest.json", json, 0664)
