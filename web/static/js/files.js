@@ -1,5 +1,9 @@
-var deleteFile, selectFile, newFile, lang, fileType, fileName, manifest;
+var deleteFile, selectFile, newFile, lang, fileType, fileName, manifest, files, postLoad;
 requirejs(['jquery', 'ko'], function ($, ko) {
+    postLoad = {
+        run: false,
+        functions: []
+    };
     var validType = /(autonomous|controls|ports|settings|logs|binaries)/;
     var filePath = window.location.pathname;
     var temp = filePath.split("/").splice(1, filePath.length);
@@ -38,6 +42,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         var self = this;
         self.data = ko.observableArray();
         self.fileType = fileType;
+        self.loaded = false;
     }
 
     files = new ViewModel();
@@ -147,6 +152,15 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         }
         $.getJSON('/file/list/' + fileType, function (data) {
             files.data(data);
+            files.loaded = true;
+            if(!postLoad.run) {
+                postLoad.run = true;
+                postLoad.functions.forEach(function (element){
+                    if(typeof (element) == "function"){
+                        element();
+                    }
+                });
+            }
             updateAccordionListener();
         });
     }

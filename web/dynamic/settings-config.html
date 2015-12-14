@@ -47,7 +47,8 @@
                     <ul data-bind="foreach: values">
                         <li>
                             <span data-bind="text: name"></span>
-                            <input data-bind="attr: {'name': name, 'data-subsystem': $parent.name}" type="text"/>
+                            <input data-bind="value: value, attr: {'name': name, 'data-subsystem': $parent.name}"
+                                   type="text"/>
                         </li>
                     </ul>
                 </div>
