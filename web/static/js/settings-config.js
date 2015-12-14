@@ -30,7 +30,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             });
         } else {
             console.log('New File');
-            $.getJSON(manifest.templates.configs.settings, function(template) {
+            $.getJSON('/file/settings/' + manifest.templates.configs.settings, function(template) {
                 if (!template.hasOwnProperty("subsystems")) {
                     return;
                 }
