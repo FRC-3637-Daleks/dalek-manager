@@ -151,17 +151,43 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             return;
         }
         $.getJSON('/file/list/' + fileType, function (data) {
-            files.data(data);
-            files.loaded = true;
-            if(!postLoad.run) {
-                postLoad.run = true;
-                postLoad.functions.forEach(function (element){
-                    if(typeof (element) == "function"){
-                        element();
-                    }
-                });
+            if(manifest != null) {
+                switch (fileType) {
+                    case "ports":
+                        if (manifest.templates.configs.ports != null &&
+                            data.indexOf(manifest.templates.configs.ports) > -1) {
+                            data.pop(manifest.templates.configs.ports);
+                        }
+                        break;
+                    case "controls":
+                        if (manifest.templates.configs.controls.available != null &&
+                            data.indexOf(manifest.templates.configs.controls.available) > -1) {
+                            data.pop(manifest.templates.configs.controls.available);
+                        }
+                        if (manifest.templates.configs.controls.requirements != null &&
+                            data.indexOf(manifest.templates.configs.controls.requirements) > -1) {
+                            data.pop(manifest.templates.configs.controls.requirements);
+                        }
+                        break;
+                    case "settings":
+                        if (manifest.templates.configs.settings != null &&
+                            data.indexOf(manifest.templates.configs.settings) > -1) {
+                            data.splice(data.indexOf(manifest.templates.configs.settings), 1);
+                        }
+                        break;
+                }
+                files.data(data);
+                files.loaded = true;
+                if(!postLoad.run) {
+                    postLoad.run = true;
+                    postLoad.functions.forEach(function (element){
+                        if(typeof (element) == "function"){
+                            element();
+                        }
+                    });
+                }
+                updateAccordionListener();
             }
-            updateAccordionListener();
         });
     }
 
@@ -242,6 +268,10 @@ requirejs(['jquery', 'ko'], function ($, ko) {
 
     ko.applyBindings(files, document.getElementById('files'));
     $(document).ready(function () {
+        $.getJSON('/file/manifest.json', function (data) {
+            manifest = data;
+            updateManifestUI();
+        });
         $('#file').parent().attr('action', '/editor/' + fileType + '/' + fileName);
         updateFileList();
         window.setInterval(updateFileList, 3000);
@@ -273,10 +303,6 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             e.preventDefault();
             var files = e.originalEvent.dataTransfer.files;
             handleFileUpload(files);
-        });
-        $.getJSON('/file/manifest.json', function (data) {
-            manifest = data;
-            updateManifestUI();
         });
     });
 });

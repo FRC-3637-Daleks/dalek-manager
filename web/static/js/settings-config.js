@@ -5,7 +5,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         if(files.data().indexOf(fileName) > -1) {
             console.log('Loading: ' + fileName);
             var template, values, AJAX = [];
-            AJAX.push($.getJSON('/file/settings/template.json'));
+            AJAX.push($.getJSON('/file/settings/' + manifest.templates.configs.settings));
             AJAX.push($.getJSON('/file/settings/' + fileName));
             $.when.apply($, AJAX).done(function () {
                 template = arguments[0][0];
@@ -30,7 +30,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             });
         } else {
             console.log('New File');
-            $.getJSON('/file/settings/template.json', function(template) {
+            $.getJSON(manifest.templates.configs.settings, function(template) {
                 if (!template.hasOwnProperty("subsystems")) {
                     return;
                 }
