@@ -226,7 +226,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         });
     }
 
-    ko.applyBindings(files);
+    ko.applyBindings(files, document.getElementById('files'));
     $(document).ready(function () {
         $('#file').parent().attr('action', '/editor/' + fileType + '/' + fileName);
         updateFileList();

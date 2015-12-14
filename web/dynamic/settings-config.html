@@ -2,7 +2,7 @@
 {{define "main"}}
 <html lang="en">
 <head>
-    <title>Ports</title>
+    <title>Settings</title>
     {{template "cssIncludes"}}
     <link href="/static/css/editor.css" rel="stylesheet" media="screen">
 </head>
@@ -40,8 +40,18 @@
                 <li><a id="binaries" href="../../binaries">Binaries</a></li>
             </ul>
         </div>
-        <div class="col-md-8 col-md-offset-2" style="padding: 0; background-color: #272822;">
-
+        <div id="content" class="content col-md-8 col-md-offset-2">
+            <form id="config" data-bind="foreach: subsystems">
+                <div class="object">
+                    <p data-bind="text: name"></p>
+                    <ul data-bind="foreach: values">
+                        <li>
+                            <span data-bind="text: name"></span>
+                            <input data-bind="attr: {'name': name, 'data-subsystem': $parent.name}" type="text"/>
+                        </li>
+                    </ul>
+                </div>
+            </form>
         </div>
         <div class="col-md-2 col-md-offset-10 rightbar">
             <p id="fileViewExpand" class="glyphicon glyphicon-chevron-left hidden viewExpand"></p>
@@ -57,6 +67,8 @@
                             </div>
                             <div class="accordion-section-content"
                                  data-bind="attr: {id:'accordion-'+$index()}">
+                                <a name="edit" class="fileButton"
+                                   data-bind="attr: {href: '/editor-gui/' + files.fileType + '/' + $data}">Edit - GUI</a>
                                 <a name="edit" class="fileButton"
                                    data-bind="attr: {href: '/editor/' + files.fileType + '/' + $data}">Edit</a>
                                 <a name="delete" class="fileButton"
@@ -85,13 +97,18 @@
     </div>
     <div class="row">
         <div class="col-md-10 col-md-offset-2 nav-bottom">
-
+            <div id="fileNameContainer" class="btn nav-box nav-btn form-inline">
+                <button id="save" class="btn nav-box nav-btn">Save</button>
+                <label for="fileName"></label>
+                <input id="fileName" class="form-control"/>
+            </div>
         </div>
     </div>
 </div>
 {{template "jsIncludes"}}
 <script src="/static/js/main.js"></script>
 <script src="/static/js/files.js"></script>
+<script src="/static/js/settings-config.js"></script>
 </body>
 </html>
 {{end}}
