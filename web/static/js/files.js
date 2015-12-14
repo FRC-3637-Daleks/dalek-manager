@@ -186,6 +186,9 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                         }
                     });
                 }
+                if(!/(controls|ports|settings)/.test(fileType)) {
+                    $('a[name="gui-edit"]').addClass('hidden');
+                }
                 updateAccordionListener();
             }
         });
