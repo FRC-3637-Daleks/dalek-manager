@@ -185,6 +185,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                             element();
                         }
                     });
+                    updateManifestUI();
                 }
                 if(!/(controls|ports|settings)/.test(fileType)) {
                     $('a[name="gui-edit"]').addClass('hidden');
