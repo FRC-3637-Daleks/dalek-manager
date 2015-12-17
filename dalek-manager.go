@@ -228,11 +228,12 @@ func addFileHandler(writer http.ResponseWriter, request *http.Request) {
 		config.ErrorLog(err)
 		err = json.Unmarshal(data, &manifest)
 		if (check(err, 500, &writer)) {return }
-		config.Log("Setting binary: " + manifest.Runtime.Binary)
-		//			binPath, err := filepath.Abs(manifest.Runtime.Binary)
-		if (check(err, 500, &writer)) {return }
-		err = util.CopyFile("dalek/" + manifest.Runtime.Binary, "../FRCUserProgram")
-		if (check(err, 500, &writer)) {return }
+		if(manifest.Runtime.Binary != "") {
+			config.Log("Setting binary: " + manifest.Runtime.Binary)
+			if (check(err, 500, &writer)) {return }
+			err = util.CopyFile("dalek/" + manifest.Runtime.Binary, "../FRCUserProgram")
+			if (check(err, 500, &writer)) {return }
+		}
 	}
 	writer.WriteHeader(http.StatusOK)
 	writer.Write([]byte("OK"))
