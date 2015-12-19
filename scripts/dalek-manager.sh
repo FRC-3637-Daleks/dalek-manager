@@ -15,20 +15,8 @@ SPATH='/home/lvuser/dman'
 OPTIONS=''
 LOGPATH=$SPATH'/logs'
 NOW=`date`
-LOGNAME="dalek-manager.log"
+LOGNAME="log-$NOW"
 ME=`whoami`
-
-if [ ! -e $SPATH ]; then
-	mkdir $SPATH
-fi
-
-if [ ! -e $LOGPATH ]; then
-	mkdir $LOGPATH
-fi
-
-if [ ! -e $LOGNAME ]; then
-	touch $LOGNAME
-fi
 
 as_user() {
 if [ "$ME" = "$USERNAME" ] ; then
@@ -44,7 +32,7 @@ then
 	echo "$SERVICE is already running!"
 else
 	echo "Starting $SERVICE..."
-	as_user "$SPATH/$SERVICE $OPTIONS >> $LOGPATH/$LOGNAME"
+	as_user "$SPATH/$SERVICE $OPTIONS &"
 	sleep 1
 	if ps aux | grep $SERVICE | grep $USERNAME | grep -v grep > /dev/null
 	then
@@ -59,7 +47,7 @@ service_stop() {
 if ps aux | grep $SERVICE | grep $USERNAME | grep -v grep > /dev/null
 then
 	echo "Stopping $SERVICE"
-	killall $SERVICE >> ${LOGPATH}/${LOGNAME}
+	killall $SERVICE
 else
 	echo "$SERVICE was not running."
 fi

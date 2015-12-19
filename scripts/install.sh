@@ -1,9 +1,9 @@
 #!/bin/sh
 
-$BASE=/home/lvuser/dman
+BASE=/home/lvuser/dman/
 
 if [ ! -e $BASE ]; then
-	mkdir /home/lvuser/dman
+	mkdir $BASE
 fi
 cd $BASE
 

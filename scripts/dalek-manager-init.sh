@@ -32,7 +32,7 @@ then
 	echo "$SERVICE is already running!"
 else
 	echo "Starting $SERVICE..."
-	as_user "$SPATH/$SERVICE $OPTIONS > $LOGPATH/$LOGNAME"
+	as_user "$SPATH/$SERVICE $OPTIONS &"
 	sleep 1
 	if ps aux | grep $SERVICE | grep $USERNAME | grep -v grep > /dev/null
 	then
