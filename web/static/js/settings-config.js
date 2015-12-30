@@ -11,10 +11,12 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                 template = arguments[0][0];
                 values = arguments[1][0];
                 if (!template.hasOwnProperty("subsystems")) {
+                    console.log('Element subsystem not found');
                     return;
                 }
                 template.subsystems.forEach(function (element) {
                     if (!element.hasOwnProperty("values")) {
+                        console.log('Element values not found');
                         return;
                     }
                     var sub = element;
@@ -32,10 +34,12 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             console.log('New File');
             $.getJSON('/file/settings/' + manifest.templates.configs.settings, function(template) {
                 if (!template.hasOwnProperty("subsystems")) {
+                    console.log('Element subsystem not found');
                     return;
                 }
                 template.subsystems.forEach(function (element) {
                     if (!element.hasOwnProperty("values")) {
+                        console.log('Element values not found');
                         return;
                     }
                     var sub = element;
