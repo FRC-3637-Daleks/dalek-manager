@@ -5,8 +5,8 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         if(files.data().indexOf(fileName) > -1) {
             console.log('Loading: ' + fileName);
             var template, values, AJAX = [];
-            AJAX.push($.getJSON('/file/settings/' + manifest.templates.configs.settings));
-            AJAX.push($.getJSON('/file/settings/' + fileName));
+            AJAX.push($.getJSON('/file/' + manifest.templates.configs.settings));
+            AJAX.push($.getJSON('/file/' + fileType + '/' + fileName));
             $.when.apply($, AJAX).done(function () {
                 template = arguments[0][0];
                 values = arguments[1][0];
@@ -32,7 +32,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             });
         } else {
             console.log('New File');
-            $.getJSON('/file/settings/' + manifest.templates.configs.settings, function(template) {
+            $.getJSON('/file/' + manifest.templates.configs.settings, function(template) {
                 if (!template.hasOwnProperty("subsystems")) {
                     console.log('Element subsystem not found');
                     return;

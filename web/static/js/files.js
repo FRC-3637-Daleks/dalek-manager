@@ -155,24 +155,24 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                 switch (fileType) {
                     case "ports":
                         if (manifest.templates.configs.ports != null &&
-                            data.indexOf(manifest.templates.configs.ports) > -1) {
-                            data.pop(manifest.templates.configs.ports);
+                            data.indexOf(manifest.templates.configs.ports.split("/")[1]) > -1) {
+                            data.pop(manifest.templates.configs.ports.split("/")[1]);
                         }
                         break;
                     case "controls":
                         if (manifest.templates.configs.controls.available != null &&
-                            data.indexOf(manifest.templates.configs.controls.available) > -1) {
-                            data.pop(manifest.templates.configs.controls.available);
+                            data.indexOf(manifest.templates.configs.controls.available.split("/")[1]) > -1) {
+                            data.pop(manifest.templates.configs.controls.available.split("/")[1]);
                         }
                         if (manifest.templates.configs.controls.requirements != null &&
-                            data.indexOf(manifest.templates.configs.controls.requirements) > -1) {
-                            data.pop(manifest.templates.configs.controls.requirements);
+                            data.indexOf(manifest.templates.configs.controls.requirements.split("/")[1]) > -1) {
+                            data.pop(manifest.templates.configs.controls.requirements.split("/")[1]);
                         }
                         break;
                     case "settings":
                         if (manifest.templates.configs.settings != null &&
-                            data.indexOf(manifest.templates.configs.settings) > -1) {
-                            data.splice(data.indexOf(manifest.templates.configs.settings), 1);
+                            data.indexOf(manifest.templates.configs.settings.split("/")[1]) > -1) {
+                            data.splice(data.indexOf(manifest.templates.configs.settings.split("/")[1]), 1);
                         }
                         break;
                 }
