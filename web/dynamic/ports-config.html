@@ -5,7 +5,7 @@
     <title>Settings</title>
     {{template "cssIncludes"}}
     <link href="/static/css/editor.css" rel="stylesheet" media="screen">
-    <link href="/static/css/settings-config.css" rel="stylesheet"/>
+    <link href="/static/css/ports-config.css" rel="stylesheet"/>
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -32,33 +32,26 @@
         <div class="col-md-2 sidebar">
             <p id="folderViewExpand" class="glyphicon glyphicon-chevron-right hidden viewExpand"></p>
             <ul class="nav nav-sidebar">
-                <li><p id="folderViewShrink" class="viewShrink">Folder View<span class="glyphicon glyphicon-chevron-left"></span></p></li>
+                <li><p id="folderViewShrink" class="viewShrink">Folder View<span
+                        class="glyphicon glyphicon-chevron-left"></span></p></li>
                 <li><a id="autonomous" href="../../autonomous">Autonomous</a></li>
                 <li><a id="ports" href="../../ports">Port</a></li>
                 <li><a id="controls" href="../../controls">Controls</a></li>
-                <li><a  id="settings" href="../../settings">Settings</a></li>
+                <li><a id="settings" href="../../settings">Settings</a></li>
                 <li><a id="logs" href="../../logs">Logs</a></li>
                 <li><a id="binaries" href="../../binaries">Binaries</a></li>
             </ul>
         </div>
         <div id="content" class="content col-md-8 col-md-offset-2">
-            <form id="config" data-bind="foreach: subsystems">
-                <div class="object">
-                    <p data-bind="text: name"></p>
-                    <ul data-bind="foreach: values">
-                        <li>
-                            <span data-bind="text: name"></span>
-                            <input data-bind="value: value, attr: {'name': name, 'data-subsystem': $parent.name}"
-                                   type="text"/>
-                        </li>
-                    </ul>
-                </div>
+            <form id="config" data-bind="template: { name: 'template', foreach: $data }">
+
             </form>
         </div>
         <div class="col-md-2 col-md-offset-10 rightbar">
             <p id="fileViewExpand" class="glyphicon glyphicon-chevron-left hidden viewExpand"></p>
             <div class="nav nav-rightbar">
-                <p id="fileViewShrink" class="viewShrink"><span class="glyphicon glyphicon-chevron-right"></span>File View</p>
+                <p id="fileViewShrink" class="viewShrink"><span class="glyphicon glyphicon-chevron-right"></span>File
+                    View</p>
                 <form>
                     <div id="files" class="accordion" data-bind="foreach: files">
                         <div class="accordion">
@@ -70,13 +63,15 @@
                             <div class="accordion-section-content"
                                  data-bind="attr: {id:'accordion-'+$index()}">
                                 <a name="gui-edit" class="fileButton"
-                                   data-bind="attr: {href: '/editor-gui/' + files.fileType + '/' + $data}">Edit - GUI</a>
+                                   data-bind="attr: {href: '/editor-gui/' + files.fileType + '/' + $data}">Edit -
+                                    GUI</a>
                                 <a name="edit" class="fileButton"
                                    data-bind="attr: {href: '/editor/' + files.fileType + '/' + $data}">Edit</a>
                                 <a name="delete" class="fileButton"
                                    data-bind="attr: {href: 'javascript:deleteFile(\'' + $data + '\');'}">Delete</a>
                                 <a name="download" class="fileButton"
-                                   data-bind="attr: {href: '/file/' + files.fileType + '/' + $data}" download>Download</a>
+                                   data-bind="attr: {href: '/file/' + files.fileType + '/' + $data}"
+                                   download>Download</a>
                                 <a name="select" class="fileButton"
                                    data-bind="attr: {href: 'javascript:selectFile(\'' + $data + '\');'}">Select</a>
                             </div>
@@ -107,10 +102,23 @@
         </div>
     </div>
 </div>
+<script id="template" type="text/html">
+    <div class="object">
+        <!-- ko if: $data.hasOwnProperty("keys") -->
+        <p data-bind="text: name"></p>
+        <!--<span data-bind="text: name"></span>-->
+        <!-- ko template: { name: 'template', foreach: keys } --><!-- /ko -->
+        <!-- /ko -->
+        <!-- ko if: !$data.hasOwnProperty("keys") -->
+        <span data-bind="text: name"></span>
+        <input data-bind="value: value" type="text"/>
+        <!-- /ko -->
+    </div>
+</script>
 {{template "jsIncludes"}}
 <script src="/static/js/main.js"></script>
 <script src="/static/js/files.js"></script>
-<script src="/static/js/settings-config.js"></script>
+<script src="/static/js/ports-config.js"></script>
 </body>
 </html>
 {{end}}
