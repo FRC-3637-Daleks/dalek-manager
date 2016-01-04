@@ -1,15 +1,22 @@
+.top-object {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.top-object > div > p {
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
 .object {
     background-color: #353535;
     color: #9d9d9d;
-    font-size: 1.2em;
-    font-weight: 600;
     padding: 5px 5px;
     border-radius: 4px;
     margin-bottom: 10px;
 }
 
-.object  input {
-    display: table-cell;
+.object > input {
     margin-left: 10px;
     margin-bottom: 10px;
     height: 34px;

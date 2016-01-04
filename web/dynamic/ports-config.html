@@ -43,7 +43,7 @@
             </ul>
         </div>
         <div id="content" class="content col-md-8 col-md-offset-2">
-            <form id="config" data-bind="template: { name: 'template', foreach: $data }">
+            <form id="config" class="top-object" data-bind="template: { name: 'template', foreach: $data }">
 
             </form>
         </div>
@@ -63,8 +63,7 @@
                             <div class="accordion-section-content"
                                  data-bind="attr: {id:'accordion-'+$index()}">
                                 <a name="gui-edit" class="fileButton"
-                                   data-bind="attr: {href: '/editor-gui/' + files.fileType + '/' + $data}">Edit -
-                                    GUI</a>
+                                   data-bind="attr: {href: '/editor-gui/' + files.fileType + '/' + $data}">Edit -GUI</a>
                                 <a name="edit" class="fileButton"
                                    data-bind="attr: {href: '/editor/' + files.fileType + '/' + $data}">Edit</a>
                                 <a name="delete" class="fileButton"
