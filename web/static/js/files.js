@@ -166,17 +166,17 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                     case "ports":
                         if (manifest.templates.configs.ports != null &&
                             data.indexOf(manifest.templates.configs.ports.split("/")[1]) > -1) {
-                            data.pop(manifest.templates.configs.ports.split("/")[1]);
+                            data.splice(data.indexOf(manifest.templates.configs.ports.split("/")[1]), 1);
                         }
                         break;
                     case "controls":
                         if (manifest.templates.configs.controls.available != null &&
                             data.indexOf(manifest.templates.configs.controls.available.split("/")[1]) > -1) {
-                            data.pop(manifest.templates.configs.controls.available.split("/")[1]);
+                            data.splice(data.indexOf(manifest.templates.configs.controls.available.split("/")[1]), 1);
                         }
                         if (manifest.templates.configs.controls.requirements != null &&
                             data.indexOf(manifest.templates.configs.controls.requirements.split("/")[1]) > -1) {
-                            data.pop(manifest.templates.configs.controls.requirements.split("/")[1]);
+                            data.splice(data.indexOf(manifest.templates.configs.controls.requirements.split("/")[1]), 1);
                         }
                         break;
                     case "settings":
