@@ -17,18 +17,18 @@ requirejs(['jquery', 'ko'], function ($, ko) {
     var filePath = window.location.pathname;
     var temp = filePath.split("/").splice(1, filePath.length);
     var typePos = -1;
-    for(var i = 0; i < temp.length; i++) {
-        if(validType.test(temp[i])) {
+    for (var i = 0; i < temp.length; i++) {
+        if (validType.test(temp[i])) {
             typePos = i;
             break;
         }
     }
-    if(typePos >= 0) {
+    if (typePos >= 0) {
         fileType = temp[typePos];
     } else {
         fileType = '';
     }
-    if(temp.length > 1 && (temp.length - 1 > typePos || typePos == -1)) {
+    if (temp.length > 1 && (temp.length - 1 > typePos || typePos == -1)) {
         fileName = temp[temp.length - 1];
         var temp2 = fileName.split('.');
         if (temp2.length == 2) {
@@ -43,7 +43,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
     }
 
     //UI setup
-    if(fileType != '') {
+    if (fileType != '') {
         $('#' + fileType).parent().addClass('active');
     }
 
@@ -126,10 +126,11 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                 return;
             }
             $('.selected-file').addClass('hidden');
-            $('.accordion-section-title-text').filter(function(){
+            $('.accordion-section-title-text').filter(function () {
                 return $(this).text() == fileName;
             }).parent().find('span').removeClass('hidden');
         }
+
         switch (fileType) {
             case "autonomous":
                 setFile(manifest.runtime.autonomous);
@@ -156,11 +157,11 @@ requirejs(['jquery', 'ko'], function ($, ko) {
     }
 
     function updateFileList() {
-        if(fileType == null) {
+        if (fileType == null) {
             return;
         }
         $.getJSON('/file/list/' + fileType, function (data) {
-            if(manifest != null) {
+            if (manifest != null) {
                 switch (fileType) {
                     case "ports":
                         if (manifest.templates.configs.ports != null &&
@@ -187,16 +188,16 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                 }
                 files.data(data);
                 files.loaded = true;
-                if(!postLoad.run) {
+                if (!postLoad.run) {
                     postLoad.run = true;
-                    postLoad.functions.forEach(function (element){
-                        if(typeof (element) == "function"){
+                    postLoad.functions.forEach(function (element) {
+                        if (typeof (element) == "function") {
                             element();
                         }
                     });
                     updateManifestUI();
                 }
-                if(!/(controls|ports|settings)/.test(fileType)) {
+                if (!/(controls|ports|settings)/.test(fileType)) {
                     $('a[name="gui-edit"]').addClass('hidden');
                 }
                 updateAccordionListener();
@@ -212,6 +213,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             updateFileList();
         });
     };
+
     selectFile = function (file) {
         switch (fileType) {
             case "autonomous":
@@ -238,24 +240,26 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         }
         updateManifest();
     };
-    newFile = function () {
-/*        var name = "untitled.txt",
-            pos = 0,
-            found = false;
-        if(files.data() != null) {
-            while (!found) {
-                files.data().forEach(function (element) {
-                    if (element == name) {
-                        name = name.substr(0, 8) + ++pos + ".txt";
-                    } else {
-                        found = true;
-                    }
-                });
-            }
-        }
-        window.location = "/editor/" + fileType + "/" + name;*/
-        window.location = "/editor/" + fileType + "/untitled.txt";
+
+    newFile = function (editorType) {
+        /*        var name = "untitled.txt",
+         pos = 0,
+         found = false;
+         if(files.data() != null) {
+         while (!found) {
+         files.data().forEach(function (element) {
+         if (element == name) {
+         name = name.substr(0, 8) + ++pos + ".txt";
+         } else {
+         found = true;
+         }
+         });
+         }
+         }
+         window.location = "/editor/" + fileType + "/" + name;*/
+        window.location = "/" + editorType + "/" + fileType + "/untitled.txt";
     };
+
     function handleFileUpload(files) {
         for (var i = 0; i < files.length; i++) {
             var fd = new FormData();
