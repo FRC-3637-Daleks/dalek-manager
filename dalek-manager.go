@@ -86,7 +86,7 @@ func main() {
 	config.DebugLog("Loaded manifest: ", manifest)
 	rtr := mux.NewRouter()
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
-		http.FileServer(http.Dir(path.Join(manifest.Server.WebRoot, "web", "static")))))
+		http.FileServer(http.Dir(path.Join(manifest.Server.WebRoot, "static")))))
 	rtr.HandleFunc("/", rootHandler)
 	rtr.HandleFunc("/{fileType:" + fileRegex + "}", defaultHandler)
 	rtr.HandleFunc("/binaries/pull", pullBinHandler)
@@ -124,21 +124,21 @@ func main() {
 }
 
 func rootHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "index.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "index.html"), nil)
 }
 
 func defaultHandler(writer http.ResponseWriter, request *http.Request) {
 	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", fileType + ".html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", fileType + ".html"), nil)
 }
 
 func configHandler(writer http.ResponseWriter, request *http.Request)  {
 	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", fileType + "-config.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", fileType + "-config.html"), nil)
 }
 
 func editorHandler(writer http.ResponseWriter, request *http.Request) {
@@ -154,7 +154,7 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 		if (check(err, 500, &writer)) {return}
 		editorWrapper.FileContent = string(content)
 	}
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "editor.html"), editorWrapper)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "editor.html"), editorWrapper)
 }
 
 func putEditorHandler(writer http.ResponseWriter, request *http.Request) {
@@ -175,7 +175,7 @@ func putEditorHandler(writer http.ResponseWriter, request *http.Request) {
 	_, err = buf.ReadFrom(file)
 	if (check(err, 500, &writer)) {return }
 	editorWrapper.FileContent = string(buf.Bytes())
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "editor.html"), editorWrapper)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "editor.html"), editorWrapper)
 }
 
 func getFileHandler(writer http.ResponseWriter, request *http.Request) {
@@ -268,7 +268,7 @@ func pullBinHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {
-	includesPath := path.Join(manifest.Server.WebRoot, "web", "dynamic", "includes.html")
+	includesPath := path.Join(manifest.Server.WebRoot, "dynamic", "includes.html")
 	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	config.DebugLog("Sending: \"", filePath, "\"")
 	info, err := os.Stat(filePath)
