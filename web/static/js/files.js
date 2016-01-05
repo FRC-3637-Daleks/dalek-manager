@@ -1,4 +1,13 @@
-var deleteFile, selectFile, newFile, lang, fileType, fileName, manifest, files, postLoad;
+var deleteFile,
+    selectFile,
+    newFile,
+    lang,
+    fileType,
+    fileName,
+    manifest,
+    files,
+    postLoad;
+
 requirejs(['jquery', 'ko'], function ($, ko) {
     postLoad = {
         run: false,
@@ -230,7 +239,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         updateManifest();
     };
     newFile = function () {
-        var name = "untitled.txt",
+/*        var name = "untitled.txt",
             pos = 0,
             found = false;
         if(files.data() != null) {
@@ -244,7 +253,8 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                 });
             }
         }
-        window.location = "/editor/" + fileType + "/" + name;
+        window.location = "/editor/" + fileType + "/" + name;*/
+        window.location = "/editor/" + fileType + "/untitled.txt";
     };
     function handleFileUpload(files) {
         for (var i = 0; i < files.length; i++) {
