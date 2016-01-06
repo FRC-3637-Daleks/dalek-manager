@@ -30,7 +30,7 @@
 					"z-axis"
 				]
 			},
-			
+
 			{
 				"name": "gamepad",
 				"digitals":
@@ -58,7 +58,7 @@
 			}
 		]
 	},
-	
+
 	{
 		"name": "sensors",
 		"subsystems":
@@ -70,7 +70,7 @@
 					"limit-up",
 					"limit-down"
 				],
-			
+
 				"analogs":
 				[
 					"potentiometer"
@@ -78,3 +78,4 @@
 			}
 		]
 	}
+]

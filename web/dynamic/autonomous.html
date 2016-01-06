@@ -70,7 +70,7 @@
                 </form>
             </div>
             <div id="fileButtons">
-                <button id="newFile" class="btn nav-box nav-btn" onclick="newFile()">
+                <button id="newFile" class="btn nav-box nav-btn" onclick="newFile('editor')">
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
                 <button id="uploadFile" class="btn nav-box nav-btn" onclick="$('#file').click()">
@@ -88,7 +88,7 @@
         </div>
     </div>
 </div>
-{{template "editorJsIncludes"}}
+{{template "jsIncludes"}}
 <script src="/static/js/main.js"></script>
 <script src="/static/js/files.js"></script>
 </body>

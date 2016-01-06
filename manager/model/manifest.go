@@ -7,7 +7,7 @@ type Manifest struct {
 							  Controls  struct {
 											Available    string `json:"available"`
 											Requirements string `json:"requirements"`
-										}
+										} `json:"controls"`
 							  Settings  string `json:"settings"`
 							  LogConfig string `json:"log-config"`
 						  } `json:"configs"`

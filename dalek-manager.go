@@ -68,6 +68,10 @@ func main() {
 		config.DebugLog("Makeing manifest.json")
 		manifest.Server.Port = 8080
 		manifest.Server.WebRoot = "."
+		manifest.Templates.Configs.Controls.Available = "controls/available.json"
+		manifest.Templates.Configs.Controls.Available = "controls/requirements.json"
+		manifest.Templates.Configs.Ports = "ports/template.json"
+		manifest.Templates.Configs.Settings = "settings/template.json"
 		json, err := json.MarshalIndent(manifest, "", "    ")
 		if (err != nil) {panic(err)}
 		ioutil.WriteFile("dalek/manifest.json", json, 0664)
@@ -77,22 +81,20 @@ func main() {
 		err = json.Unmarshal(data, &manifest)
 	}
 	fileRegex := "autonomous|controls|ports|settings|logs|binaries"
+	editorRegex := "autonomous|controls|ports|settings"
+	editorGuiRegex := "controls|ports|settings"
 	config.DebugLog("Loaded manifest: ", manifest)
 	rtr := mux.NewRouter()
-	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(
-		http.Dir(path.Join(manifest.Server.WebRoot, "web", "static")))))
+	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
+		http.FileServer(http.Dir(path.Join(manifest.Server.WebRoot, "static")))))
 	rtr.HandleFunc("/", rootHandler)
-	rtr.HandleFunc("/autonomous", autonomousHandler)
-	rtr.HandleFunc("/ports", portsHandler)
-	rtr.HandleFunc("/controls", controlsHandler)
-	rtr.HandleFunc("/settings", settingsHandler)
-	rtr.HandleFunc("/logs", logsHandler)
-	rtr.HandleFunc("/binaries", binariesHandler)
+	rtr.HandleFunc("/{fileType:" + fileRegex + "}", defaultHandler)
 	rtr.HandleFunc("/binaries/pull", pullBinHandler)
+	rtr.HandleFunc("/editor-gui/{fileType:" + editorGuiRegex + "}/{fileName}", configHandler)
 	rtr.HandleFunc("/editor/{fileName}", editorHandler).Methods("GET")
 	rtr.HandleFunc("/editor/{fileName}", putEditorHandler).Methods("POST")
-	rtr.HandleFunc("/editor/{fileType:" + fileRegex + "}/{fileName}", editorHandler).Methods("GET")
-	rtr.HandleFunc("/editor/{fileType:" + fileRegex + "}/{fileName}", putEditorHandler).Methods("POST")
+	rtr.HandleFunc("/editor/{fileType:" + editorRegex + "}/{fileName}", editorHandler).Methods("GET")
+	rtr.HandleFunc("/editor/{fileType:" + editorRegex + "}/{fileName}", putEditorHandler).Methods("POST")
 	rtr.HandleFunc("/file/{fileName}", getFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/{fileName}", addFileHandler).Methods("POST")
 	rtr.HandleFunc("/file/{fileName}", deleteFileHandler).Methods("DELETE")
@@ -122,31 +124,21 @@ func main() {
 }
 
 func rootHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "index.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "index.html"), nil)
 }
 
-func autonomousHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "autonomous.html"), nil)
+func defaultHandler(writer http.ResponseWriter, request *http.Request) {
+	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
+	vars := mux.Vars(request)
+	fileType := vars["fileType"]
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", fileType + ".html"), nil)
 }
 
-func portsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "ports.html"), nil)
-}
-
-func controlsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "controls.html"), nil)
-}
-
-func settingsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "settings.html"), nil)
-}
-
-func logsHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "logs.html"), nil)
-}
-
-func binariesHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "binaries.html"), nil)
+func configHandler(writer http.ResponseWriter, request *http.Request)  {
+	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
+	vars := mux.Vars(request)
+	fileType := vars["fileType"]
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", fileType + "-config.html"), nil)
 }
 
 func editorHandler(writer http.ResponseWriter, request *http.Request) {
@@ -162,7 +154,7 @@ func editorHandler(writer http.ResponseWriter, request *http.Request) {
 		if (check(err, 500, &writer)) {return}
 		editorWrapper.FileContent = string(content)
 	}
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "editor.html"), editorWrapper)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "editor.html"), editorWrapper)
 }
 
 func putEditorHandler(writer http.ResponseWriter, request *http.Request) {
@@ -183,7 +175,7 @@ func putEditorHandler(writer http.ResponseWriter, request *http.Request) {
 	_, err = buf.ReadFrom(file)
 	if (check(err, 500, &writer)) {return }
 	editorWrapper.FileContent = string(buf.Bytes())
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "web", "dynamic", "editor.html"), editorWrapper)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "editor.html"), editorWrapper)
 }
 
 func getFileHandler(writer http.ResponseWriter, request *http.Request) {
@@ -236,11 +228,12 @@ func addFileHandler(writer http.ResponseWriter, request *http.Request) {
 		config.ErrorLog(err)
 		err = json.Unmarshal(data, &manifest)
 		if (check(err, 500, &writer)) {return }
-		config.Log("Setting binary: " + manifest.Runtime.Binary)
-		//			binPath, err := filepath.Abs(manifest.Runtime.Binary)
-		if (check(err, 500, &writer)) {return }
-		err = util.CopyFile("dalek/" + manifest.Runtime.Binary, "../FRCUserProgram")
-		if (check(err, 500, &writer)) {return }
+		if(manifest.Runtime.Binary != "") {
+			config.Log("Setting binary: " + manifest.Runtime.Binary)
+			if (check(err, 500, &writer)) {return }
+			err = util.CopyFile("dalek/" + manifest.Runtime.Binary, "../FRCUserProgram")
+			if (check(err, 500, &writer)) {return }
+		}
 	}
 	writer.WriteHeader(http.StatusOK)
 	writer.Write([]byte("OK"))
@@ -275,7 +268,7 @@ func pullBinHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {
-	includesPath := path.Join(manifest.Server.WebRoot, "web", "dynamic", "includes.html")
+	includesPath := path.Join(manifest.Server.WebRoot, "dynamic", "includes.html")
 	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	config.DebugLog("Sending: \"", filePath, "\"")
 	info, err := os.Stat(filePath)

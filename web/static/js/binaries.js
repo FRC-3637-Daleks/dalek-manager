@@ -1,5 +1,5 @@
 var pullBin;
-requirejs(['jquery', 'ko'], function ($) {
+requirejs(['jquery'], function ($) {
     pullBin = function() {
         var binName = $('#fileName').val();
         if(binName == null || binName == '') {
