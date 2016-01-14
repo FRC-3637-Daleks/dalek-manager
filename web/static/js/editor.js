@@ -2,6 +2,10 @@ var editor;
 
 requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
 
+    if(/(ports|settings)/.test(fileType)) {
+        $('#newGUIFile').removeClass('hidden');
+    }
+
     var nameChange = false;
     var originalName;
 
