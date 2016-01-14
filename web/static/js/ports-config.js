@@ -1,6 +1,10 @@
 var save;
 requirejs(['jquery', 'ko'], function ($, ko) {
 
+    function showError(error) {
+        $('#error').html(error).removeClass('hidden');
+    }
+
     function load() {
         if (files.data().indexOf(fileName) > -1) {
             console.log('Loading: ' + fileName);
@@ -10,9 +14,14 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             $.when.apply($, AJAX).done(function () {
                 template = arguments[0][0];
                 values = arguments[1][0];
-                if (!Array.isArray(template)) {
-                    console.log('Template is not an array');
+                if (template == null || template == '' || template == {} || values == null || values == '' || values == {}) {
+                    console.log('No data loaded');
+                    showError('No data loaded');
                     return;
+                }
+                if (!Array.isArray(template)) {
+                    console.log('Invalid template: template is not an array');
+                    showError('Invalid template: template is not an array');
                 }
                 template.forEach(function (element) {
                     var top = element, path = [], depth = 0, setKeys = function (element) {
@@ -29,7 +38,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
 
                             });
                             path.pop();
-                            if(val != null) {
+                            if (val != null) {
                                 element.value = val;
                             }
                         }
@@ -40,18 +49,22 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                         element.hasOwnProperty("keys") &&
                         Array.isArray(element.keys))) {
                         console.log('Element is missing a property (name, min max, keys)');
+                        showError('Element is missing a property (name, min max, keys)');
                         return;
                     }
                     element.keys.forEach(setKeys);
                 });
-                console.log(template);
                 ko.applyBindings(template, document.getElementById('content'));
+            }).fail(function() {
+                console.log('No data loaded');
+                showError('No data loaded');
             });
         } else {
             console.log('New File');
             $.getJSON('/file/' + manifest.templates.configs.ports, function (template) {
                 if (!Array.isArray(template)) {
                     console.log('Template is not an array');
+                    showError('Template is not an array');
                     return;
                 }
                 template.forEach(function (element) {
@@ -71,11 +84,15 @@ requirejs(['jquery', 'ko'], function ($, ko) {
                         element.hasOwnProperty("keys") &&
                         Array.isArray(element.keys))) {
                         console.log('Element is missing a property (name, min max, keys)');
+                        showError('Element is missing a property (name, min max, keys)');
                         return;
                     }
                     element.keys.forEach(setKeys);
                 });
                 ko.applyBindings(template, document.getElementById('content'));
+            }).fail(function() {
+                console.log('No data loaded');
+                showError('No data loaded');
             });
         }
     }
