@@ -9,6 +9,7 @@ var deleteFile,
     postLoad;
 
 requirejs(['jquery', 'ko'], function ($, ko) {
+    var hideTemplates = false;
     postLoad = {
         run: false,
         functions: []
@@ -162,29 +163,31 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         }
         $.getJSON('/file/list/' + fileType, function (data) {
             if (manifest != null) {
-                switch (fileType) {
-                    case "ports":
-                        if (manifest.templates.configs.ports != null &&
-                            data.indexOf(manifest.templates.configs.ports.split("/")[1]) > -1) {
-                            data.splice(data.indexOf(manifest.templates.configs.ports.split("/")[1]), 1);
-                        }
-                        break;
-                    case "controls":
-                        if (manifest.templates.configs.controls.available != null &&
-                            data.indexOf(manifest.templates.configs.controls.available.split("/")[1]) > -1) {
-                            data.splice(data.indexOf(manifest.templates.configs.controls.available.split("/")[1]), 1);
-                        }
-                        if (manifest.templates.configs.controls.requirements != null &&
-                            data.indexOf(manifest.templates.configs.controls.requirements.split("/")[1]) > -1) {
-                            data.splice(data.indexOf(manifest.templates.configs.controls.requirements.split("/")[1]), 1);
-                        }
-                        break;
-                    case "settings":
-                        if (manifest.templates.configs.settings != null &&
-                            data.indexOf(manifest.templates.configs.settings.split("/")[1]) > -1) {
-                            data.splice(data.indexOf(manifest.templates.configs.settings.split("/")[1]), 1);
-                        }
-                        break;
+                if(hideTemplates) {
+                    switch (fileType) {
+                        case "ports":
+                            if (manifest.templates.configs.ports != null &&
+                                data.indexOf(manifest.templates.configs.ports.split("/")[1]) > -1) {
+                                data.splice(data.indexOf(manifest.templates.configs.ports.split("/")[1]), 1);
+                            }
+                            break;
+                        case "controls":
+                            if (manifest.templates.configs.controls.available != null &&
+                                data.indexOf(manifest.templates.configs.controls.available.split("/")[1]) > -1) {
+                                data.splice(data.indexOf(manifest.templates.configs.controls.available.split("/")[1]), 1);
+                            }
+                            if (manifest.templates.configs.controls.requirements != null &&
+                                data.indexOf(manifest.templates.configs.controls.requirements.split("/")[1]) > -1) {
+                                data.splice(data.indexOf(manifest.templates.configs.controls.requirements.split("/")[1]), 1);
+                            }
+                            break;
+                        case "settings":
+                            if (manifest.templates.configs.settings != null &&
+                                data.indexOf(manifest.templates.configs.settings.split("/")[1]) > -1) {
+                                data.splice(data.indexOf(manifest.templates.configs.settings.split("/")[1]), 1);
+                            }
+                            break;
+                    }
                 }
                 files.data(data);
                 files.loaded = true;
