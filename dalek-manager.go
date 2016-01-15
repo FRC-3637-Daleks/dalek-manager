@@ -67,7 +67,7 @@ func main() {
 	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
 		config.DebugLog("Makeing manifest.json")
 		manifest.Server.Port = 8080
-		manifest.Server.WebRoot = "."
+		manifest.Server.WebRoot = "web/"
 		manifest.Templates.Configs.Controls.Available = "controls/available.json"
 		manifest.Templates.Configs.Controls.Available = "controls/requirements.json"
 		manifest.Templates.Configs.Ports = "ports/template.json"
