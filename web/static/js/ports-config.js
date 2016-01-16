@@ -85,18 +85,14 @@ requirejs(['jquery', 'ko'], function ($, ko) {
     save = function () {
         var name = $('#fileName').val();
         var json = {};
-        var subsystems = $('input').filter(function () {
-            return $(this).attr('data-subsystem') != null;
-        }).toArray();
-        subsystems.forEach(function (element) {
-            var subsystem = $(element).attr('data-subsystem');
-            if (!json.hasOwnProperty(subsystem)) {
-                json[subsystem] = {};
-            }
-            json[subsystem][$(element).attr('name')] = $(element).val();
+        var objects = $('#config').children().toArray();
+        function getData(element) {
+        }
+        objects.forEach(function (element) {
+            console.log(element);
         });
         console.log(json);
-        var boundary = "---------------------------7da24f2e50046";
+        /*var boundary = "---------------------------7da24f2e50046";
         var body = '--' + boundary + '\r\n'
             + 'Content-Disposition: form-data; name="file";'
             + 'filename="temp.txt"\r\n'
@@ -112,7 +108,7 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             console.log("Save successful: " + response);
         }).fail(function (response) {
             console.log("Save failed: " + response);
-        });
+        });*/
     };
 
     $('#save').on('click', function () {
