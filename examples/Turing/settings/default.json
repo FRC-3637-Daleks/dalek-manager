@@ -1,7 +1,8 @@
 {
 	"drive":
 	{
-		"precision-ratio": 0.3
+		"precision-ratio": 0.3,
+		"mode": "velocity"
 	},
 	
 	"cobra":
