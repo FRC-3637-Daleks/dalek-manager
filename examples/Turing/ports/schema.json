@@ -1,0 +1,71 @@
+{
+	"id": "http://roboRIO-3637-FRC.local:5810/ports/schema#",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"description": "Schema for a RoboRIO ports configuration",
+	"type": "object",
+	"required": ["CAN", "DIO"],
+	"additionalProperties": false,
+	"properties":
+	{
+		"CAN":
+		{
+			"description": "CAN Device IDs",
+			"type": "object",
+			"required": [ "drive", "PDP", "PCM" ],
+			"additionalProperties": false,
+			"properties":
+			{
+				"drive":
+				{
+					"type": "object",
+					"required": [ "front-right", "front-left", "rear-right", "rear-left" ],
+					"additionalProperties": false,
+					"patternProperties":
+					{
+						"^(front-right|front-left|rear-right|rear-left)$": {"$ref": "#/definitions/CAN"}
+					}
+				}
+			},
+			"patternProperties":
+			{
+				"^(PDP|PCM)$": {"$ref": "#/definitions/CAN"}
+			}
+		},
+		"DIO":
+		{
+			"description": "Digital I/O pins",
+			"type": "object",
+			"required": [ "cobra" ],
+			"additionalProperties": false,
+			"properties":
+			{
+				"cobra":
+				{
+					"type": "object",
+					"required": [ "limit-up", "limit-down" ],
+					"additionalProperties": false,
+					"patternProperties":
+					{
+						"^(limit-up|limit-down)$": {"$ref": "#/definitions/DIO"}
+					}
+				}
+			}
+		}
+	},
+	
+	"definitions":
+	{
+		"CAN":
+		{
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 63
+		},
+		"DIO":
+		{
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 8
+		}
+	}
+}
