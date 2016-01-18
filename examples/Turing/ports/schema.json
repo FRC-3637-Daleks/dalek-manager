@@ -20,15 +20,16 @@
 					"type": "object",
 					"required": [ "front-right", "front-left", "rear-right", "rear-left" ],
 					"additionalProperties": false,
-					"patternProperties":
+					"properties":
 					{
-						"^(front-right|front-left|rear-right|rear-left)$": {"$ref": "#/definitions/CAN"}
+						"front-right": {"$ref": "#/definitions/CAN"},
+						"front-left": {"$ref": "#/definitions/CAN"},
+						"rear-right": {"$ref": "#/definitions/CAN"},
+						"rear-left": {"$ref": "#/definitions/CAN"}
 					}
-				}
-			},
-			"patternProperties":
-			{
-				"^(PDP|PCM)$": {"$ref": "#/definitions/CAN"}
+				},
+				"PDP": {"$ref": "#/definitions/CAN"},
+				"PCM": {"$ref": "#/definitions/CAN"}
 			}
 		},
 		"DIO":
@@ -44,9 +45,10 @@
 					"type": "object",
 					"required": [ "limit-up", "limit-down" ],
 					"additionalProperties": false,
-					"patternProperties":
+					"properties":
 					{
-						"^(limit-up|limit-down)$": {"$ref": "#/definitions/DIO"}
+						"limit-up": {"$ref": "#/definitions/DIO"},
+						"limit-down": {"$ref": "#/definitions/DIO"}
 					}
 				}
 			}
