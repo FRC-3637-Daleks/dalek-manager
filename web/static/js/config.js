@@ -1,38 +1,43 @@
 var save, editor;
-requirejs(['jquery', 'jsoneditor'], function ($, jsEditor) {
+requirejs(['jquery', 'jsoneditor'], function ($) {
+
+    JSONEditor.defaults.editors.object.options.collapsed = false;
 
     function load() {
         if (files.data().indexOf(fileName) > -1) {
             console.log('Loading: ' + fileName);
-            var template, values, AJAX = [];
-            AJAX.push($.getJSON('/file/' + manifest.templates.configs.settings));
+            var schema, values, AJAX = [];
+            AJAX.push($.getJSON('/file/' + manifest.templates.configs[fileType]));
             AJAX.push($.getJSON('/file/' + fileType + '/' + fileName));
             $.when.apply($, AJAX).done(function () {
-                template = arguments[0][0];
+                schema = arguments[0][0];
                 values = arguments[1][0];
                 editor = new JSONEditor(document.getElementById("config"), {
-                    ajax: true,
                     disable_edit_json: true,
                     disable_properties: true,
-                    schema: template,
+                    schema: schema,
                     theme: 'bootstrap3',
                     iconlib: "bootstrap3"
                 });
                 editor.setValue(values);
+                postConfigLoad();
             });
         } else {
             console.log('New File');
-            $.getJSON('/file/' + manifest.templates.configs.settings, function (template) {
+            $.getJSON('/file/' + manifest.templates.configs[fileType], function (schema) {
                 editor = new JSONEditor(document.getElementById("config"), {
-                    ajax: true,
                     disable_edit_json: true,
                     disable_properties: true,
-                    schema: template,
+                    schema: schema,
                     theme: 'bootstrap3',
                     iconlib: "bootstrap3"
                 });
+                postConfigLoad();
             });
         }
+    }
+
+    function postConfigLoad() {
         editor.on('ready', function () {
             editor.validate();
         });

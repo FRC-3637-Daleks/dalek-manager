@@ -3,13 +3,9 @@
 	{
 		"configs":
 		{
-			"ports": "ports/template.json",
-			"controls":
-			{
-				"available": "controls/available.json",
-				"requirements": "controls/requirements.json"
-			},
-			"settings": "settings/template.json",
+			"ports": "ports/schema.json",
+			"controls":"controls/schema.json",
+			"settings": "settings/schema.json",
 			"log-config": "logs/default.json"
 		}
 	},

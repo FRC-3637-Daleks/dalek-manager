@@ -136,9 +136,7 @@ func defaultHandler(writer http.ResponseWriter, request *http.Request) {
 
 func configHandler(writer http.ResponseWriter, request *http.Request)  {
 	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
-	vars := mux.Vars(request)
-	fileType := vars["fileType"]
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", fileType + "-config.html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "config.html"), nil)
 }
 
 func editorHandler(writer http.ResponseWriter, request *http.Request) {
