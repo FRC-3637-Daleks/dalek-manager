@@ -1,8 +1,8 @@
-var save;
-requirejs(['jquery', 'ko'], function ($, ko) {
+var save, editor;
+requirejs(['jquery', 'jsoneditor'], function ($, jsEditor) {
 
     function load() {
-        if(files.data().indexOf(fileName) > -1) {
+        if (files.data().indexOf(fileName) > -1) {
             console.log('Loading: ' + fileName);
             var template, values, AJAX = [];
             AJAX.push($.getJSON('/file/' + manifest.templates.configs.settings));
@@ -10,64 +10,39 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             $.when.apply($, AJAX).done(function () {
                 template = arguments[0][0];
                 values = arguments[1][0];
-                if (!template.hasOwnProperty("subsystems")) {
-                    console.log('Element subsystem not found');
-                    return;
-                }
-                template.subsystems.forEach(function (element) {
-                    if (!element.hasOwnProperty("values")) {
-                        console.log('Element values not found');
-                        return;
-                    }
-                    var sub = element;
-                    element.values.forEach(function (element) {
-                        if (values.hasOwnProperty(sub.name)) {
-                            if (values[sub.name].hasOwnProperty(element.name)) {
-                                element.value = values[sub.name][element.name];
-                            }
-                        }
-                    });
+                editor = new JSONEditor(document.getElementById("config"), {
+                    ajax: true,
+                    disable_edit_json: true,
+                    disable_properties: true,
+                    schema: template,
+                    theme: 'bootstrap3',
+                    iconlib: "bootstrap3"
                 });
-                ko.applyBindings(template, document.getElementById('content'));
+                editor.setValue(values);
             });
         } else {
             console.log('New File');
-            $.getJSON('/file/' + manifest.templates.configs.settings, function(template) {
-                if (!template.hasOwnProperty("subsystems")) {
-                    console.log('Element subsystem not found');
-                    return;
-                }
-                template.subsystems.forEach(function (element) {
-                    if (!element.hasOwnProperty("values")) {
-                        console.log('Element values not found');
-                        return;
-                    }
-                    var sub = element;
-                    element.values.forEach(function (element) {
-                        element.value = null;
-                    });
+            $.getJSON('/file/' + manifest.templates.configs.settings, function (template) {
+                editor = new JSONEditor(document.getElementById("config"), {
+                    ajax: true,
+                    disable_edit_json: true,
+                    disable_properties: true,
+                    schema: template,
+                    theme: 'bootstrap3',
+                    iconlib: "bootstrap3"
                 });
-                ko.applyBindings(template, document.getElementById('content'));
             });
         }
+        editor.on('ready', function () {
+            editor.validate();
+        });
     }
 
     postLoad.functions.push(load);
 
     save = function () {
         var name = $('#fileName').val();
-        var json = {};
-        var subsystems = $('input').filter(function() {
-            return $(this).attr('data-subsystem') != null;
-        }).toArray();
-        subsystems.forEach(function(element){
-            var subsystem = $(element).attr('data-subsystem');
-            if(!json.hasOwnProperty(subsystem)) {
-                json[subsystem] = {};
-            }
-            json[subsystem][$(element).attr('name')] = $(element).val();
-        });
-        console.log(json);
+        var json = editor.getValue();
         var boundary = "---------------------------7da24f2e50046";
         var body = '--' + boundary + '\r\n'
             + 'Content-Disposition: form-data; name="file";'
@@ -87,11 +62,13 @@ requirejs(['jquery', 'ko'], function ($, ko) {
         });
     };
 
-    $('#save').on('click', function(){
+    $('#save').on('click', function () {
         save();
     });
-    if(fileName != '') {
+
+    if (fileName != '') {
         $('#fileName').attr('value', fileName);
     }
+
     $('#fileNameContainer').find('label').html(fileType + '/');
 });
