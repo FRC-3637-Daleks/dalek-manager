@@ -1,7 +1,7 @@
 var save, editor;
 requirejs(['jquery', 'jsoneditor'], function ($) {
 
-    JSONEditor.defaults.editors.object.options.collapsed = false;
+    JSONEditor.defaults.editors.object.options.collapsed = true;
 
     function load() {
         if (files.data().indexOf(fileName) > -1) {
@@ -47,6 +47,7 @@ requirejs(['jquery', 'jsoneditor'], function ($) {
 
     save = function () {
         var name = $('#fileName').val();
+        document.title = name;
         var json = editor.getValue();
         var boundary = "---------------------------7da24f2e50046";
         var body = '--' + boundary + '\r\n'
