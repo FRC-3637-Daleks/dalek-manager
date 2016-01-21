@@ -57,7 +57,7 @@ requirejs(['jquery', 'jsoneditor'], function ($) {
             + '--' + boundary + '--';
         $.ajax({
             type: 'POST',
-            url: '/file/' + fileType + '/' + fileName,
+            url: '/file/' + fileType + '/' + name,
             contentType: "multipart/form-data; boundary=" + boundary,
             data: body
         }).done(function (response) {
@@ -66,10 +66,6 @@ requirejs(['jquery', 'jsoneditor'], function ($) {
             console.log("Save failed: " + response);
         });
     };
-
-    $('#save').on('click', function () {
-        save();
-    });
 
     if (fileName != '') {
         $('#fileName').attr('value', fileName);
