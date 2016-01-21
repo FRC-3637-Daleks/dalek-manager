@@ -72,12 +72,14 @@
 				"squared":
 				{
 					"description": "Same range but more precision at smaller values",
-					"type": "boolean"
+					"type": "boolean",
+					"format": "checkbox"
 				},
 				"inverted":
 				{
 					"description": "Flip range. (multiply by -1)",
-					"type": "boolean"
+					"type": "boolean",
+					"format": "checkbox"
 				}
 			}
 		},
@@ -101,7 +103,8 @@
 				"not":
 				{
 					"description": "True -> False, False -> True",
-					"type": "boolean"
+					"type": "boolean",
+					"format": "checkbox"
 				}
 			}
 		},
@@ -194,9 +197,9 @@
 				"button":
 				{
 					"type": "string",
-					"enum": [ "trigger", 
-							"hat-middle", "hat-left", "hat-right", "hat-front", "hat-rear",
-							"base-bottom-left", "base-top-left", "base-top-right", "base-bottom-left" ]
+					"enum": [ "trigger",
+						"hat-middle", "hat-left", "hat-right", "hat-front", "hat-rear",
+						"base-bottom-left", "base-top-left", "base-top-right", "base-bottom-left" ]
 				}
 			}
 		},
@@ -213,7 +216,7 @@
 					"type": "string",
 					"template": "gamepad"
 				},
-				"button": 
+				"button":
 				{
 					"type": "integer",
 					"minimum": 0,
