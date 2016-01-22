@@ -29,6 +29,31 @@ var debug = flag.Bool("debug", false, "If set debug output will print")
 func main() {
 	flag.Parse()
 	config.Debug = *debug
+	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
+		config.DebugLog("Makeing manifest.json")
+		manifest.Server.Port = 5810
+		manifest.Server.WebRoot = "web/"
+		manifest.Templates.Configs.Controls = "controls/schema.json"
+		manifest.Templates.Configs.Ports = "ports/schema.json"
+		manifest.Templates.Configs.Settings = "settings/schema.json"
+		json, err := json.MarshalIndent(manifest, "", "    ")
+		if (err != nil) {panic(err)}
+		ioutil.WriteFile("dalek/manifest.json", json, 0664)
+	} else {
+		data, err := ioutil.ReadFile("dalek/manifest.json")
+		config.ErrorLog(err)
+		err = json.Unmarshal(data, &manifest)
+	}
+	json, err := json.MarshalIndent(manifest, "", "    ")
+	if(err != nil) {
+		config.Log("Manifest error: ", manifest)
+		config.ErrorLog(err)
+		return
+	}
+	config.DebugLog("Loaded manifest: \n", string(json))
+	if _, err := os.Stat(manifest.Server.WebRoot); os.IsNotExist(err) {
+		panic(errors.New("Cannot find web directory"))
+	}
 	if _, err := os.Stat("dalek"); os.IsNotExist(err) {
 		config.DebugLog("Makeing dalek Directory")
 		err := os.MkdirAll("dalek", 0775)
@@ -64,31 +89,9 @@ func main() {
 		err := os.MkdirAll("dalek/binaries", 0775)
 		if (err != nil) {panic(err)}
 	}
-	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
-		config.DebugLog("Makeing manifest.json")
-		manifest.Server.Port = 5810
-		manifest.Server.WebRoot = "web/"
-		manifest.Templates.Configs.Controls = "controls/schema.json"
-		manifest.Templates.Configs.Ports = "ports/schema.json"
-		manifest.Templates.Configs.Settings = "settings/schema.json"
-		json, err := json.MarshalIndent(manifest, "", "    ")
-		if (err != nil) {panic(err)}
-		ioutil.WriteFile("dalek/manifest.json", json, 0664)
-	} else {
-		data, err := ioutil.ReadFile("dalek/manifest.json")
-		config.ErrorLog(err)
-		err = json.Unmarshal(data, &manifest)
-	}
 	fileRegex := "autonomous|controls|ports|settings|logs|binaries"
 	editorRegex := "autonomous|controls|ports|settings"
 	editorGuiRegex := "controls|ports|settings"
-	json, err := json.MarshalIndent(manifest, "", "    ")
-	if(err != nil) {
-		config.Log("Manifest error: ", manifest)
-		config.ErrorLog(err)
-		return
-	}
-	config.DebugLog("Loaded manifest: \n", string(json))
 	rtr := mux.NewRouter()
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
 		http.FileServer(http.Dir(path.Join(manifest.Server.WebRoot, "static")))))
