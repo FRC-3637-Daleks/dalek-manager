@@ -4,10 +4,7 @@ type Manifest struct {
 	Templates struct {
 				  Configs struct {
 							  Ports     string `json:"ports"`
-							  Controls  struct {
-											Available    string `json:"available"`
-											Requirements string `json:"requirements"`
-										} `json:"controls"`
+							  Controls  string `json:"controls"`
 							  Settings  string `json:"settings"`
 							  LogConfig string `json:"log-config"`
 						  } `json:"configs"`
