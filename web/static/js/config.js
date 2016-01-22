@@ -2,6 +2,7 @@ var save, editor;
 requirejs(['jquery', 'jsoneditor'], function ($) {
 
     JSONEditor.defaults.editors.object.options.collapsed = true;
+    JSONEditor.defaults.editors.object.options.format = 'grid';
 
     function load() {
         if (files.data().indexOf(fileName) > -1) {
