@@ -293,13 +293,19 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             manifest = data;
             updateManifestUI();
         });
-        $('#file').parent().attr('action', '/editor/' + fileType + '/' + fileName);
+        if(fileType == 'binaries')
+            $('#file').parent().attr('action', '/file/' + fileType + '/' + fileName);
+        else
+            $('#file').parent().attr('action', '/editor/' + fileType + '/' + fileName);
         updateFileList();
         window.setInterval(updateFileList, 3000);
         function handleFileSelect(evt) {
             var file = evt.target.files[0];
             if (file != null) {
-                $('#file').parent().attr('action', '/editor/' + fileType + '/' + file.name).submit();
+                if(fileType == 'binaries')
+                    $('#file').parent().attr('action', '/file/' + fileType + '/' + file.name).submit();
+                else
+                    $('#file').parent().attr('action', '/editor/' + fileType + '/' + file.name).submit();
             }
         }
 
