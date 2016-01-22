@@ -82,7 +82,13 @@ func main() {
 	fileRegex := "autonomous|controls|ports|settings|logs|binaries"
 	editorRegex := "autonomous|controls|ports|settings"
 	editorGuiRegex := "controls|ports|settings"
-	config.DebugLog("Loaded manifest: ", manifest)
+	json, err := json.MarshalIndent(manifest, "", "    ")
+	if(err != nil) {
+		config.Log("Manifest error: ", manifest)
+		config.ErrorLog(err)
+		return
+	}
+	config.DebugLog("Loaded manifest: \n", string(json))
 	rtr := mux.NewRouter()
 	rtr.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
 		http.FileServer(http.Dir(path.Join(manifest.Server.WebRoot, "static")))))
