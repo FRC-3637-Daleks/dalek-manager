@@ -1,5 +1,5 @@
 var save, editor;
-requirejs(['jquery', 'jsoneditor'], function ($) {
+requirejs(['jquery', 'json'], function ($) {
 
     JSONEditor.defaults.editors.object.options.collapsed = true;
     JSONEditor.defaults.editors.object.options.format = 'grid';
