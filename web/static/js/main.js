@@ -1,3 +1,4 @@
+var startCheck, stopCheck;
 requirejs(['jquery', 'mqtt'], function ($) {
     $(document).ready(function () {
 
@@ -61,7 +62,9 @@ requirejs(['jquery', 'mqtt'], function ($) {
             password = null,
             cleansession = true,
             mqtt,
-            reconnectTimeout = 5000;
+            reconnectTimeout = 5000,
+            serverIntervalId,
+            mqttIntervalId;
 
         function MQTTconnect() {
             if (typeof path == "undefined") {
@@ -81,7 +84,7 @@ requirejs(['jquery', 'mqtt'], function ($) {
                 onFailure: function (message) {
                     console.log("Connection failed: " + message.errorMessage + "Retrying");
                     $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
-                    setTimeout(MQTTconnect, reconnectTimeout);
+                    mqttIntervalId = setTimeout(MQTTconnect, reconnectTimeout);
                 }
             };
 
@@ -102,16 +105,27 @@ requirejs(['jquery', 'mqtt'], function ($) {
         }
 
         function onConnectionLost(response) {
-            setTimeout(MQTTconnect, reconnectTimeout);
+            mqttIntervalId = setTimeout(MQTTconnect, reconnectTimeout);
             //console.log("connection lost: " + responseObject.errorMessage + ". Reconnecting");
             $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
 
         }
 
-        $(document).ready(function () {
+        startCheck = function() {
             checkStatus();
             MQTTconnect();
-            setInterval(checkStatus, reconnectTimeout);
+            serverIntervalId = setInterval(checkStatus, reconnectTimeout);
+        };
+
+        stopCheck = function() {
+            clearInterval(serverIntervalId);
+            clearInterval(mqttIntervalId);
+            $('#robot-status').html('Not Running').removeClass('running stopped').addClass('no-status');
+            $('#mqtt-status').html('Not Running').removeClass('running stopped').addClass('no-status');
+        };
+
+        $(document).ready(function () {
+            //startCheck();
         });
     });
 });
