@@ -283,6 +283,7 @@ func statusHandler(writer http.ResponseWriter, request *http.Request)  {
 		http.Error(writer, "", 503)
 		return
 	}
+	c.Disconnect(250)
 	writer.WriteHeader(http.StatusOK)
 }
 
