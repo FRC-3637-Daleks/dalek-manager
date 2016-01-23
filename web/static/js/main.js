@@ -1,4 +1,4 @@
-requirejs(['jquery'], function ($) {
+requirejs(['jquery', 'mqtt'], function ($) {
     $(document).ready(function () {
 
         $('#folderViewShrink').find('> span').on('click', function () {
@@ -33,33 +33,85 @@ requirejs(['jquery'], function ($) {
 
         function checkStatus() {
             $.ajax({
-                url: "/test",
+                url: "/status",
                 type: "HEAD",
                 timeout: 1000,
                 statusCode: {
-                    200: function (response) {
+                    200: function () {
                         $('#robot-status').html('Running').removeClass('no-status stopped').addClass('running');
-                        $('#mqtt-status').html('Running').removeClass('no-status stopped').addClass('running');
                     },
-                    503: function (response) {
+                    204: function () {
                         $('#robot-status').html('Running').removeClass('no-status stopped').addClass('running');
-                        $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
                     },
-                    400: function (response) {
+                    400: function () {
                         $('#robot-status').html('Not Running').removeClass('no-status running').addClass('stopped');
-                        $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
                     },
-                    0: function (response) {
+                    0: function () {
                         $('#robot-status').html('Not Running').removeClass('no-status running').addClass('stopped');
-                        $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
                     }
                 }
             });
         }
 
-        $(document).ready(function() {
+        var host = '127.0.0.1',
+            port = 9001,
+            topic = '#',
+            useTLS = false,
+            username = null,
+            password = null,
+            cleansession = true,
+            mqtt,
+            reconnectTimeout = 5000;
+
+        function MQTTconnect() {
+            if (typeof path == "undefined") {
+                path = '/mqtt';
+            }
+            mqtt = new Paho.MQTT.Client(
+                host,
+                port,
+                path,
+                "dalek-manager"
+            );
+            var options = {
+                timeout: 3,
+                useSSL: useTLS,
+                cleanSession: cleansession,
+                onSuccess: onConnect,
+                onFailure: function (message) {
+                    console.log("Connection failed: " + message.errorMessage + "Retrying");
+                    $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
+                    setTimeout(MQTTconnect, reconnectTimeout);
+                }
+            };
+
+            mqtt.onConnectionLost = onConnectionLost;
+
+            if (username != null) {
+                options.userName = null;
+                options.password = null;
+            }
+            //console.log("Host=" + host + ", port=" + port + ", path=" + path + " TLS = " + useTLS + " username=" + username + " password=" + password);
+            mqtt.connect(options);
+        }
+
+        function onConnect() {
+            //console.log('Connected to ' + host + ':' + port + path);
+            mqtt.subscribe(topic, {qos: 0});
+            $('#mqtt-status').html('Running').removeClass('no-status stopped').addClass('running');
+        }
+
+        function onConnectionLost(response) {
+            setTimeout(MQTTconnect, reconnectTimeout);
+            //console.log("connection lost: " + responseObject.errorMessage + ". Reconnecting");
+            $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
+
+        }
+
+        $(document).ready(function () {
             checkStatus();
-            setInterval(checkStatus, 5000);
+            MQTTconnect();
+            setInterval(checkStatus, reconnectTimeout);
         });
     });
 });

@@ -151,6 +151,8 @@ requirejs(['jquery', 'ko'], function ($, ko) {
             case "binaries":
                 setFile(manifest.runtime.binary);
                 break;
+            case "":
+                break;
             default:
                 console.log("Invalid file type");
                 break;
