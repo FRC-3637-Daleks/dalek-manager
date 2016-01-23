@@ -120,8 +120,8 @@ requirejs(['jquery', 'mqtt'], function ($) {
         stopCheck = function() {
             clearInterval(serverIntervalId);
             clearInterval(mqttIntervalId);
-            $('#robot-status').html('Not Running').removeClass('running stopped').addClass('no-status');
-            $('#mqtt-status').html('Not Running').removeClass('running stopped').addClass('no-status');
+            $('#robot-status').html('No Status').removeClass('running stopped').addClass('no-status');
+            $('#mqtt-status').html('No Status').removeClass('running stopped').addClass('no-status');
         };
 
         $(document).ready(function () {
