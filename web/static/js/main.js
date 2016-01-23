@@ -31,5 +31,35 @@ requirejs(['jquery'], function ($) {
             $('#files').removeClass('hidden');
         });
 
+        function checkStatus() {
+            $.ajax({
+                url: "/test",
+                type: "HEAD",
+                timeout: 1000,
+                statusCode: {
+                    200: function (response) {
+                        $('#robot-status').html('Running').removeClass('no-status stopped').addClass('running');
+                        $('#mqtt-status').html('Running').removeClass('no-status stopped').addClass('running');
+                    },
+                    503: function (response) {
+                        $('#robot-status').html('Running').removeClass('no-status stopped').addClass('running');
+                        $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
+                    },
+                    400: function (response) {
+                        $('#robot-status').html('Not Running').removeClass('no-status running').addClass('stopped');
+                        $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
+                    },
+                    0: function (response) {
+                        $('#robot-status').html('Not Running').removeClass('no-status running').addClass('stopped');
+                        $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            checkStatus();
+            setInterval(checkStatus, 5000);
+        });
     });
 });

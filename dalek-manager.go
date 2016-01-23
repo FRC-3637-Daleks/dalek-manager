@@ -20,6 +20,7 @@ import (
 	"strconv"
 	"github.com/FRC-3637-Daleks/dalek-manager/manager/util"
 	"errors"
+	MQTT "git.eclipse.org/gitroot/paho/org.eclipse.paho.mqtt.golang.git"
 )
 
 var config configuration.Config
@@ -111,6 +112,7 @@ func main() {
 	rtr.HandleFunc("/file/{fileType:" + fileRegex + "}/{fileName}", deleteFileHandler).Methods("DELETE")
 	rtr.HandleFunc("/file/list/", listFileHandler).Methods("GET")
 	rtr.HandleFunc("/file/list/{fileType:" + fileRegex + "}", listFileHandler).Methods("GET")
+	rtr.HandleFunc("/test", statusHandler)
 	http.Handle("/", rtr)
 	if (manifest.Server.Port == 0) {
 		goto defaultStart
@@ -271,6 +273,17 @@ func pullBinHandler(writer http.ResponseWriter, request *http.Request) {
 	if (check(err, 500, &writer)) {return }
 	writer.WriteHeader(http.StatusOK)
 	writer.Write([]byte("OK"))
+}
+
+func statusHandler(writer http.ResponseWriter, request *http.Request)  {
+	opts := MQTT.NewClientOptions().AddBroker("tcp://localhost:1883")
+	opts.SetClientID("go-simple")
+	c := MQTT.NewClient(opts)
+	if token := c.Connect(); token.Wait() && token.Error() != nil {
+		http.Error(writer, "", 503)
+		return
+	}
+	writer.WriteHeader(http.StatusOK)
 }
 
 func serveTemplate(writer http.ResponseWriter, request *http.Request, filePath string, data interface{}) {
