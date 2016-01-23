@@ -60,7 +60,7 @@ requirejs(['jquery', 'mqtt'], function ($) {
             useTLS = false,
             username = null,
             password = null,
-            cleansession = true,
+            cleanSession = true,
             mqtt,
             reconnectTimeout = 5000,
             serverIntervalId,
@@ -79,10 +79,10 @@ requirejs(['jquery', 'mqtt'], function ($) {
             var options = {
                 timeout: 3,
                 useSSL: useTLS,
-                cleanSession: cleansession,
+                cleanSession: cleanSession,
                 onSuccess: onConnect,
                 onFailure: function (message) {
-                    console.log("Connection failed: " + message.errorMessage + "Retrying");
+                    //console.log("Connection failed: " + message.errorMessage + "Retrying");
                     $('#mqtt-status').html('Not Running').removeClass('no-status running').addClass('stopped');
                     mqttIntervalId = setTimeout(MQTTconnect, reconnectTimeout);
                 }
