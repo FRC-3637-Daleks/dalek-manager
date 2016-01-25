@@ -206,7 +206,14 @@ func getFileHandler(writer http.ResponseWriter, request *http.Request) {
 
 func listFileHandler(writer http.ResponseWriter, request *http.Request) {
 	vars := mux.Vars(request)
-	fileList, err := getFileList("dalek/" + vars["fileType"])
+	fileType := vars["fileType"]
+	var fileList []string
+	var err error
+	if(fileType == "logs") {
+		fileList, err = getLogList()
+	} else {
+		fileList, err = getFileList("dalek/" + fileType)
+	}
 	if (check(err, 500, &writer)) {return}
 	fileJson, err := json.MarshalIndent(fileList, "", "    ")
 	if (check(err, 500, &writer)) {return}
@@ -319,6 +326,34 @@ func getFileList(dir string) ([]string, error) {
 	for _, f := range fileData {
 		if (!f.IsDir()) {
 			files = append(files, f.Name())
+		}
+	}
+	return files, err
+}
+
+func getLogList() ([]string, error) {
+	var (
+		files []string
+		err error
+	)
+	fileData, err := ioutil.ReadDir("dalek/logs")
+	for _, f := range fileData {
+		if (f.IsDir()) {
+			console, manifest := false, false
+			fileData, err := ioutil.ReadDir("dalek/logs/" + f.Name())
+			if (err != nil) {
+				return files, err
+			}
+			for _, f := range fileData {
+				if(f.Name() == "manifest.json") {
+					manifest = true
+				} else if (f.Name() == "console.log") {
+					console = true
+				}
+			}
+			if (manifest && console) {
+				files = append(files, f.Name())
+			}
 		}
 	}
 	return files, err
