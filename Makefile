@@ -40,7 +40,7 @@ $(OUTPUT): $(TOPLEVEL_FILE)
 	go build $(GOARGS) $(TOPLEVEL_FILE)
 
 $(ARM_OUTPUT): $(TOPLEVEL_FILE)
-	env GOOS=linux GOARCH=arm GOARM=7 go build $(GOARGS) -o $(ARM_OUTPUT) $(TOPLEVEL_FILE)
+	env CGO_ENABlED=true GOOS=linux GOARCH=arm GOARM=7 go build $(GOARGS) -o $(ARM_OUTPUT) $(TOPLEVEL_FILE)
 
 deploy: $(ARM_OUTPUT) $(SCRIPTS) $(DEPLOYED_TAR)
 	ssh  $(TARGET_ADDRESS) "/etc/init.d/$(OUTPUT) stop || true"
