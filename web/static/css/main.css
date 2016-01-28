@@ -54,6 +54,11 @@
     text-decoration: none;
 }
 
+.selected-file {
+    float: right;
+    color: #9d9d9d;
+}
+
 #navbar-buttons {
     margin-right: 10px;
 }

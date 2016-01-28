@@ -1,126 +1,110 @@
 {
-	"binds":
-	{
-		"drive":
-		{
-			"move-x": 
-			{
-				"source": 
-				{
-					"input": "joysticks/joystick/0/y-axis",
-				},
-				"squared": true
-			},
-			
-			"move-y":
-			{
-				"source":
-				{
-					"input": "joysticks/joystick/0/y-axis",
-				},
-				"squared": true
-			},
-			
-			"move-rotate":
-			{
-				"source":
-				{
-					"input": "joysticks/joystick/1/x-axis",
-				},
-				"squared": true
-			},
-		
-			"precision-mode-on":
-			{
-				"poll": "onTrue",
-				"source": "precision-toggle"
-			},
-			
-			"precision-mode-off":
-			{
-				"poll": "onFalse",
-				"source": "precision-toggle"
-			}
-		},
-		
-		"cobra":
-		{
-			"move":
-			{
-				"source": 
-				{
-					"input": "joysticks/gamepad/2/left-y-axis"
-				}
-			},
-			
-			"move-up":
-			{
-				"poll": "onTrue",
-				"source": 
-				{
-					"input": "joysticks/gamepad/2/left-bottom-trigger"
-				},
-				
-				"arguments":
-				{
-					"speed": "joysticks/joystick/0/z-axis"
-				}
-			},
-			
-			"move-down":
-			{
-				"poll": "onTrue",
-				"source": 
-				{
-					"input": "joysticks/gamepad/2/left-top-trigger"
-				},
-				
-				"arguments":
-				{
-					"speed": 0.5
-				}
-			},
-			
-			"stop":
-			{
-				"poll": "onTrue",
-				"source": "cobra-stop"
-			}
-		}
-	},
-	
-	"groups":
-	{
-		"precision-toggle":
-		{
-			"type": "toggle",
-			"source":
-			{
-				"type": "and",
-				"sources":
-				[
-					{"input": "joysticks/joystick/0/trigger"},
-					{"input": "joysticks/joystick/1/trigger"}
-				]
-			}
-		},
-		
-		"cobra-stop":
-		{
-			"type": "none-of",
-			"sources":
-			[
-				{"input": "joysticks/gamepad/2/left-bottom-trigger"},
-				{"input": "joysticks/gamepad/2/left-top-trigger"},
-				{"input": "sensors/cobra/limit-up"},
-				{"input": "sensors/cobra/limit-down"},
-				{
-					"input": "sensors/cobra/potentiometer",
-					"type": "compare",
-					"comparison": ">",
-					"comparator": 900
-				}
-			],
-			"comment": "Use of sensors in this case is impractical, and is only here to demonstrate format",
-		}
-	}
+  "binds": {
+    "drive": {
+      "move-y": {
+        "source": {
+          "device-type": "joystick",
+          "id": "right",
+          "axis": "y"
+        },
+        "squared": false,
+        "inverted": false
+      },
+      "move-rotate": {
+        "source": {
+          "device-type": "joystick",
+          "id": "left",
+          "axis": "x"
+        },
+        "squared": false,
+        "inverted": false
+      },
+      "precision-mode": {
+        "source": "Precision Toggle",
+        "not": false
+      }
+    },
+    "cobra": {
+      "move": {
+        "source": {
+          "device-type": "gamepad",
+          "axis": "left-y"
+        },
+        "squared": false,
+        "inverted": false
+      },
+      "move-up": {
+        "source": {
+          "source": {
+            "device-type": "gamepad",
+            "button": 5
+          },
+          "not": false
+        }
+      },
+      "move-down": {
+        "source": {
+          "source": {
+            "device-type": "gamepad",
+            "button": 6
+          },
+          "not": false
+        }
+      },
+      "stop": {
+        "source": {
+          "source": {
+            "device-type": "gamepad",
+            "button": 4
+          },
+          "not": false
+        },
+        "cooldown": 1
+      }
+    }
+  },
+  "user-def-bool": [
+    {
+      "id": "Precision Toggle",
+      "operation": "allOf",
+      "operands": [
+        {
+          "source": {
+            "device-type": "joystick",
+            "id": "left",
+            "button": "trigger"
+          },
+          "not": false
+        },
+        {
+          "source": {
+            "device-type": "joystick",
+            "id": "right",
+            "button": "trigger"
+          },
+          "not": false
+        }
+      ]
+    },
+    {
+      "id": "Cobra Stop",
+      "operation": "noneOf",
+      "operands": [
+        {
+          "source": {
+            "device-type": "gamepad",
+            "button": 5
+          },
+          "not": false
+        },
+        {
+          "source": {
+            "device-type": "gamepad",
+            "button": 6
+          },
+          "not": false
+        }
+      ]
+    }
+  ]
+}

@@ -2,9 +2,10 @@
 {{define "main"}}
 <html lang="en">
 <head>
-    <title>Binaries</title>
+    <title>Settings</title>
     {{template "cssIncludes"}}
     <link href="/static/css/editor.css" rel="stylesheet" media="screen">
+    <link href="/static/css/config.css" rel="stylesheet"/>
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -40,8 +41,8 @@
                 <li><a id="binaries" href="../../binaries">Binaries</a></li>
             </ul>
         </div>
-        <div class="col-md-8 col-md-offset-2" style="padding: 0; background-color: #272822;">
-
+        <div id="content" class="content col-md-8 col-md-offset-2">
+            <div id="config"></div>
         </div>
         <div class="col-md-2 col-md-offset-10 rightbar">
             <p id="fileViewExpand" class="glyphicon glyphicon-chevron-left hidden viewExpand"></p>
@@ -57,6 +58,10 @@
                             </div>
                             <div class="accordion-section-content"
                                  data-bind="attr: {id:'accordion-'+$index()}">
+                                <a name="gui-edit" class="fileButton"
+                                   data-bind="attr: {href: '/editor-gui/' + files.fileType + '/' + $data}">Edit - GUI</a>
+                                <a name="edit" class="fileButton"
+                                   data-bind="attr: {href: '/editor/' + files.fileType + '/' + $data}">Edit</a>
                                 <a name="delete" class="fileButton"
                                    data-bind="attr: {href: 'javascript:deleteFile(\'' + $data + '\');'}">Delete</a>
                                 <a name="download" class="fileButton"
@@ -69,9 +74,12 @@
                 </form>
             </div>
             <div id="fileButtons">
-                <!--<button id="newFile" class="btn nav-box nav-btn" onclick="newFile('editor')">
+                <button id="newGUIFile" class="btn nav-box nav-btn" onclick="newFile('editor-gui')">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                </button>
+                <button id="newFile" class="btn nav-box nav-btn" onclick="newFile('editor')">
                     <span class="glyphicon glyphicon-plus"></span>
-                </button>-->
+                </button>
                 <button id="uploadFile" class="btn nav-box nav-btn" onclick="$('#file').click()">
                     <span class="glyphicon glyphicon-upload"></span>
                 </button>
@@ -84,9 +92,9 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-2 nav-bottom">
             <div id="fileNameContainer" class="btn nav-box nav-btn form-inline">
+                <button id="save" class="btn nav-box nav-btn" onclick="save()">Save</button>
                 <label for="fileName"></label>
                 <input id="fileName" class="form-control"/>
-                <button id="save" class="btn nav-box nav-btn" onclick="pullBin();">Pull Binary</button>
             </div>
         </div>
     </div>
@@ -94,7 +102,7 @@
 {{template "jsIncludes"}}
 <script src="/static/js/main.js"></script>
 <script src="/static/js/files.js"></script>
-<script src="/static/js/binaries.js"></script>
+<script src="/static/js/config.js"></script>
 </body>
 </html>
 {{end}}

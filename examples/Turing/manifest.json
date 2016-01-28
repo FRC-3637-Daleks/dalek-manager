@@ -3,13 +3,9 @@
 	{
 		"configs":
 		{
-			"ports": "ports/template.json",
-			"controls":
-			{
-				"available": "controls/available.json",
-				"requirements": "controls/requirements.json"
-			},
-			"settings": "settings/template.json",
+			"ports": "ports/schema.json",
+			"controls":"controls/schema.json",
+			"settings": "settings/schema.json",
 			"log-config": "logs/default.json"
 		}
 	},
@@ -24,7 +20,7 @@
 			"logs": "logs/default.json"
 		},
 		"autonomous": "autonomous/fast_can.lua",
-		"binary": "binaries/2015_Apr_11_17",
+		"binary": "binaries/2015_Apr_11_17"
 	},
 	
 	"server":

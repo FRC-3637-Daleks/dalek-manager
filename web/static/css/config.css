@@ -1,0 +1,15 @@
+#config {
+    color: #9d9d9d;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+}
+
+#config button {
+    background-color: #101010;
+    border-color: #787879;
+}
+
+#config .well {
+    background-color: #1c1c1c;
+    border-color: #787879;
+}

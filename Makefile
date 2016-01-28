@@ -10,7 +10,7 @@ OUTPUT := dalek-manager
 ARM_OUTPUT := $(OUTPUT)-arm
 
 TEAMNO := 3637
-TARGET_HOSTNAME := roboRIO-$(TEAMNO).local     # In the event of failure switch to IP address
+TARGET_HOSTNAME := roboRIO-$(TEAMNO)-FRC.local     # In the event of failure switch to IP address
 TARGET_USER := lvuser
 ROOT_USER := Admin
 TARGET_ADDRESS := $(TARGET_USER)@$(TARGET_HOSTNAME)

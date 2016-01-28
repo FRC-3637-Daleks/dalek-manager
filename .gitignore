@@ -4,5 +4,6 @@ bin/
 cross-bin/
 dalek/
 dalek-manager*
+!scripts/*
 !dalek-manager.go
 *.tar.gz

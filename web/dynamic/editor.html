@@ -52,10 +52,12 @@
                            <div class="accordion-section-title">
                                <a class="accordion-section-title-text"
                                   data-bind="attr: {href: '#accordion-'+$index()}, text: $data"></a>
-                               <span class="selected"></span>
+                               <span class="selected-file glyphicon glyphicon-ok hidden"></span>
                            </div>
                            <div class="accordion-section-content"
                                 data-bind="attr: {id:'accordion-'+$index()}">
+                               <a name="gui-edit" class="fileButton"
+                                  data-bind="attr: {href: '/editor-gui/' + files.fileType + '/' + $data}">Edit - GUI</a>
                                <a name="edit" class="fileButton"
                                   data-bind="attr: {href: '/editor/' + files.fileType + '/' + $data}">Edit</a>
                                <a name="delete" class="fileButton"
@@ -70,7 +72,10 @@
                 </form>
             </div>
             <div id="fileButtons">
-                <button id="newFile" class="btn nav-box nav-btn" onclick="newFile()">
+                <button id="newGUIFile" class="btn nav-box nav-btn hidden" onclick="newFile('editor-gui')">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                </button>
+                <button id="newFile" class="btn nav-box nav-btn" onclick="newFile('editor')">
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
                 <button id="uploadFile" class="btn nav-box nav-btn" onclick="$('#file').click()">
@@ -92,7 +97,7 @@
         </div>
     </div>
 </div>
-{{template "editorJsIncludes"}}
+{{template "jsIncludes"}}
 <script src="/static/js/main.js"></script>
 <script src="/static/js/files.js"></script>
 <script src="/static/js/editor.js"></script>

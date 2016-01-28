@@ -2,47 +2,101 @@
 {{define "main"}}
 <html lang="en">
 <head>
-    <title>Team 3637 Robot Manager</title>
+    <title>Controls</title>
     {{template "cssIncludes"}}
+    <link href="/static/css/editor.css" rel="stylesheet" media="screen">
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Team 3637 Robot Manager</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <form id="navbar-buttons" class="navbar-form navbar-right">
-                <button id="reset" type="button" class="btn nav-box nav-btn">Reset Robot</button>
-                <p class="btn nav-box">Robot <span id="robot-status" class="status no-status">No Status</span></p>
-                <p class="btn nav-box">MQTT <span id="mqtt-status" class="status no-status">No Status</span></p>
-            </form>
-        </div>
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand page-scroll" href="/">Team 3637 Robot Manager</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+        <form id="navbar-buttons" class="navbar-form navbar-right">
+            <button id="reset" type="button" class="btn nav-box nav-btn">Reset Robot</button>
+            <p class="btn nav-box">Robot <span id="robot-status" class="status no-status">No Status</span></p>
+
+            <p class="btn nav-box">MQTT <span id="mqtt-status" class="status no-status">No Status</span></p>
+        </form>
+    </div>
 </nav>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
+        <div class="col-md-2 sidebar">
+            <p id="folderViewExpand" class="glyphicon glyphicon-chevron-right hidden viewExpand"></p>
             <ul class="nav nav-sidebar">
-                <li><a href="autonomous">Autonomous</a></li>
-                <li><a href="ports">Port</a></li>
-                <li class="active"><a href="controls">Controls</a></li>
-                <li><a href="settings">Settings</a></li>
-                <li><a href="logs">Logs</a></li>
-                <li><a href="binaries">Binaries</a></li>
+                <li><p id="folderViewShrink" class="viewShrink">Folder View<span class="glyphicon glyphicon-chevron-left"></span></p></li>
+                <li><a id="autonomous" href="../../autonomous">Autonomous</a></li>
+                <li><a id="ports" href="../../ports">Port</a></li>
+                <li><a id="controls" href="../../controls">Controls</a></li>
+                <li><a  id="settings" href="../../settings">Settings</a></li>
+                <li><a id="logs" href="../../logs">Logs</a></li>
+                <li><a id="binaries" href="../../binaries">Binaries</a></li>
             </ul>
         </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="col-md-8 col-md-offset-2" style="padding: 0; background-color: #272822;">
+
+        </div>
+        <div class="col-md-2 col-md-offset-10 rightbar">
+            <p id="fileViewExpand" class="glyphicon glyphicon-chevron-left hidden viewExpand"></p>
+            <div class="nav nav-rightbar">
+                <p id="fileViewShrink" class="viewShrink"><span class="glyphicon glyphicon-chevron-right"></span>File View</p>
+                <form>
+                    <div id="files" class="accordion" data-bind="foreach: files">
+                        <div class="accordion">
+                            <div class="accordion-section-title">
+                                <a class="accordion-section-title-text"
+                                   data-bind="attr: {href: '#accordion-'+$index()}, text: $data"></a>
+                                <span class="selected-file glyphicon glyphicon-ok hidden"></span>
+                            </div>
+                            <div class="accordion-section-content"
+                                 data-bind="attr: {id:'accordion-'+$index()}">
+                                <a name="gui-edit" class="fileButton"
+                                   data-bind="attr: {href: '/editor-gui/' + files.fileType + '/' + $data}">Edit - GUI</a>
+                                <a name="edit" class="fileButton"
+                                   data-bind="attr: {href: '/editor/' + files.fileType + '/' + $data}">Edit</a>
+                                <a name="delete" class="fileButton"
+                                   data-bind="attr: {href: 'javascript:deleteFile(\'' + $data + '\');'}">Delete</a>
+                                <a name="download" class="fileButton"
+                                   data-bind="attr: {href: '/file/' + files.fileType + '/' + $data}" download>Download</a>
+                                <a name="select" class="fileButton"
+                                   data-bind="attr: {href: 'javascript:selectFile(\'' + $data + '\');'}">Select</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div id="fileButtons">
+                <button id="newGUIFile" class="btn nav-box nav-btn" onclick="newFile('editor-gui')">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                </button>
+                <button id="newFile" class="btn nav-box nav-btn" onclick="newFile('editor')">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
+                <button id="uploadFile" class="btn nav-box nav-btn" onclick="$('#file').click()">
+                    <span class="glyphicon glyphicon-upload"></span>
+                </button>
+                <form method="post" enctype="multipart/form-data">
+                    <input id="file" type="file" name="file" class="hidden"/>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-2 nav-bottom">
 
         </div>
     </div>
 </div>
 {{template "jsIncludes"}}
-<script src="../static/js/main.js"></script>
+<script src="/static/js/main.js"></script>
+<script src="/static/js/files.js"></script>
 </body>
 </html>
 {{end}}

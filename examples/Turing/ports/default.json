@@ -8,11 +8,11 @@
 			"rear-right": 3,
 			"rear-left": 4
 		},
-		
+
 		"PDP": 5,
 		"PCM": 6
 	},
-	
+
 	"DIO":
 	{
 		"cobra":

@@ -1,67 +1,54 @@
 [
-	{
-		"name": "drive",
-		"continuous-inputs":
-		[
-			{
-				"name": "move-x",
-				"type": "double"
-			},
-			
-			{
-				"name": "move-y",
-				"type": "double"
-			},
-			
-			{
-				"name": "move-rotate",
-				"type": "double"
-			},
-		],
-		
-		"commands":
-		[
-			{
-				"name": "precision-mode-on"
-			},
-			
-			{
-				"name": "precision-mode-off"
-			}
-		]
-	},
-
-	{
-		"name": "cobra",
-		"continous-inputs":
-		[
-			{
-				"name": "move",
-				"type": "double"
-			}
-		],
-		
-		"commands":
-		[
-			{
-				"name": "move-up"
-				"arguments":
-				[
-					{
-						"name": "speed",
-						"type": "double"
-						"default": 0.5
-					}
-				]
-			},
-			
-			{
-				"name": "move-down"
-			},
-			
-			{
-				"name": "stop"
-			}
-		],
-	}
+    {
+        "name": "drive",
+        "continuous-inputs": [
+            {
+                "name": "move-x",
+                "type": "double"
+            },
+            {
+                "name": "move-y",
+                "type": "double"
+            },
+            {
+                "name": "move-rotate",
+                "type": "double"
+            }
+        ],
+        "commands": [
+            {
+                "name": "precision-mode-on"
+            },
+            {
+                "name": "precision-mode-off"
+            }
+        ]
+    },
+    {
+        "name": "cobra",
+        "continous-inputs": [
+            {
+                "name": "move",
+                "type": "double"
+            }
+        ],
+        "commands": [
+            {
+                "name": "move-up",
+                "arguments": [
+                    {
+                        "name": "speed",
+                        "type": "double",
+                        "default": 0.5
+                    }
+                ]
+            },
+            {
+                "name": "move-down"
+            },
+            {
+                "name": "stop"
+            }
+        ]
+    }
 ]
