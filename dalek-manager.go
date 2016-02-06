@@ -149,6 +149,11 @@ func configHandler(writer http.ResponseWriter, request *http.Request)  {
 	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "config.html"), nil)
 }
 
+func logViewerHandler(writer http.ResponseWriter, request *http.Request)  {
+	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "log-viewer.html"), nil)
+}
+
 func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	editorWrapper := data.EditorWrapper{}
