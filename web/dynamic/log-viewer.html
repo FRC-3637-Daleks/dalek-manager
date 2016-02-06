@@ -5,6 +5,7 @@
     <title>Autonomous</title>
     {{template "cssIncludes"}}
     <link href="/static/css/editor.css" rel="stylesheet" media="screen">
+    <link href="/static/css/log-viewer.css" rel="stylesheet">
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -58,6 +59,8 @@
                                  data-bind="attr: {id:'accordion-'+$index()}">
                                 <a name="edit" class="fileButton"
                                    data-bind="attr: {href: '/editor/' + files.fileType + '/' + $data}">Edit</a>
+                                <a name="edit" class="fileButton"
+                                   data-bind="attr: {href: '/editor/' + files.fileType + '/' + $data}">Edit</a>
                                 <a name="delete" class="fileButton"
                                    data-bind="attr: {href: 'javascript:deleteFile(\'' + $data + '\');'}">Delete</a>
                                 <a name="download" class="fileButton"
@@ -90,8 +93,8 @@
 </div>
 {{template "jsIncludes"}}
 <script src="/static/js/main.js"></script>
-
 <script src="/static/js/files.js"></script>
+<script src="/static/js/log-viewer.js"></script>
 </body>
 </html>
 {{end}}
