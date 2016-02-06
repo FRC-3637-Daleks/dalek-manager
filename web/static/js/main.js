@@ -54,8 +54,8 @@ requirejs(['jquery', 'mqtt'], function ($) {
             });
         }
 
-        var host = '127.0.0.1',
-            port = 9001,
+        var host = mqttHost,
+            port = parseInt(mqttPort),
             topic = '#',
             useTLS = false,
             username = null,

@@ -32,6 +32,7 @@ func main() {
 	if _, err := os.Stat("dalek/manifest.json"); os.IsNotExist(err) {
 		config.DebugLog("Makeing manifest.json")
 		manifest.Server.Port = 5810
+		manifest.Server.MqttPort = 5800
 		manifest.Server.WebRoot = "web/"
 		manifest.Templates.Configs.Controls = "controls/schema.json"
 		manifest.Templates.Configs.Ports = "ports/schema.json"
@@ -134,14 +135,24 @@ func main() {
 }
 
 func rootHandler(writer http.ResponseWriter, request *http.Request) {
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "index.html"), nil)
+	var pageData data.PageWrapper
+	ip, err := getMqttHost()
+	if (check(err, 500, &writer)) {return}
+	pageData.ServerIP = ip
+	pageData.MqttPort = manifest.Server.MqttPort
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", "index.html"), pageData)
 }
 
 func defaultHandler(writer http.ResponseWriter, request *http.Request) {
+	var pageData data.PageWrapper
+	ip, err := getMqttHost()
+	if (check(err, 500, &writer)) {return}
+	pageData.ServerIP = ip
+	pageData.MqttPort = manifest.Server.MqttPort
 	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
-	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", fileType + ".html"), nil)
+	serveTemplate(writer, request, path.Join(manifest.Server.WebRoot, "dynamic", fileType + ".html"), pageData)
 }
 
 func configHandler(writer http.ResponseWriter, request *http.Request)  {
@@ -156,7 +167,11 @@ func logViewerHandler(writer http.ResponseWriter, request *http.Request)  {
 
 func editorHandler(writer http.ResponseWriter, request *http.Request) {
 	config.DebugLog("Request for: " + request.Method + " \"", request.URL.Path, "\"")
-	editorWrapper := data.EditorWrapper{}
+	var editorWrapper data.EditorWrapper
+	ip, err := getMqttHost()
+	if (check(err, 500, &writer)) {return}
+	editorWrapper.ServerIP = ip
+	editorWrapper.MqttPort = manifest.Server.MqttPort
 	vars := mux.Vars(request)
 	fileType := vars["fileType"]
 	fileName := vars["fileName"]
@@ -363,4 +378,12 @@ func getLogList() ([]string, error) {
 		}
 	}
 	return files, err
+}
+
+func getMqttHost() (string, error) {
+	if(manifest.Server.MqttHost != "") {
+		return manifest.Server.MqttHost, nil
+	} else {
+		return util.GetIP()
+	}
 }

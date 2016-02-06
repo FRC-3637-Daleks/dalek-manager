@@ -11,6 +11,13 @@
 <link href="/static/css/main.css" rel="stylesheet"/>
 {{end}}
 
+{{define "vars"}}
+<script>
+    var mqttHost = '{{.ServerIP}}';
+    var mqttPort = '{{.MqttPort}}';
+</script>
+{{end}}
+
 {{define "jsIncludes"}}
 <script src="/static/js/lib/require.js"></script>
 <script>

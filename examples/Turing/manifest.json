@@ -26,6 +26,8 @@
 	"server":
 	{
 		"web-root": "web/",
-		"port": 5800
+		"port": 5810,
+		"mqttHost": "",
+		"mqttPort": 5800
 	}
 }

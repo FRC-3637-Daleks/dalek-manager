@@ -20,7 +20,9 @@ type Manifest struct {
 				  Binary     string `json:"binary"`
 			  } `json:"runtime"`
 	Server    struct {
-				  WebRoot string `json:"web-root"`
-				  Port    int     `json:"port"`
+				  WebRoot  string `json:"web-root"`
+				  Port     int     `json:"port"`
+				  MqttHost string `json:"mqttHost"`
+				  MqttPort int `json:"mqttPort"`
 			  } `json:"server"`
 }

@@ -14,6 +14,10 @@ requirejs(['jquery', 'ace/ace', 'mousetrap'], function($, ace, mousetrap) {
     editor.setTheme('ace/theme/monokai');
     editor.getSession().setMode('ace/mode/' + lang);
 
+    if(readOnly == 'true'){
+        editor.setReadOnly(true);
+    }
+
     //Setup save function
     var fileName = document.title;
 
