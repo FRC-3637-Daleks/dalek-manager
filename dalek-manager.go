@@ -99,6 +99,7 @@ func main() {
 	rtr.HandleFunc("/{fileType:" + fileRegex + "}", defaultHandler)
 	rtr.HandleFunc("/binaries/pull", pullBinHandler)
 	rtr.HandleFunc("/editor-gui/{fileType:" + editorGuiRegex + "}/{fileName}", configHandler)
+	rtr.HandleFunc("/log-viewer/{fileName}", logViewerHandler)
 	rtr.HandleFunc("/editor/{fileName}", editorHandler).Methods("GET")
 	rtr.HandleFunc("/editor/{fileName}", putEditorHandler).Methods("POST")
 	rtr.HandleFunc("/editor/{fileType:" + editorRegex + "}/{fileName}", editorHandler).Methods("GET")
