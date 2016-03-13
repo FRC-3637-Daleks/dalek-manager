@@ -34,6 +34,7 @@ func main() {
 		manifest.Server.Port = 5810
 		manifest.Server.MqttPort = 5800
 		manifest.Server.WebRoot = "web/"
+		manifest.Server.WorkingBinPath = "/home/lvuser/FRCUserProgram"
 		manifest.Templates.Configs.Controls = "controls/schema.json"
 		manifest.Templates.Configs.Ports = "ports/schema.json"
 		manifest.Templates.Configs.Settings = "settings/schema.json"
@@ -296,7 +297,7 @@ func pullBinHandler(writer http.ResponseWriter, request *http.Request) {
 		if (check(err, 500, &writer)) {return }
 	}
 	config.DebugLog("Copying FRCUserProgram to : dalek/binaries/" + fileName)
-	err = util.CopyFile("../FRCUserProgram", "dalek/binaries/" + fileName)
+	err = util.CopyFile(manifest.Server.WorkingBinPath, "dalek/binaries/" + fileName)
 	if (check(err, 500, &writer)) {return }
 	writer.WriteHeader(http.StatusOK)
 	writer.Write([]byte("OK"))
